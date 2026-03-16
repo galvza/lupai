@@ -126,6 +126,12 @@ def bcb_inadimplencia_valid(bcb_fixtures: dict) -> list[dict]:
     return bcb_fixtures["inadimplencia_valid"]
 
 
+@pytest.fixture
+def bcb_pib_valid(bcb_fixtures: dict) -> list[dict]:
+    """Retorna resposta válida da API do BCB pra PIB trimestral."""
+    return bcb_fixtures["pib_valid"]
+
+
 # ==================== Fixtures DIEESE ====================
 
 
@@ -197,6 +203,46 @@ def anp_csv_latin1() -> bytes:
     """Retorna CSV da ANP codificado em latin-1 (ISO-8859-1)."""
     raw = load_fixture("anp_responses.csv")
     return raw.encode("latin-1")
+
+
+# ==================== Fixtures Energia (IBGE SIDRA) ====================
+
+
+@pytest.fixture
+def energia_fixtures() -> dict:
+    """Retorna todas as fixtures de respostas da API SIDRA."""
+    return load_json_fixture("energia_responses.json")
+
+
+@pytest.fixture
+def energia_sidra_valid(energia_fixtures: dict) -> list[dict]:
+    """Retorna resposta válida da API SIDRA pra energia elétrica."""
+    return energia_fixtures["sidra_valid"]
+
+
+# ==================== Fixtures FipeZAP ====================
+
+
+@pytest.fixture
+def fipezap_excel_bytes() -> bytes:
+    """Retorna o conteúdo do Excel mock do FipeZAP como bytes."""
+    filepath = FIXTURES_DIR / "fipezap_sample.xlsx"
+    return filepath.read_bytes()
+
+
+# ==================== Fixtures IBGE / PNAD ====================
+
+
+@pytest.fixture
+def ibge_desemprego_fixtures() -> dict:
+    """Retorna todas as fixtures de respostas da API SIDRA (PNAD)."""
+    return load_json_fixture("ibge_desemprego_response.json")
+
+
+@pytest.fixture
+def ibge_pnad_valid(ibge_desemprego_fixtures: dict) -> list[dict]:
+    """Retorna resposta válida da API SIDRA pra taxa de desocupação."""
+    return ibge_desemprego_fixtures["pnad_valid"]
 
 
 # ==================== Fixtures utilitárias ====================

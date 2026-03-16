@@ -15,10 +15,10 @@ import { useInsights } from "@/hooks/useInsights";
 import type { IndicatorKey } from "@/types/indicator";
 
 describe("useIndicators — carregamento (T090)", () => {
-  it("deve carregar dados com todos os indicadores ativos por padrão", () => {
+  it("deve carregar dados com os 8 indicadores originais ativos por padrão", () => {
     const { result } = renderHook(() => useIndicators());
 
-    const allKeys: IndicatorKey[] = [
+    const defaultKeys: IndicatorKey[] = [
       "selic",
       "ipca",
       "dolar",
@@ -28,8 +28,18 @@ describe("useIndicators — carregamento (T090)", () => {
       "endividamento",
       "inadimplencia",
     ];
-    for (const key of allKeys) {
+    for (const key of defaultKeys) {
       expect(result.current.activeIndicators.has(key)).toBe(true);
+    }
+
+    const newKeys: IndicatorKey[] = [
+      "aluguel",
+      "energiaEletrica",
+      "desemprego",
+      "pib",
+    ];
+    for (const key of newKeys) {
+      expect(result.current.activeIndicators.has(key)).toBe(false);
     }
   });
 
@@ -264,10 +274,10 @@ describe("useInsights (T092)", () => {
       (i) => i.indicator === "selic" && i.type === "min"
     );
 
-    // Selic fixture: max = 19.75 (2005-06), min = 2.25 (2020-06)
+    // Selic fixture: max = 19.75 (2005-08), min = 2 (2021-02)
     expect(maxInsight).toBeDefined();
     expect(maxInsight!.value).toBe(19.75);
     expect(minInsight).toBeDefined();
-    expect(minInsight!.value).toBe(2.25);
+    expect(minInsight!.value).toBe(2);
   });
 });

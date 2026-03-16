@@ -6,7 +6,7 @@ export type MonthlyDataPoint = {
   value: number;
 };
 
-/** Chaves dos 8 indicadores econômicos do dashboard. */
+/** Chaves dos 12 indicadores econômicos do dashboard. */
 export type IndicatorKey =
   | "selic"
   | "ipca"
@@ -15,7 +15,11 @@ export type IndicatorKey =
   | "cestaBasica"
   | "gasolina"
   | "endividamento"
-  | "inadimplencia";
+  | "inadimplencia"
+  | "aluguel"
+  | "energiaEletrica"
+  | "desemprego"
+  | "pib";
 
 /** Mapa de indicadores: cada chave contém sua série temporal. */
 export type IndicatorsMap = Record<IndicatorKey, MonthlyDataPoint[]>;
@@ -31,6 +35,6 @@ export type IndicatorsData = {
     /** Formato "YYYY-MM" (ex: "2025-12") */
     end: string;
   };
-  /** Séries temporais dos 8 indicadores. */
+  /** Séries temporais dos 12 indicadores. */
   indicators: IndicatorsMap;
 };

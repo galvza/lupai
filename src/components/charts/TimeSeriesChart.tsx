@@ -39,6 +39,10 @@ const ALL_KEYS: IndicatorKey[] = [
   "gasolina",
   "endividamento",
   "inadimplencia",
+  "aluguel",
+  "energiaEletrica",
+  "desemprego",
+  "pib",
 ];
 
 const YEAR_TICKS = ["2005-01", "2010-01", "2015-01", "2020-01", "2025-01"];

@@ -9,9 +9,11 @@ import NarrativeText from "@/components/cards/NarrativeText";
 import Timeline from "@/components/cards/Timeline";
 import PullQuote from "@/components/cards/PullQuote";
 import InsightGrid from "@/components/cards/InsightGrid";
+import HousingInsightCards from "@/components/cards/HousingInsightCards";
 import CtaBox from "@/components/cards/CtaBox";
 import ChartSection from "@/components/charts/ChartSection";
 import CorrelationChart from "@/components/charts/CorrelationChart";
+import RentCorrelationChart from "@/components/charts/RentCorrelationChart";
 import DebtCycleChart from "@/components/charts/DebtCycleChart";
 
 export default function Home() {
@@ -49,7 +51,29 @@ export default function Home() {
         </div>
       </Section>
 
-      <Section chapterNumber={3} title="O que os números revelam">
+      <Section chapterNumber={3} title="O que o IPCA não conta">
+        <NarrativeText>
+          <p>
+            A inflação oficial mede uma cesta de produtos. Mas qualquer
+            brasileiro sabe que tem coisa que subiu muito mais que a média. O
+            aluguel em São Paulo, por exemplo — o FipeZAP mostra que o m² de
+            locação disparou bem acima do IPCA. A conta de luz? Teve ano (2015,
+            2021) que a bandeira vermelha sozinha adicionava 30% na fatura.
+            Esses são os custos que o IPCA dilui na média — mas que pesam no
+            bolso de quem paga.
+          </p>
+        </NarrativeText>
+
+        <div className="mt-10">
+          <RentCorrelationChart />
+        </div>
+
+        <div className="mt-10">
+          <HousingInsightCards />
+        </div>
+      </Section>
+
+      <Section chapterNumber={4} title="O que os números revelam">
         <PullQuote />
 
         <div className="mt-10">

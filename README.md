@@ -4,8 +4,8 @@ Dashboard interativo que cruza 8 indicadores econômicos brasileiros dos último
 
 **[Ver dashboard ao vivo →](https://calmai.pages.dev)**
 
-![CI](https://github.com/bfreis1/calmai/actions/workflows/ci.yml/badge.svg)
-![Data Update](https://github.com/bfreis1/calmai/actions/workflows/update-data.yml/badge.svg)
+![CI](https://github.com/galvza/calmai/actions/workflows/ci.yml/badge.svg)
+![Data Update](https://github.com/galvza/calmai/actions/workflows/update-data.yml/badge.svg)
 
 ![Screenshot do dashboard](./docs/screenshot.png)
 

@@ -1,8 +1,8 @@
 """Extrator de dados da API SGS do Banco Central do Brasil.
 
 Consulta a API pública do BCB pra extrair séries temporais de
-6 indicadores econômicos: Selic, IPCA, Dólar, Salário Mínimo,
-Endividamento das Famílias e Inadimplência.
+7 indicadores econômicos: Selic, IPCA, Dólar, Salário Mínimo,
+Endividamento das Famílias, Inadimplência e PIB trimestral.
 """
 
 import logging
@@ -23,6 +23,7 @@ SERIES: dict[str, int] = {
     "salario_minimo": 1619,
     "endividamento": 29037,  # Endividamento das famílias (% da renda)
     "inadimplencia": 21082,  # Inadimplência da carteira de crédito (%)
+    "pib": 22109,  # PIB trimestral - var. % contra trimestre anterior (ajuste sazonal)
 }
 
 DAILY_SERIES = {"dolar"}
@@ -225,7 +226,7 @@ class BCBExtractor:
         start_year: int = 2005,
         end_year: int = 2025,
     ) -> dict[str, list[MonthlyDataPoint]]:
-        """Extrai todos os 6 indicadores do BCB.
+        """Extrai todos os 7 indicadores do BCB.
 
         Args:
             start_year: Ano inicial da extração.

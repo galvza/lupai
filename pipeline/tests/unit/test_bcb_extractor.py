@@ -324,8 +324,8 @@ class TestBCBExtractorEdgeCases:
             extractor.extract("inexistente", 2024, 2025)
 
     @responses.activate
-    def test_extract_all_returns_six_indicators(self, bcb_selic_valid):
-        """extract_all deve retornar dicionário com 6 indicadores."""
+    def test_extract_all_returns_seven_indicators(self, bcb_selic_valid):
+        """extract_all deve retornar dicionário com 7 indicadores."""
         for code in SERIES.values():
             url_pattern = re.compile(
                 rf"{re.escape(BASE_URL)}\.{code}/dados"
@@ -334,7 +334,7 @@ class TestBCBExtractorEdgeCases:
         extractor = BCBExtractor()
         result = extractor.extract_all(2024, 2025)
         assert set(result.keys()) == set(SERIES.keys())
-        assert len(result) == 6
+        assert len(result) == 7
         for points in result.values():
             assert isinstance(points, list)
 
@@ -375,3 +375,48 @@ class TestBCBExtractorInadimplencia:
         extractor = BCBExtractor()
         result = extractor.extract("inadimplencia", 2005, 2010)
         assert result == []
+
+
+class TestBCBExtractorPIB:
+    """Extração do PIB trimestral (SGS 22109)."""
+
+    @responses.activate
+    def test_returns_valid_data_points(self, bcb_pib_valid):
+        """Deve retornar lista de MonthlyDataPoint com valores corretos."""
+        _mock_bcb(SERIES["pib"], bcb_pib_valid)
+        extractor = BCBExtractor()
+        result = extractor.extract("pib", 2024, 2025)
+        assert len(result) == 4
+        assert all(isinstance(p, MonthlyDataPoint) for p in result)
+
+    @responses.activate
+    def test_quarterly_dates(self, bcb_pib_valid):
+        """Datas devem corresponder aos trimestres (jan, abr, jul, out)."""
+        _mock_bcb(SERIES["pib"], bcb_pib_valid)
+        extractor = BCBExtractor()
+        result = extractor.extract("pib", 2024, 2025)
+        dates = [p.date for p in result]
+        assert dates == ["2024-01", "2024-04", "2024-07", "2024-10"]
+
+    @responses.activate
+    def test_values_include_negative(self, bcb_pib_valid):
+        """PIB pode ter valores negativos (contração)."""
+        _mock_bcb(SERIES["pib"], bcb_pib_valid)
+        extractor = BCBExtractor()
+        result = extractor.extract("pib", 2024, 2025)
+        assert result[0].value == pytest.approx(0.8)
+        assert result[3].value == pytest.approx(-0.1)
+
+    @responses.activate
+    def test_values_are_percentages(self, bcb_pib_valid):
+        """Valores do PIB devem ser variações percentuais razoáveis."""
+        _mock_bcb(SERIES["pib"], bcb_pib_valid)
+        extractor = BCBExtractor()
+        result = extractor.extract("pib", 2024, 2025)
+        for point in result:
+            assert -20 <= point.value <= 20
+
+    @responses.activate
+    def test_series_code_is_22109(self):
+        """Série do PIB deve ser 22109."""
+        assert SERIES["pib"] == 22109

@@ -23,6 +23,22 @@ const ALL_KEYS: IndicatorKey[] = [
   "gasolina",
   "endividamento",
   "inadimplencia",
+  "aluguel",
+  "energiaEletrica",
+  "desemprego",
+  "pib",
+];
+
+/** Indicadores ativos por padrão (originais). Novos iniciam desligados. */
+const DEFAULT_ACTIVE: IndicatorKey[] = [
+  "selic",
+  "ipca",
+  "dolar",
+  "salarioMinimo",
+  "cestaBasica",
+  "gasolina",
+  "endividamento",
+  "inadimplencia",
 ];
 
 /** Dados retornados pelo hook, filtrados conforme estado atual. */
@@ -60,7 +76,7 @@ export const useIndicators = (
   initialActive?: IndicatorKey[]
 ): UseIndicatorsReturn => {
   const [activeIndicators, setActiveIndicators] = useState<Set<IndicatorKey>>(
-    () => new Set(initialActive ?? ALL_KEYS)
+    () => new Set(initialActive ?? DEFAULT_ACTIVE)
   );
   const [selectedGovernment, setSelectedGovernment] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState<[string, string] | null>(null);

@@ -43,6 +43,10 @@ def _bcb_data() -> dict[str, list[MonthlyDataPoint]]:
             MonthlyDataPoint(date="2024-01", value=3.5),
             MonthlyDataPoint(date="2024-02", value=3.4),
         ],
+        "pib": [
+            MonthlyDataPoint(date="2024-01", value=0.8),
+            MonthlyDataPoint(date="2024-04", value=1.4),
+        ],
     }
 
 
@@ -62,8 +66,32 @@ def _anp_data() -> list[MonthlyDataPoint]:
     ]
 
 
+def _fipezap_data() -> list[MonthlyDataPoint]:
+    """Dados mock do FipeZAP."""
+    return [
+        MonthlyDataPoint(date="2024-01", value=0.73),
+        MonthlyDataPoint(date="2024-02", value=0.85),
+    ]
+
+
+def _ibge_data() -> list[MonthlyDataPoint]:
+    """Dados mock do IBGE SIDRA (energia elétrica)."""
+    return [
+        MonthlyDataPoint(date="2024-01", value=-0.64),
+        MonthlyDataPoint(date="2024-02", value=0.14),
+    ]
+
+
+def _pnad_data() -> list[MonthlyDataPoint]:
+    """Dados mock do IBGE PNAD (desemprego)."""
+    return [
+        MonthlyDataPoint(date="2024-02", value=7.8),
+        MonthlyDataPoint(date="2024-05", value=7.1),
+    ]
+
+
 def _mock_all_sources():
-    """Retorna patches para mockar todas as 3 fontes com sucesso."""
+    """Retorna patches para mockar todas as 6 fontes com sucesso."""
     bcb_mock = MagicMock()
     bcb_data = _bcb_data()
     bcb_mock.extract.side_effect = lambda ind, *a, **kw: bcb_data[ind]
@@ -74,15 +102,27 @@ def _mock_all_sources():
     anp_mock = MagicMock()
     anp_mock.extract.return_value = _anp_data()
 
-    return bcb_mock, dieese_mock, anp_mock
+    fipezap_mock = MagicMock()
+    fipezap_mock.extract.return_value = _fipezap_data()
+
+    ibge_mock = MagicMock()
+    ibge_mock.extract.return_value = _ibge_data()
+
+    pnad_mock = MagicMock()
+    pnad_mock.extract.return_value = _pnad_data()
+
+    return bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock
 
 
-def _patch_extractors(bcb_mock, dieese_mock, anp_mock):
-    """Retorna contextos de patch para os 3 extractors."""
+def _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock):
+    """Retorna contextos de patch para os 6 extractors."""
     return (
         patch("main.BCBExtractor", return_value=bcb_mock),
         patch("main.DIEESEExtractor", return_value=dieese_mock),
         patch("main.ANPExtractor", return_value=anp_mock),
+        patch("main.FipeZAPExtractor", return_value=fipezap_mock),
+        patch("main.EnergiaExtractor", return_value=ibge_mock),
+        patch("main.IBGEExtractor", return_value=pnad_mock),
     )
 
 
@@ -91,9 +131,9 @@ class TestPipelineFullRun:
 
     def test_generates_indicators_json(self, tmp_output_dir):
         """Deve gerar indicators.json com dados de todas as fontes."""
-        bcb_mock, dieese_mock, anp_mock = _mock_all_sources()
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
-        with p1, p2, p3:
+        bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock = _mock_all_sources()
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
+        with p1, p2, p3, p4, p5, p6:
             run_pipeline(output_dir=str(tmp_output_dir))
         filepath = tmp_output_dir / "indicators.json"
         assert filepath.exists()
@@ -103,9 +143,9 @@ class TestPipelineFullRun:
 
     def test_generates_metadata_json(self, tmp_output_dir):
         """Deve gerar metadata.json com status de todas as fontes."""
-        bcb_mock, dieese_mock, anp_mock = _mock_all_sources()
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
-        with p1, p2, p3:
+        bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock = _mock_all_sources()
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
+        with p1, p2, p3, p4, p5, p6:
             run_pipeline(output_dir=str(tmp_output_dir))
         filepath = tmp_output_dir / "metadata.json"
         assert filepath.exists()
@@ -115,25 +155,26 @@ class TestPipelineFullRun:
         assert "bcb" in sources_ids
         assert "dieese" in sources_ids
         assert "anp" in sources_ids
+        assert "pnad" in sources_ids
         for src in data["sources"]:
             assert src["status"] == "success"
 
     def test_generates_governments_json(self, tmp_output_dir):
         """Deve gerar governments.json."""
-        bcb_mock, dieese_mock, anp_mock = _mock_all_sources()
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
-        with p1, p2, p3:
+        bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock = _mock_all_sources()
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
+        with p1, p2, p3, p4, p5, p6:
             run_pipeline(output_dir=str(tmp_output_dir))
         filepath = tmp_output_dir / "governments.json"
         assert filepath.exists()
         data = json.loads(filepath.read_text(encoding="utf-8"))
         assert len(data["governments"]) == 7
 
-    def test_all_eight_indicators_populated(self, tmp_output_dir):
-        """indicators.json deve ter dados em todas as 8 séries."""
-        bcb_mock, dieese_mock, anp_mock = _mock_all_sources()
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
-        with p1, p2, p3:
+    def test_all_twelve_indicators_populated(self, tmp_output_dir):
+        """indicators.json deve ter dados em todas as 12 séries."""
+        bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock = _mock_all_sources()
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
+        with p1, p2, p3, p4, p5, p6:
             run_pipeline(output_dir=str(tmp_output_dir))
         filepath = tmp_output_dir / "indicators.json"
         data = json.loads(filepath.read_text(encoding="utf-8"))
@@ -141,6 +182,7 @@ class TestPipelineFullRun:
         expected_keys = {
             "selic", "ipca", "dolar", "salarioMinimo",
             "cestaBasica", "gasolina", "endividamento", "inadimplencia",
+            "aluguel", "energiaEletrica", "desemprego", "pib",
         }
         assert set(indicators.keys()) == expected_keys
         for key, points in indicators.items():
@@ -148,18 +190,18 @@ class TestPipelineFullRun:
 
     def test_returns_pipeline_result(self, tmp_output_dir):
         """Deve retornar PipelineResult com indicadores e sem erros."""
-        bcb_mock, dieese_mock, anp_mock = _mock_all_sources()
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
-        with p1, p2, p3:
+        bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock = _mock_all_sources()
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
+        with p1, p2, p3, p4, p5, p6:
             result = run_pipeline(output_dir=str(tmp_output_dir))
-        assert len(result.indicators) == 8
+        assert len(result.indicators) == 12
         assert result.errors == []
 
     def test_single_indicator_mode(self, tmp_output_dir):
         """--indicador selic deve extrair apenas a Selic."""
-        bcb_mock, dieese_mock, anp_mock = _mock_all_sources()
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
-        with p1, p2, p3:
+        bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock = _mock_all_sources()
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
+        with p1, p2, p3, p4, p5, p6:
             result = run_pipeline(
                 output_dir=str(tmp_output_dir),
                 indicator="selic",
@@ -176,11 +218,11 @@ class TestPipelinePartialFailure:
 
     def test_generates_partial_data(self, tmp_output_dir):
         """Deve gerar JSONs com dados das fontes que funcionaram."""
-        bcb_mock, dieese_mock, anp_mock = _mock_all_sources()
+        bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock = _mock_all_sources()
         # ANP falha
         anp_mock.extract.side_effect = ConnectionError("Timeout ANP")
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
-        with p1, p2, p3:
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
+        with p1, p2, p3, p4, p5, p6:
             result = run_pipeline(output_dir=str(tmp_output_dir))
         # Indicadores do BCB e DIEESE devem estar presentes
         assert "selic" in result.indicators
@@ -192,10 +234,10 @@ class TestPipelinePartialFailure:
 
     def test_metadata_shows_error_status(self, tmp_output_dir):
         """metadata.json deve indicar status 'error' pra fonte que falhou."""
-        bcb_mock, dieese_mock, anp_mock = _mock_all_sources()
+        bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock = _mock_all_sources()
         anp_mock.extract.side_effect = ConnectionError("Timeout ANP")
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
-        with p1, p2, p3:
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
+        with p1, p2, p3, p4, p5, p6:
             run_pipeline(output_dir=str(tmp_output_dir))
         filepath = tmp_output_dir / "metadata.json"
         data = json.loads(filepath.read_text(encoding="utf-8"))
@@ -206,10 +248,10 @@ class TestPipelinePartialFailure:
 
     def test_result_contains_errors(self, tmp_output_dir):
         """PipelineResult deve listar os erros das fontes que falharam."""
-        bcb_mock, dieese_mock, anp_mock = _mock_all_sources()
+        bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock = _mock_all_sources()
         dieese_mock.extract.side_effect = ValueError("Tabela não encontrada")
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
-        with p1, p2, p3:
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
+        with p1, p2, p3, p4, p5, p6:
             result = run_pipeline(output_dir=str(tmp_output_dir))
         assert len(result.errors) == 1
         assert "dieese" in result.errors[0]
@@ -226,8 +268,14 @@ class TestPipelineTotalFailure:
         dieese_mock.extract.side_effect = ConnectionError("DIEESE offline")
         anp_mock = MagicMock()
         anp_mock.extract.side_effect = ConnectionError("ANP offline")
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
-        with p1, p2, p3:
+        fipezap_mock = MagicMock()
+        fipezap_mock.extract.side_effect = ConnectionError("FIPE offline")
+        ibge_mock = MagicMock()
+        ibge_mock.extract.side_effect = ConnectionError("IBGE offline")
+        pnad_mock = MagicMock()
+        pnad_mock.extract.side_effect = ConnectionError("PNAD offline")
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
+        with p1, p2, p3, p4, p5, p6:
             with pytest.raises(RuntimeError, match="todas as fontes falharam"):
                 run_pipeline(output_dir=str(tmp_output_dir))
 
@@ -239,14 +287,23 @@ class TestPipelineTotalFailure:
         dieese_mock.extract.side_effect = ConnectionError("DIEESE offline")
         anp_mock = MagicMock()
         anp_mock.extract.side_effect = ConnectionError("ANP offline")
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
-        with p1, p2, p3:
+        fipezap_mock = MagicMock()
+        fipezap_mock.extract.side_effect = ConnectionError("FIPE offline")
+        ibge_mock = MagicMock()
+        ibge_mock.extract.side_effect = ConnectionError("IBGE offline")
+        pnad_mock = MagicMock()
+        pnad_mock.extract.side_effect = ConnectionError("PNAD offline")
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
+        with p1, p2, p3, p4, p5, p6:
             with pytest.raises(RuntimeError) as exc_info:
                 run_pipeline(output_dir=str(tmp_output_dir))
         error_msg = str(exc_info.value)
         assert "bcb" in error_msg
         assert "dieese" in error_msg
         assert "anp" in error_msg
+        assert "fipezap" in error_msg
+        assert "ibge" in error_msg
+        assert "pnad" in error_msg
 
 
 class TestPipelineIdempotency:
@@ -257,19 +314,19 @@ class TestPipelineIdempotency:
         dir1 = tmp_path / "run1"
         dir2 = tmp_path / "run2"
 
-        bcb_mock, dieese_mock, anp_mock = _mock_all_sources()
-        p1, p2, p3 = _patch_extractors(bcb_mock, dieese_mock, anp_mock)
+        bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock = _mock_all_sources()
+        p1, p2, p3, p4, p5, p6 = _patch_extractors(bcb_mock, dieese_mock, anp_mock, fipezap_mock, ibge_mock, pnad_mock)
 
         # Primeira execução
-        with p1, p2, p3:
+        with p1, p2, p3, p4, p5, p6:
             run_pipeline(output_dir=str(dir1))
 
         # Recriar mocks (side_effect se consome)
-        bcb_mock2, dieese_mock2, anp_mock2 = _mock_all_sources()
-        p4, p5, p6 = _patch_extractors(bcb_mock2, dieese_mock2, anp_mock2)
+        bcb_mock2, dieese_mock2, anp_mock2, fipezap_mock2, ibge_mock2, pnad_mock2 = _mock_all_sources()
+        p7, p8, p9, p10, p11, p12 = _patch_extractors(bcb_mock2, dieese_mock2, anp_mock2, fipezap_mock2, ibge_mock2, pnad_mock2)
 
         # Segunda execução
-        with p4, p5, p6:
+        with p7, p8, p9, p10, p11, p12:
             run_pipeline(output_dir=str(dir2))
 
         # Comparar indicators.json (sem lastUpdated que muda)

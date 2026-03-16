@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 KEY_MAP: dict[str, str] = {
     "salario_minimo": "salarioMinimo",
     "cesta_basica": "cestaBasica",
+    "energia_eletrica": "energiaEletrica",
 }
 
 # Metadados estáticos por indicador (chaves já em camelCase)
@@ -101,6 +102,54 @@ INDICATOR_META: dict[str, dict[str, str]] = {
         ),
         "color": "#D85A30",
         "frequency": "mensal",
+    },
+    "energiaEletrica": {
+        "label": "Energia elétrica residencial",
+        "shortLabel": "Energia",
+        "unit": "% var. mensal",
+        "source": "ibge",
+        "description": (
+            "Variação mensal do IPCA — subitem energia elétrica "
+            "residencial (inclui bandeiras tarifárias)"
+        ),
+        "color": "#EAB308",
+        "frequency": "mensal",
+    },
+    "aluguel": {
+        "label": "Aluguel (FipeZAP)",
+        "shortLabel": "Aluguel",
+        "unit": "% var. mensal",
+        "source": "fipezap",
+        "description": (
+            "Variação mensal do Índice FipeZAP de locação "
+            "residencial em São Paulo"
+        ),
+        "color": "#F59E0B",
+        "frequency": "mensal",
+    },
+    "desemprego": {
+        "label": "Taxa de desemprego",
+        "shortLabel": "Desemprego",
+        "unit": "%",
+        "source": "pnad",
+        "description": (
+            "Taxa de desocupação trimestral da PNAD Contínua "
+            "(pessoas de 14 anos ou mais)"
+        ),
+        "color": "#7C3AED",
+        "frequency": "trimestral",
+    },
+    "pib": {
+        "label": "PIB trimestral",
+        "shortLabel": "PIB",
+        "unit": "% var. trimestral",
+        "source": "bcb",
+        "description": (
+            "Variação percentual do PIB contra o trimestre "
+            "imediatamente anterior, com ajuste sazonal"
+        ),
+        "color": "#059669",
+        "frequency": "trimestral",
     },
 }
 

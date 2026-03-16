@@ -18,7 +18,7 @@ const Footer = () => {
       >
         <span>Dados: BCB (API SGS) &middot; DIEESE &middot; ANP</span>
         <a
-          href="https://github.com/bfreis1/calmai"
+          href="https://github.com/galvza/calmai"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:underline"

@@ -29,7 +29,7 @@ const CtaBox = () => {
         dashboard está disponível no GitHub.
       </p>
       <a
-        href="https://github.com/bfreis1/calmai"
+        href="https://github.com/galvza/calmai"
         target="_blank"
         rel="noopener noreferrer"
         className="cta-link"

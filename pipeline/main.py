@@ -1,9 +1,12 @@
 """Entrypoint do pipeline de coleta e transformação de dados econômicos.
 
-Orquestra extração → normalização → exportação de 8 indicadores:
-- BCB: selic, ipca, dolar, salario_minimo, endividamento, inadimplencia
+Orquestra extração → normalização → exportação de 12 indicadores:
+- BCB: selic, ipca, dolar, salario_minimo, endividamento, inadimplencia, pib
 - DIEESE: cesta_basica
 - ANP: gasolina
+- FIPE: aluguel
+- IBGE/SIDRA: energia_eletrica
+- IBGE/PNAD: desemprego
 """
 
 import argparse
@@ -18,6 +21,9 @@ from src.extractors.bcb import BCBExtractor
 from src.extractors.bcb import BASE_URL as BCB_URL
 from src.extractors.dieese import DIEESEExtractor
 from src.extractors.dieese import URL as DIEESE_URL
+from src.extractors.energia import SIDRA_BASE_URL, EnergiaExtractor
+from src.extractors.fipezap import FIPEZAP_URL, FipeZAPExtractor
+from src.extractors.ibge import PNAD_BASE_URL, IBGEExtractor
 from src.loaders.json_exporter import export_governments, export_indicators, export_metadata
 from src.models.indicators import MonthlyDataPoint, PipelineResult, SourceStatus
 from src.transformers.normalize import normalize_series
@@ -26,9 +32,12 @@ logger = logging.getLogger(__name__)
 
 # Mapeamento fonte → indicadores que ela fornece
 SOURCE_INDICATORS: dict[str, list[str]] = {
-    "bcb": ["selic", "ipca", "dolar", "salario_minimo", "endividamento", "inadimplencia"],
+    "bcb": ["selic", "ipca", "dolar", "salario_minimo", "endividamento", "inadimplencia", "pib"],
     "dieese": ["cesta_basica"],
     "anp": ["gasolina"],
+    "fipezap": ["aluguel"],
+    "ibge": ["energia_eletrica"],
+    "pnad": ["desemprego"],
 }
 
 # Metadados estáticos das fontes (URLs importadas dos extractors)
@@ -44,6 +53,18 @@ SOURCE_META: dict[str, dict[str, str]] = {
     "anp": {
         "name": "ANP",
         "url": ANP_URL,
+    },
+    "fipezap": {
+        "name": "FipeZAP / FIPE",
+        "url": FIPEZAP_URL,
+    },
+    "ibge": {
+        "name": "IBGE / SIDRA",
+        "url": SIDRA_BASE_URL,
+    },
+    "pnad": {
+        "name": "IBGE / PNAD Contínua",
+        "url": PNAD_BASE_URL,
     },
 }
 
@@ -140,6 +161,66 @@ def _extract_anp(
     return {"gasolina": points}
 
 
+def _extract_fipezap(
+    extractor: FipeZAPExtractor,
+    start_year: int,
+    end_year: int,
+) -> dict[str, list[MonthlyDataPoint]]:
+    """Extrai aluguel do FipeZAP.
+
+    Args:
+        extractor: Instância do FipeZAPExtractor.
+        start_year: Ano inicial.
+        end_year: Ano final.
+
+    Returns:
+        Dict com chave "aluguel" → lista de pontos.
+    """
+    logger.info("Extraindo aluguel do FipeZAP...")
+    points = extractor.extract(start_year, end_year)
+    return {"aluguel": points}
+
+
+def _extract_ibge(
+    extractor: EnergiaExtractor,
+    start_year: int,
+    end_year: int,
+) -> dict[str, list[MonthlyDataPoint]]:
+    """Extrai energia elétrica residencial do IBGE SIDRA.
+
+    Args:
+        extractor: Instância do EnergiaExtractor.
+        start_year: Ano inicial.
+        end_year: Ano final.
+
+    Returns:
+        Dict com chave "energia_eletrica" → lista de pontos.
+    """
+    logger.info("Extraindo energia elétrica do IBGE SIDRA...")
+    points = extractor.extract(start_year, end_year)
+    return {"energia_eletrica": points}
+
+
+def _extract_pnad(
+    extractor: IBGEExtractor,
+    start_year: int,
+    end_year: int,
+) -> dict[str, list[MonthlyDataPoint]]:
+    """Extrai taxa de desocupação do IBGE PNAD Contínua.
+
+    Args:
+        extractor: Instância do IBGEExtractor.
+        start_year: Ano inicial.
+        end_year: Ano final.
+
+    Returns:
+        Dict com chave "desemprego" → lista de pontos.
+    """
+    logger.info("Extraindo desemprego do IBGE PNAD Contínua...")
+    points = extractor.extract(start_year, end_year)
+    return {"desemprego": points}
+
+
 def run_pipeline(
     start_year: int = 2005,
     end_year: int = 2025,
@@ -174,11 +255,17 @@ def run_pipeline(
     bcb = BCBExtractor()
     dieese = DIEESEExtractor()
     anp = ANPExtractor()
+    fipezap = FipeZAPExtractor()
+    ibge = EnergiaExtractor()
+    pnad = IBGEExtractor()
 
     extractors = {
         "bcb": lambda inds: _extract_bcb(bcb, inds, start_year, end_year),
         "dieese": lambda _inds: _extract_dieese(dieese, start_year, end_year),
         "anp": lambda _inds: _extract_anp(anp, start_year, end_year),
+        "fipezap": lambda _inds: _extract_fipezap(fipezap, start_year, end_year),
+        "ibge": lambda _inds: _extract_ibge(ibge, start_year, end_year),
+        "pnad": lambda _inds: _extract_pnad(pnad, start_year, end_year),
     }
 
     # Executar extração por fonte

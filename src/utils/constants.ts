@@ -11,7 +11,7 @@ type IndicatorConfig = {
   frequency: string;
 };
 
-/** Configuração de exibição e metadados dos 8 indicadores do dashboard. */
+/** Configuração de exibição e metadados dos 12 indicadores do dashboard. */
 export const INDICATOR_CONFIG: Record<IndicatorKey, IndicatorConfig> = {
   selic: {
     label: "Taxa Selic",
@@ -87,6 +87,45 @@ export const INDICATOR_CONFIG: Record<IndicatorKey, IndicatorConfig> = {
     description:
       "Percentual da carteira de crédito com atraso superior a 90 dias",
     frequency: "mensal",
+  },
+  aluguel: {
+    label: "Aluguel (FipeZAP)",
+    shortLabel: "Aluguel",
+    unit: "% var. mensal",
+    color: "#1D9E75",
+    source: "fipezap",
+    description:
+      "Variação mensal do índice FipeZAP de locação residencial em São Paulo",
+    frequency: "mensal",
+  },
+  energiaEletrica: {
+    label: "Energia elétrica",
+    shortLabel: "Energia",
+    unit: "% var. mensal",
+    color: "#F2A623",
+    source: "ibge",
+    description:
+      "Variação mensal do IPCA — subitem energia elétrica residencial",
+    frequency: "mensal",
+  },
+  desemprego: {
+    label: "Desemprego",
+    shortLabel: "Desemprego",
+    unit: "%",
+    color: "#993556",
+    source: "ibge",
+    description: "Taxa de desocupação trimestral (PNAD Contínua, IBGE)",
+    frequency: "trimestral",
+  },
+  pib: {
+    label: "PIB trimestral",
+    shortLabel: "PIB",
+    unit: "% var. trimestral",
+    color: "#0F6E56",
+    source: "bcb",
+    description:
+      "Variação do PIB contra trimestre anterior (ajuste sazonal)",
+    frequency: "trimestral",
   },
 };
 

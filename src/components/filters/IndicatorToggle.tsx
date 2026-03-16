@@ -1,22 +1,35 @@
 /**
- * Toggles de indicadores em formato de pills clicáveis.
+ * Toggles de indicadores em formato de pills clicáveis, agrupados por categoria.
  *
- * Cada pill representa um indicador, com cor e label do INDICATOR_CONFIG.
+ * Categorias:
+ * - Financeiro: Selic, Dólar, Endividamento, Inadimplência
+ * - Preços: IPCA, Cesta Básica, Gasolina, Aluguel, Energia
+ * - Atividade: Sal. Mínimo, Desemprego, PIB
+ *
  * Pill ativa: borda colorida e fundo sutil. Inativa: cinza.
  */
 
 import type { IndicatorKey } from "@/types/indicator";
 import { INDICATOR_CONFIG } from "@/utils/constants";
 
-const ALL_KEYS: IndicatorKey[] = [
-  "selic",
-  "ipca",
-  "dolar",
-  "salarioMinimo",
-  "cestaBasica",
-  "gasolina",
-  "endividamento",
-  "inadimplencia",
+type Category = {
+  label: string;
+  keys: IndicatorKey[];
+};
+
+const CATEGORIES: Category[] = [
+  {
+    label: "Financeiro",
+    keys: ["selic", "dolar", "endividamento", "inadimplencia"],
+  },
+  {
+    label: "Preços",
+    keys: ["ipca", "cestaBasica", "gasolina", "aluguel", "energiaEletrica"],
+  },
+  {
+    label: "Atividade",
+    keys: ["salarioMinimo", "desemprego", "pib"],
+  },
 ];
 
 type IndicatorToggleProps = {
@@ -26,39 +39,57 @@ type IndicatorToggleProps = {
   onToggle: (key: IndicatorKey) => void;
 };
 
-/** Linha de pills clicáveis pra alternar indicadores no gráfico. */
+/** Pills clicáveis agrupadas por categoria pra alternar indicadores no gráfico. */
 const IndicatorToggle = ({
   activeIndicators,
   onToggle,
 }: IndicatorToggleProps) => {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-      {ALL_KEYS.map((key) => {
-        const config = INDICATOR_CONFIG[key];
-        const active = activeIndicators.has(key);
-        return (
-          <button
-            key={key}
-            onClick={() => onToggle(key)}
-            aria-pressed={active}
-            aria-label={`${active ? "Desativar" : "Ativar"} indicador ${config.shortLabel}`}
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      {CATEGORIES.map((cat) => (
+        <div key={cat.label} style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
+          <span
             style={{
-              padding: "4px 12px",
-              borderRadius: "16px",
-              border: `1.5px solid ${active ? config.color : "var(--border)"}`,
-              background: active ? `${config.color}15` : "transparent",
-              color: active ? config.color : "var(--text-tertiary)",
-              fontSize: "12px",
-              fontWeight: active ? 500 : 400,
-              cursor: "pointer",
-              transition: "all 0.15s ease",
-              lineHeight: 1.5,
+              fontSize: "10px",
+              fontWeight: 500,
+              color: "var(--text-tertiary)",
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              minWidth: "72px",
+              flexShrink: 0,
             }}
           >
-            {config.shortLabel}
-          </button>
-        );
-      })}
+            {cat.label}
+          </span>
+          {cat.keys.map((key) => {
+            const config = INDICATOR_CONFIG[key];
+            const active = activeIndicators.has(key);
+            return (
+              <button
+                key={key}
+                onClick={() => onToggle(key)}
+                aria-pressed={active}
+                aria-label={`${active ? "Desativar" : "Ativar"} indicador ${config.shortLabel}`}
+                style={{
+                  padding: "3px 10px",
+                  borderRadius: "16px",
+                  border: `1.5px solid ${active ? config.color : "var(--border)"}`,
+                  background: active ? `${config.color}15` : "transparent",
+                  color: active ? config.color : "var(--text-tertiary)",
+                  fontSize: "11px",
+                  fontWeight: active ? 500 : 400,
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                  lineHeight: 1.5,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {config.shortLabel}
+              </button>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 };
