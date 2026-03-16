@@ -16,7 +16,7 @@ const Footer = () => {
         className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-4"
         style={{ fontSize: "13px", color: "var(--text-secondary)" }}
       >
-        <span>Dados: BCB (API SGS) &middot; DIEESE &middot; ANP</span>
+        <span>Dados: BCB (API SGS) &middot; DIEESE &middot; ANP &middot; IBGE (SIDRA) &middot; FipeZAP</span>
         <a
           href="https://github.com/galvza/calmai"
           target="_blank"

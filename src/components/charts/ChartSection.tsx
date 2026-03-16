@@ -54,8 +54,7 @@ const ChartSection = () => {
           lineHeight: 1.5,
         }}
       >
-        Todas as linhas partem do mesmo ponto pra facilitar a comparação.
-        O PIB mostra o crescimento acumulado desde 2005. Aluguel e energia mostram quanto o preço subiu mês a mês, somado ao longo do tempo.
+        O gráfico mostra a variação relativa (base 100). Passe o mouse para ver os valores reais de cada indicador.
       </p>
     </div>
   );

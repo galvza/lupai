@@ -23,7 +23,7 @@ const EVENTS: TimelineEvent[] = [
     type: "growth",
     title: "O milagrinho brasileiro",
     body: "A China comprava tudo que o Brasil plantava e extraía. Soja, minério, petróleo — tudo voando. A Selic caiu de 19% pra 11%, o dólar recuou, o emprego cresceu. O país surfava uma onda que parecia não ter fim. Parecia.",
-    badges: ["Selic: 19% → 11%", "Dólar: R$ 2,70 → R$ 1,77"],
+    badges: ["Selic: 19% → 11%", "Dólar: R$ 2,69 → R$ 1,77"],
   },
   {
     date: "Abril 2008",
