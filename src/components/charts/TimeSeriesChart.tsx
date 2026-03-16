@@ -68,17 +68,35 @@ const TimeSeriesChart = ({
     const allDates = new Set<string>();
     const firstValues: Partial<Record<IndicatorKey, number>> = {};
     const lookups: Partial<Record<IndicatorKey, Record<string, number>>> = {};
+    const rawLookups: Partial<Record<IndicatorKey, Record<string, number>>> = {};
 
     for (const key of ALL_KEYS) {
       if (!activeIndicators.has(key)) continue;
       const points = data[key];
       if (!points || points.length === 0) continue;
-      firstValues[key] = points[0].value;
+
       const map: Record<string, number> = {};
-      for (const p of points) {
-        map[p.date] = p.value;
-        allDates.add(p.date);
+
+      if (INDICATOR_CONFIG[key].isVariationRate) {
+        // Variações mensais (%) → índice acumulado (base 100)
+        const raw: Record<string, number> = {};
+        let index = 100;
+        for (const p of points) {
+          index *= 1 + p.value / 100;
+          map[p.date] = index;
+          raw[p.date] = p.value;
+          allDates.add(p.date);
+        }
+        firstValues[key] = 100;
+        rawLookups[key] = raw;
+      } else {
+        for (const p of points) {
+          map[p.date] = p.value;
+          allDates.add(p.date);
+        }
+        firstValues[key] = points[0].value;
       }
+
       lookups[key] = map;
     }
 
@@ -112,7 +130,9 @@ const TimeSeriesChart = ({
         const first = firstValues[key];
         if (value !== undefined && first !== undefined && first !== 0) {
           point[key] = (value / first) * 100;
-          point[`_${key}`] = value;
+          // Pro tooltip: valor original (variação mensal) ou valor real
+          const rawMap = rawLookups[key];
+          point[`_${key}`] = rawMap ? rawMap[date] ?? value : value;
         }
       }
       return point;

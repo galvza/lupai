@@ -9,6 +9,8 @@ type IndicatorConfig = {
   source: string;
   description: string;
   frequency: string;
+  /** Se true, os dados são variações mensais (%) e devem ser compostos em índice acumulado antes de normalizar. */
+  isVariationRate?: boolean;
 };
 
 /** Configuração de exibição e metadados dos 12 indicadores do dashboard. */
@@ -97,6 +99,7 @@ export const INDICATOR_CONFIG: Record<IndicatorKey, IndicatorConfig> = {
     description:
       "Variação mensal do índice FipeZAP de locação residencial em São Paulo",
     frequency: "mensal",
+    isVariationRate: true,
   },
   energiaEletrica: {
     label: "Energia elétrica",
@@ -107,6 +110,7 @@ export const INDICATOR_CONFIG: Record<IndicatorKey, IndicatorConfig> = {
     description:
       "Variação mensal do IPCA — subitem energia elétrica residencial",
     frequency: "mensal",
+    isVariationRate: true,
   },
   desemprego: {
     label: "Desemprego",
