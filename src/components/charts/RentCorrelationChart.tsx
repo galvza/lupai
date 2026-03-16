@@ -246,6 +246,20 @@ const RentCorrelationChart = () => {
           >
             (valores normalizados — base 100 no início de cada série)
           </p>
+          <p
+            style={{
+              fontSize: "13px",
+              color: "var(--text-secondary)",
+              fontStyle: "italic",
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              marginTop: "8px",
+            }}
+          >
+            Exceção: em 2015–2016, a recessão foi tão severa que o desemprego
+            destruiu a demanda por imóveis — mesmo com a Selic em 14,25%, o
+            aluguel caiu. A correlação só vale quando a economia está
+            funcionando.
+          </p>
         </>
       ) : (
         <p
