@@ -5,11 +5,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://calmai.pages.dev"),
   title: "O Custo de Vida do Brasileiro — 20 anos em dados",
   description:
-    "8 indicadores econômicos brasileiros de 2005 a 2025. Dados oficiais do Banco Central, DIEESE e ANP. Interativo e open source.",
+    "12 indicadores econômicos brasileiros de 2005 a 2025. Dados oficiais do BCB, DIEESE, ANP, IBGE e FIPE. Interativo e open source.",
   openGraph: {
     title: "Em 20 anos, seu dinheiro perdeu metade do valor",
     description:
-      "8 indicadores econômicos brasileiros de 2005 a 2025. Dados oficiais do Banco Central, DIEESE e ANP. Interativo e open source.",
+      "12 indicadores econômicos brasileiros de 2005 a 2025. Dados oficiais do BCB, DIEESE, ANP, IBGE e FIPE. Interativo e open source.",
     images: ["/og-image.png"],
     type: "website",
     locale: "pt_BR",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Em 20 anos, seu dinheiro perdeu metade do valor",
     description:
-      "8 indicadores econômicos brasileiros de 2005 a 2025. Dados oficiais do Banco Central, DIEESE e ANP. Interativo e open source.",
+      "12 indicadores econômicos brasileiros de 2005 a 2025. Dados oficiais do BCB, DIEESE, ANP, IBGE e FIPE. Interativo e open source.",
     images: ["/og-image.png"],
   },
   icons: {
@@ -31,7 +31,7 @@ const jsonLd = {
   "@type": "WebApplication",
   name: "O Custo de Vida do Brasileiro",
   description:
-    "Dashboard interativo com 8 indicadores econômicos brasileiros de 2005 a 2025",
+    "Dashboard interativo com 12 indicadores econômicos brasileiros de 2005 a 2025",
   url: "https://calmai.pages.dev",
   author: { "@type": "Person", name: "Bruno Reis" },
   inLanguage: "pt-BR",

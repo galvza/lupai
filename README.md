@@ -1,6 +1,6 @@
 # O Custo de Vida do Brasileiro
 
-Dashboard interativo que cruza 8 indicadores econômicos brasileiros dos últimos 20 anos, com dados oficiais do Banco Central, DIEESE e ANP.
+Dashboard interativo que cruza 12 indicadores econômicos brasileiros dos últimos 20 anos, com dados oficiais do BCB, DIEESE, ANP, IBGE e FIPE.
 
 **[Ver dashboard ao vivo →](https://calmai.pages.dev)**
 
@@ -13,7 +13,7 @@ Dashboard interativo que cruza 8 indicadores econômicos brasileiros dos último
 
 Este projeto nasceu de uma pergunta simples: **quanto o dinheiro do brasileiro perdeu de valor em 20 anos?**
 
-A resposta está nos dados. O dashboard cruza Selic, IPCA, dólar, salário mínimo, cesta básica, gasolina, endividamento das famílias e inadimplência — todos extraídos automaticamente de APIs públicas — e apresenta a evolução com filtros por período de governo.
+A resposta está nos dados. O dashboard cruza Selic, IPCA, dólar, salário mínimo, cesta básica, gasolina, endividamento, inadimplência, aluguel, energia elétrica, desemprego e PIB — todos extraídos automaticamente de APIs públicas — e apresenta a evolução com filtros por período de governo.
 
 Os dados são atualizados semanalmente via pipeline automatizado.
 
@@ -29,19 +29,23 @@ Os dados são atualizados semanalmente via pipeline automatizado.
 | Inadimplência | Banco Central — API SGS | 21082 | 2011–presente |
 | Cesta básica (São Paulo) | DIEESE | Web scraping | 2005–presente |
 | Gasolina (média nacional) | ANP | CSV série histórica | 2005–presente |
+| Aluguel (FipeZAP) | FIPE | Download Excel | 2008–presente |
+| Energia elétrica | IBGE | API SIDRA (tabelas 1419/7060) | 2012–presente |
+| Desemprego (PNAD) | IBGE | API SIDRA (tabela 6381) | 2012–presente |
+| PIB trimestral | Banco Central — API SGS | 22109 | 2005–presente |
 
 ## Arquitetura
 
 O projeto tem duas partes independentes:
 
-**Pipeline ETL (Python)** — Coleta dados de 3 fontes, normaliza e exporta como JSON.
+**Pipeline ETL (Python)** — Coleta dados de 5 fontes, normaliza e exporta como JSON.
 
 **Dashboard (Next.js)** — Consome os JSONs e renderiza visualizações interativas.
 
 Não existe backend rodando. O site inteiro é HTML estático servido pelo Cloudflare Pages.
 
 ```
-Fontes (BCB, DIEESE, ANP)
+Fontes (BCB, DIEESE, ANP, IBGE, FIPE)
         ↓
 Pipeline Python (extração → transformação → exportação)
         ↓
@@ -106,7 +110,7 @@ npx serve out
 
 O pipeline segue o padrão Extract → Transform → Load:
 
-**Extract:** Cada fonte tem um extrator dedicado (`bcb.py`, `dieese.py`, `anp.py`). O extrator do BCB consulta a API SGS com retry automático. O do DIEESE faz scraping de tabela HTML. O da ANP parseia CSVs de séries históricas.
+**Extract:** Cada fonte tem um extrator dedicado (`bcb.py`, `dieese.py`, `anp.py`, `fipezap.py`, `energia.py`, `ibge.py`). O extrator do BCB consulta a API SGS com retry automático. O do DIEESE faz scraping de tabela HTML. O da ANP parseia CSVs de séries históricas. O FipeZAP baixa Excel de séries históricas. Os do IBGE consultam a API SIDRA.
 
 **Transform:** O normalizador padroniza datas (YYYY-MM), converte tipos numéricos, remove duplicatas, filtra pelo período configurado e agrega dados diários em médias mensais.
 

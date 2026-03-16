@@ -57,7 +57,7 @@ const InsightGrid = () => {
     {
       title: "A conta que não fecha",
       value: `${formatDecimal(endivMax?.value, 1)}% da renda`,
-      body: "Quase metade do que o brasileiro ganha já tá comprometido com dívida. Recorde histórico. O salário subiu, mas a parcela subiu junto.",
+      body: "O brasileiro deve quase metade do que ganha no ano inteiro. Recorde histórico. O salário subiu, mas a dívida subiu junto.",
       sentiment: "negative",
     },
     {

@@ -98,6 +98,26 @@ export const filterByDateRange = (
 };
 
 /**
+ * Compõe variações mensais (%) em variação acumulada.
+ *
+ * Cada ponto representa uma variação mensal (ex: 2.5 = +2,5% no mês).
+ * O resultado é a variação total do período: (1+r1)(1+r2)...(1+rN) - 1.
+ *
+ * @param points - Série de variações mensais em %.
+ * @returns Variação acumulada em %, ou null se vazia.
+ */
+export const compoundMonthlyRates = (
+  points: MonthlyDataPoint[]
+): number | null => {
+  if (points.length === 0) return null;
+  let factor = 1;
+  for (const p of points) {
+    factor *= 1 + p.value / 100;
+  }
+  return (factor - 1) * 100;
+};
+
+/**
  * Compõe taxas anuais de uma série pra calcular variação acumulada.
  *
  * Trata cada ponto como uma taxa anual vigente no período até o próximo ponto.
