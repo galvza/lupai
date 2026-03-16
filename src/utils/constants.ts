@@ -11,6 +11,8 @@ type IndicatorConfig = {
   frequency: string;
   /** Se true, os dados são variações mensais (%) e devem ser compostos em índice acumulado antes de normalizar. */
   isVariationRate?: boolean;
+  /** Se true, os dados são um número-índice (ex: PIB base 100) e o tooltip mostra crescimento % desde o início. */
+  isIndexSeries?: boolean;
 };
 
 /** Configuração de exibição e metadados dos 12 indicadores do dashboard. */
@@ -124,12 +126,13 @@ export const INDICATOR_CONFIG: Record<IndicatorKey, IndicatorConfig> = {
   pib: {
     label: "PIB trimestral",
     shortLabel: "PIB",
-    unit: "% var. trimestral",
+    unit: "índice",
     color: "#0F6E56",
     source: "bcb",
     description:
-      "Variação do PIB contra trimestre anterior (ajuste sazonal)",
+      "Índice do PIB trimestral dessazonalizado (BCB série 22109)",
     frequency: "trimestral",
+    isIndexSeries: true,
   },
 };
 

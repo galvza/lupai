@@ -45,6 +45,19 @@ const ChartSection = () => {
         activeIndicators={activeIndicators}
         governments={governments}
       />
+      <p
+        className="font-ui"
+        style={{
+          fontSize: "10px",
+          color: "var(--text-tertiary)",
+          marginTop: "8px",
+          lineHeight: 1.5,
+        }}
+      >
+        Valores normalizados (base 100 = início da série) pra permitir comparação visual.
+        PIB = índice trimestral dessazonalizado (BCB); tooltip mostra crescimento acumulado desde 2005.
+        Aluguel e energia = variações mensais compostas em índice acumulado.
+      </p>
     </div>
   );
 };

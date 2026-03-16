@@ -17,10 +17,14 @@ import {
 
 /** Formata valor conforme a unidade do indicador. */
 const formatValue = (key: IndicatorKey, value: number): string => {
-  const unit = INDICATOR_CONFIG[key].unit;
-  if (unit === "R$") return formatCurrency(value);
-  if (unit === "R$/USD") return formatDollar(value);
-  if (unit === "R$/litro") return formatPricePerLiter(value);
+  const config = INDICATOR_CONFIG[key];
+  if (config.isIndexSeries) {
+    const sign = value >= 0 ? "+" : "";
+    return `${sign}${value.toFixed(1).replace(".", ",")}%`;
+  }
+  if (config.unit === "R$") return formatCurrency(value);
+  if (config.unit === "R$/USD") return formatDollar(value);
+  if (config.unit === "R$/litro") return formatPricePerLiter(value);
   return formatPercent(value);
 };
 

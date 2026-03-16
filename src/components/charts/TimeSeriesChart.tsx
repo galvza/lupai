@@ -89,6 +89,17 @@ const TimeSeriesChart = ({
         }
         firstValues[key] = 100;
         rawLookups[key] = raw;
+      } else if (INDICATOR_CONFIG[key].isIndexSeries) {
+        // Número-índice → tooltip mostra crescimento % desde o início
+        const raw: Record<string, number> = {};
+        const first = points[0].value;
+        for (const p of points) {
+          map[p.date] = p.value;
+          raw[p.date] = ((p.value / first) - 1) * 100;
+          allDates.add(p.date);
+        }
+        firstValues[key] = first;
+        rawLookups[key] = raw;
       } else {
         for (const p of points) {
           map[p.date] = p.value;
