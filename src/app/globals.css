@@ -25,6 +25,11 @@ html {
 
   --font-serif: 'Georgia', 'Times New Roman', 'Times', serif;
   --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Responsive font-size tokens (overridden on mobile) */
+  --fs-micro: 10px;
+  --fs-label: 11px;
+  --fs-body-sm: 13px;
 }
 
 body {
@@ -114,6 +119,12 @@ main {
 
 /* === Mobile adjustments === */
 @media (max-width: 640px) {
+  :root {
+    --fs-micro: 12px;
+    --fs-label: 12px;
+    --fs-body-sm: 14px;
+  }
+
   body {
     font-size: 17px;
   }
@@ -127,6 +138,6 @@ main {
   }
 
   blockquote p {
-    font-size: 16px;
+    font-size: 17px;
   }
 }

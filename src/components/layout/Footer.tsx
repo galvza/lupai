@@ -14,7 +14,7 @@ const Footer = () => {
     >
       <div
         className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-4"
-        style={{ fontSize: "13px", color: "var(--text-secondary)" }}
+        style={{ fontSize: "var(--fs-body-sm)", color: "var(--text-secondary)" }}
       >
         <span>Dados: BCB (API SGS) &middot; DIEESE &middot; ANP &middot; IBGE (SIDRA) &middot; FipeZAP</span>
         <a

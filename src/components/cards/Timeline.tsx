@@ -162,7 +162,7 @@ const Timeline = () => {
                 <p
                   className="font-ui"
                   style={{
-                    fontSize: "11px",
+                    fontSize: "var(--fs-label)",
                     textTransform: "uppercase",
                     letterSpacing: "0.05em",
                     color: dotColor,
@@ -198,7 +198,7 @@ const Timeline = () => {
                       key={badge}
                       className="font-ui"
                       style={{
-                        fontSize: "11px",
+                        fontSize: "var(--fs-label)",
                         padding: "2px 8px",
                         borderRadius: "10px",
                         border: `1px solid ${dotColor}30`,
@@ -231,7 +231,7 @@ const Timeline = () => {
             color: "var(--text-secondary)",
             cursor: "pointer",
             fontWeight: 500,
-            fontSize: "13px",
+            fontSize: "var(--fs-body-sm)",
           }}
         >
           Ver todos os marcos ↓

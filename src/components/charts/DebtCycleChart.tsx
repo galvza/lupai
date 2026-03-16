@@ -267,7 +267,7 @@ const DebtCycleChart = () => {
       <p
         className="font-ui"
         style={{
-          fontSize: "11px",
+          fontSize: "var(--fs-label)",
           color: "var(--text-tertiary)",
           textAlign: "center",
           marginTop: "8px",

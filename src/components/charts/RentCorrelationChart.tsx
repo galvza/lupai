@@ -237,7 +237,7 @@ const RentCorrelationChart = () => {
           <p
             className="font-ui"
             style={{
-              fontSize: "11px",
+              fontSize: "var(--fs-label)",
               color: "var(--text-tertiary)",
               textAlign: "center",
               marginTop: "8px",
@@ -248,7 +248,7 @@ const RentCorrelationChart = () => {
           </p>
           <p
             style={{
-              fontSize: "13px",
+              fontSize: "var(--fs-body-sm)",
               color: "var(--text-secondary)",
               fontStyle: "italic",
               fontFamily: "Georgia, 'Times New Roman', serif",
@@ -265,7 +265,7 @@ const RentCorrelationChart = () => {
         <p
           className="font-ui"
           style={{
-            fontSize: "13px",
+            fontSize: "var(--fs-body-sm)",
             color: "var(--text-tertiary)",
             fontStyle: "italic",
             textAlign: "center",

@@ -49,7 +49,7 @@ const PullQuote = () => {
       <p
         className="font-ui"
         style={{
-          fontSize: "11px",
+          fontSize: "var(--fs-label)",
           color: "var(--text-tertiary)",
           marginTop: "8px",
           fontStyle: "normal",

@@ -32,7 +32,7 @@ const InsightCard = ({ title, value, body, sentiment }: InsightCardProps) => {
       <p
         className="font-ui"
         style={{
-          fontSize: "11px",
+          fontSize: "var(--fs-label)",
           textTransform: "uppercase",
           letterSpacing: "0.05em",
           color: "var(--text-tertiary)",
@@ -54,7 +54,7 @@ const InsightCard = ({ title, value, body, sentiment }: InsightCardProps) => {
       </p>
       <p
         style={{
-          fontSize: "13px",
+          fontSize: "var(--fs-body-sm)",
           lineHeight: 1.6,
           color: "var(--text-secondary)",
         }}

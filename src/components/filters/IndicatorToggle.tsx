@@ -50,7 +50,7 @@ const IndicatorToggle = ({
         <div key={cat.label} style={{ display: "flex", flexWrap: "wrap", gap: "6px", alignItems: "center" }}>
           <span
             style={{
-              fontSize: "10px",
+              fontSize: "var(--fs-micro)",
               fontWeight: 500,
               color: "var(--text-tertiary)",
               textTransform: "uppercase",
@@ -76,7 +76,7 @@ const IndicatorToggle = ({
                   border: `1.5px solid ${active ? config.color : "var(--border)"}`,
                   background: active ? `${config.color}15` : "transparent",
                   color: active ? config.color : "var(--text-tertiary)",
-                  fontSize: "11px",
+                  fontSize: "var(--fs-label)",
                   fontWeight: active ? 500 : 400,
                   cursor: "pointer",
                   transition: "all 0.15s ease",

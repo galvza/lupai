@@ -83,7 +83,7 @@ const GovernmentBar = () => {
                 flexShrink: 0,
               }}
             />
-            <span style={{ fontSize: "11px", color: "var(--text-tertiary)" }}>
+            <span style={{ fontSize: "var(--fs-label)", color: "var(--text-tertiary)" }}>
               {seg.name}
             </span>
           </div>

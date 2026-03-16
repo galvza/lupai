@@ -28,7 +28,7 @@ const Section = ({ chapterNumber, title, id, children }: SectionProps) => {
         <p
           className="mb-2 font-ui"
           style={{
-            fontSize: "11px",
+            fontSize: "var(--fs-label)",
             color: "var(--text-tertiary)",
             textTransform: "uppercase",
             letterSpacing: "0.08em",

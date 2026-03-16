@@ -63,7 +63,7 @@ const ComparisonStrip = ({ indicator, label }: ComparisonStripProps) => {
       >
         <p
           style={{
-            fontSize: "11px",
+            fontSize: "var(--fs-label)",
             color: "var(--text-tertiary)",
             marginBottom: "4px",
           }}
@@ -81,7 +81,7 @@ const ComparisonStrip = ({ indicator, label }: ComparisonStripProps) => {
           alignItems: "center",
           padding: "0 12px",
           color: "var(--text-tertiary)",
-          fontSize: "13px",
+          fontSize: "var(--fs-body-sm)",
         }}
       >
         vs
@@ -90,7 +90,7 @@ const ComparisonStrip = ({ indicator, label }: ComparisonStripProps) => {
       <div style={{ padding: "16px", textAlign: "center" }}>
         <p
           style={{
-            fontSize: "11px",
+            fontSize: "var(--fs-label)",
             color: "var(--text-tertiary)",
             marginBottom: "4px",
           }}

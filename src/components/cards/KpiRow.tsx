@@ -100,7 +100,7 @@ const KpiRow = () => {
             >
               <p
                 style={{
-                  fontSize: "11px",
+                  fontSize: "var(--fs-label)",
                   textTransform: "uppercase",
                   color: "var(--text-tertiary)",
                   letterSpacing: "0.05em",
@@ -118,7 +118,7 @@ const KpiRow = () => {
               >
                 {kpi.current}
               </p>
-              <p style={{ fontSize: "11px", color }}>
+              <p style={{ fontSize: "var(--fs-label)", color }}>
                 {arrow} era {kpi.firstFmt} em {kpi.year}
               </p>
             </div>

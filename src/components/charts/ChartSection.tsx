@@ -23,7 +23,7 @@ const ChartSection = () => {
       <p
         className="mb-4 font-ui"
         style={{
-          fontSize: "13px",
+          fontSize: "var(--fs-body-sm)",
           lineHeight: 1.6,
           color: "var(--text-tertiary)",
         }}
@@ -48,7 +48,7 @@ const ChartSection = () => {
       <p
         className="font-ui"
         style={{
-          fontSize: "10px",
+          fontSize: "var(--fs-micro)",
           color: "var(--text-tertiary)",
           marginTop: "8px",
           lineHeight: 1.5,
