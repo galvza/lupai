@@ -2,7 +2,7 @@
 
 Dashboard interativo que cruza 12 indicadores econômicos brasileiros dos últimos 20 anos, com dados oficiais do BCB, DIEESE, ANP, IBGE e FIPE.
 
-**[Ver dashboard ao vivo →](https://calmai.pages.dev)**
+**[Ver dashboard ao vivo →](https://custo-de-vida-brasil.pages.dev/)**
 
 ![CI](https://github.com/galvza/calmai/actions/workflows/ci.yml/badge.svg)
 ![Data Update](https://github.com/galvza/calmai/actions/workflows/update-data.yml/badge.svg)
