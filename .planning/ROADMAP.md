@@ -71,7 +71,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Types, DB migration, Google Search wrapper, blocklist/dedup utilities, Gemini scoring, fixtures and tests (Wave 1)
+- [x] 03-01-PLAN.md — Types, DB migration, Google Search wrapper, blocklist/dedup utilities, Gemini scoring, fixtures and tests (Wave 1)
 - [ ] 03-02-PLAN.md — Discovery sub-tasks, extraction stubs, full orchestrator with waitpoint confirmation, confirmation API route, tests (Wave 2)
 
 **UI hint**: yes
