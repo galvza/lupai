@@ -12,7 +12,12 @@ Entregar em minutos o que hoje leva horas: uma análise completa do mercado/nich
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Project scaffolded with Next.js 15.5, TypeScript 5.7, Tailwind v4, Trigger.dev v4 — Phase 1
+- ✓ Database schema (4 tables: analyses, competitors, viral_content, synthesis) — Phase 1
+- ✓ All service clients configured (Apify, Gemini, AssemblyAI, Bunny, Trigger.dev) — Phase 1
+- ✓ TypeScript domain types defined (17+ interfaces, zero `any`) — Phase 1
+- ✓ Fixture/mock infrastructure (11 JSON, 6 factories, 23 tests passing) — Phase 1
+- ✓ Environment configuration with Zod validation — Phase 1
 
 ### Active
 
@@ -106,4 +111,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-27 after initialization*
+*Last updated: 2026-03-27 after Phase 1 completion*
