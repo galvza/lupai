@@ -54,7 +54,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Backend logic: input classification, understand + analyze API routes, Trigger.dev stub, tests (Wave 1)
+- [x] 02-01-PLAN.md — Backend logic: input classification, understand + analyze API routes, Trigger.dev stub, tests (Wave 1)
 - [ ] 02-02-PLAN.md — Frontend UI: homepage components, input-to-redirect flow, analysis shell page, component tests (Wave 2)
 
 **UI hint**: yes

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 2 plans verified
-last_updated: "2026-03-27T20:43:07.944Z"
+status: executing
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-03-27T20:50:29.109Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 10
   completed_phases: 1
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Entregar em minutos o que hoje leva horas: analise completa do mercado/nicho com concorrentes mapeados, dados consolidados e recomendacoes estrategicas acionaveis.
-**Current focus:** Phase 01 — foundation-project-setup
+**Current focus:** Phase 02 — input-ai-understanding
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 02 (input-ai-understanding) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-03-27
 
 Progress: [░░░░░░░░░░] 0%
@@ -55,6 +55,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P01 | 9min | 2 tasks | 44 files |
 | Phase 01 P03 | 3min | 2 tasks | 14 files |
 | Phase 01 P02 | 5min | 2 tasks | 17 files |
+| Phase 02 P01 | 5min | 3 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,10 @@ Recent decisions affecting current work:
 - [Phase 01]: Service clients use process.env directly (not Zod config imports) to avoid parse errors in Trigger.dev edge environment
 - [Phase 01]: Database type updated with Relationships, Views, Functions, Enums to match Supabase JS v2 GenericSchema requirement
 - [Phase 01]: All Apify wrappers filter output at extraction time (never store raw actor response per D-15)
+- [Phase 02]: classifyInput uses letterCount <= 3 threshold to reject 3-letter gibberish
+- [Phase 02]: NONSENSE/MINIMAL inputs skip Gemini calls to save API tokens
+- [Phase 02]: analyze-market task is intentional stub - Phase 3 implements full orchestration
+- [Phase 02]: responseJsonSchema via zod-to-json-schema for type-safe Gemini structured output
 
 ### Pending Todos
 
@@ -89,6 +94,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T20:43:07.941Z
-Stopped at: Phase 2 plans verified
-Resume file: .planning/phases/02-input-ai-understanding/02-01-PLAN.md
+Last session: 2026-03-27T20:50:29.106Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None
