@@ -40,7 +40,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md — Scaffold Next.js project, install deps, define TypeScript types, env config (Wave 1)
 - [ ] 01-02-PLAN.md — Supabase migration, client, queries, and all service client wrappers (Wave 2)
-- [ ] 01-03-PLAN.md — Fixture/mock infrastructure and initial tests (Wave 2)
+- [x] 01-03-PLAN.md — Fixture/mock infrastructure and initial tests (Wave 2)
 
 ### Phase 2: Input & AI Understanding
 **Goal**: Users can describe their niche in plain text and see the AI's interpretation before starting analysis
