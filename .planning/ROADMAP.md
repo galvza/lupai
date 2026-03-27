@@ -51,11 +51,11 @@ Plans:
   2. After submitting, the AI returns a structured interpretation (niche, segment, region) within 5 seconds
   3. User sees a confirmation screen showing what the AI understood and can adjust it before proceeding
   4. Clicking "start analysis" creates a database record, triggers a background job, and redirects to the analysis page (API route completes in under 10 seconds)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md — Backend logic: input classification, understand + analyze API routes, Trigger.dev stub, tests (Wave 1)
+- [ ] 02-02-PLAN.md — Frontend UI: homepage components, input-to-redirect flow, analysis shell page, component tests (Wave 2)
 
 **UI hint**: yes
 
@@ -194,7 +194,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4/5/6 (parallelizable) -> 7 -> 8
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Project Setup | 0/3 | Planning complete | - |
-| 2. Input & AI Understanding | 0/2 | Not started | - |
+| 2. Input & AI Understanding | 0/2 | Planning complete | - |
 | 3. Competitor Discovery & Orchestration | 0/2 | Not started | - |
 | 4. Website, SEO & Social Extraction | 0/2 | Not started | - |
 | 5. Ads Intelligence | 0/2 | Not started | - |
