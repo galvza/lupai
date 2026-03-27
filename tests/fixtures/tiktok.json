@@ -1,0 +1,23 @@
+{
+  "followers": 8400,
+  "postingFrequency": "3x por semana",
+  "engagementRate": 5.1,
+  "topPosts": [
+    {
+      "url": "https://tiktok.com/@clinica/video/123",
+      "caption": "POV: voce descobrindo que clareamento nao doi",
+      "likes": 2340,
+      "comments": 156,
+      "shares": 89,
+      "postedAt": "2026-03-22T09:00:00Z"
+    },
+    {
+      "url": "https://tiktok.com/@clinica/video/456",
+      "caption": "3 sinais de que voce precisa de um canal",
+      "likes": 1567,
+      "comments": 98,
+      "shares": 45,
+      "postedAt": "2026-03-19T11:00:00Z"
+    }
+  ]
+}

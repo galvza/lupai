@@ -1,0 +1,31 @@
+{
+  "followers": 15200,
+  "postingFrequency": "4x por semana",
+  "engagementRate": 3.2,
+  "topPosts": [
+    {
+      "url": "https://instagram.com/p/abc123",
+      "caption": "Sorriso perfeito comeca com uma boa consulta! Agende ja.",
+      "likes": 342,
+      "comments": 28,
+      "shares": null,
+      "postedAt": "2026-03-20T14:00:00Z"
+    },
+    {
+      "url": "https://instagram.com/p/def456",
+      "caption": "Antes e depois: clareamento dental em 1 sessao",
+      "likes": 891,
+      "comments": 67,
+      "shares": null,
+      "postedAt": "2026-03-18T10:30:00Z"
+    },
+    {
+      "url": "https://instagram.com/p/ghi789",
+      "caption": "Dicas de higiene bucal que voce precisa saber",
+      "likes": 256,
+      "comments": 15,
+      "shares": null,
+      "postedAt": "2026-03-15T16:00:00Z"
+    }
+  ]
+}

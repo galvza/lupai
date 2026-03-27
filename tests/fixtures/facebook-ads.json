@@ -1,0 +1,29 @@
+{
+  "activeAdsCount": 3,
+  "ads": [
+    {
+      "adId": "meta-ad-001",
+      "creativeUrl": "https://example.com/creative1.jpg",
+      "copyText": "Clareamento dental com 40% de desconto! Agende sua avaliacao gratuita.",
+      "format": "image",
+      "startedAt": "2026-03-01T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "adId": "meta-ad-002",
+      "creativeUrl": "https://example.com/creative2.mp4",
+      "copyText": "Implante dentario em ate 12x sem juros. Consulta gratis!",
+      "format": "video",
+      "startedAt": "2026-02-15T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "adId": "meta-ad-003",
+      "creativeUrl": "https://example.com/creative3.jpg",
+      "copyText": "Aparelho invisivel: seu sorriso perfeito sem metal",
+      "format": "carousel",
+      "startedAt": "2026-03-10T00:00:00Z",
+      "isActive": true
+    }
+  ]
+}

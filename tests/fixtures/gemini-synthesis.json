@@ -1,0 +1,23 @@
+{
+  "strategicOverview": "O mercado de clinicas odontologicas em SP e altamente competitivo, com forte presenca digital. Os principais concorrentes investem em Meta Ads com foco em clareamento e implantes. A taxa de engajamento no Instagram e superior a media do setor (3.2%), indicando que conteudo visual de antes/depois tem alto apelo.",
+  "recommendations": [
+    {
+      "title": "Investir em conteudo de antes/depois no Instagram",
+      "description": "Clinica Sorriso SP gera 891 likes por post de antes/depois vs 256 em posts educativos. Crie serie semanal mostrando resultados reais de clareamento e implantes.",
+      "priority": "high",
+      "category": "conteudo"
+    },
+    {
+      "title": "Comecar presenca no TikTok",
+      "description": "Clinica Sorriso tem 8.400 seguidores no TikTok com engajamento de 5.1%. O formato POV e dicas rapidas funciona bem. Comece com 3 videos por semana.",
+      "priority": "high",
+      "category": "redes-sociais"
+    },
+    {
+      "title": "Otimizar keywords de Google Ads",
+      "description": "Concorrente investe em 'dentista sp' e 'implante dentario preco'. Adicione keywords de cauda longa como 'clareamento dental zona sul sp' para CPC menor.",
+      "priority": "medium",
+      "category": "anuncios"
+    }
+  ]
+}
