@@ -54,12 +54,30 @@ Homepage with a prominent text input where users describe their niche in free te
 - **D-17:** Error messages displayed inline below the input — not toast, not alert
 - **D-18:** If AI interpretation fails, user can retry without reloading the page
 
+### UX Guidance (Input Assistance)
+- **D-27:** Smart rotating placeholder that cycles through examples every 3-4 seconds with fade animation:
+  - "e.g. loja de suplementos esportivos em Campinas"
+  - "e.g. clinica de estetica no Rio de Janeiro"
+  - "e.g. www.minhalojaonline.com.br"
+  - "e.g. e-commerce de roupas femininas plus size"
+- **D-28:** Helper chips below the input — clickable quick-start examples:
+  - "Local business" → pre-fills template for local business
+  - "E-commerce" → pre-fills template for online store
+  - "I have a URL" → switches input to URL mode
+- **D-29:** Inline tips that appear AS the user types (guide without blocking):
+  - User types 1-2 words → subtle hint: "Adicione sua regiao e tipo de negocio para melhores resultados"
+  - User pastes URL → hint: "Vamos analisar seu site primeiro"
+  - User types long paragraph → hint: "Quanto mais detalhes, melhor nossa analise"
+- **D-30:** First-time dismissible banner at top (uses localStorage, shows only once):
+  "Descreva seu negocio ou nicho e a LupAI vai encontrar seus concorrentes, analisar o mercado e entregar recomendacoes acionaveis."
+- **D-31:** UX philosophy: GUIDE without BLOCKING — no popups, no modals, no forced tutorials. The UI teaches by example.
+
 ### Claude's Discretion
-- Exact visual design and spacing of the input area
 - Loading animation style (spinner vs skeleton vs dots)
 - Exact card styling for the confirmation display
 - How the mode toggle looks (radio buttons vs segmented control vs tabs)
 - Transition/animation between input and confirmation states
+- Exact visual styling of helper chips and inline tips
 
 </decisions>
 
