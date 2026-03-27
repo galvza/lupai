@@ -75,6 +75,15 @@ export interface Database {
           user_business_url?: string | null;
           trigger_run_id?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: '';
+            columns: [];
+            isOneToOne: false;
+            referencedRelation: '';
+            referencedColumns: [];
+          },
+        ];
       };
       competitors: {
         Row: {
@@ -112,6 +121,15 @@ export interface Database {
           google_ads_data?: GoogleAdsData | null;
           gmb_data?: GmbData | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'competitors_analysis_id_fkey';
+            columns: ['analysis_id'];
+            isOneToOne: false;
+            referencedRelation: 'analyses';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       viral_content: {
         Row: {
@@ -143,6 +161,15 @@ export interface Database {
           hook_body_cta?: HookBodyCta | null;
           engagement_metrics?: EngagementMetrics;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'viral_content_analysis_id_fkey';
+            columns: ['analysis_id'];
+            isOneToOne: false;
+            referencedRelation: 'analyses';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       synthesis: {
         Row: {
@@ -168,8 +195,25 @@ export interface Database {
           creative_scripts?: CreativeScript[];
           comparative_analysis?: ComparativeAnalysis | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'synthesis_analysis_id_fkey';
+            columns: ['analysis_id'];
+            isOneToOne: true;
+            referencedRelation: 'analyses';
+            referencedColumns: ['id'];
+          },
+        ];
       };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: {
+      analysis_mode: AnalysisMode;
+      analysis_status: AnalysisStatus;
+      content_platform: ContentPlatform;
+    };
+    CompositeTypes: Record<string, never>;
   };
 }
 
