@@ -1,0 +1,109 @@
+# LupAI
+
+## What This Is
+
+Uma plataforma de inteligência e análise de marketing com IA que, a partir de um input simples sobre o negócio do usuário, descobre concorrentes, analisa o mercado, identifica conteúdos virais do nicho, transcreve e analisa vídeos, entrega recomendações estratégicas acionáveis e modela conteúdo sugerido (roteiros de vídeo com gancho, corpo e CTA). LupAI é uma lupa inteligente pro mercado — investiga, analisa, recomenda e modela conteúdo. A execução fica com o time.
+
+## Core Value
+
+Entregar em minutos o que hoje leva horas: uma análise completa do mercado/nicho com concorrentes mapeados, dados consolidados e recomendações estratégicas acionáveis — tudo a partir de um input simples.
+
+## Requirements
+
+### Validated
+
+(None yet — ship to validate)
+
+### Active
+
+- [ ] Input simples: campo de texto livre onde o usuário descreve o nicho/segmento
+- [ ] Camada de entendimento: IA interpreta o input e identifica nicho, segmento e região
+- [ ] Descoberta de concorrentes: sistema encontra 3-4 concorrentes relevantes do nicho
+- [ ] Análise do site (posicionamento, oferta, preços, meta tags)
+- [ ] Análise de SEO (autoridade estimada, palavras-chave principais, tráfego estimado)
+- [ ] Descoberta e análise de redes sociais (posts recentes, frequência, engajamento)
+- [ ] Anúncios ativos na Biblioteca de Anúncios do Meta (criativos, copy, formato, tempo no ar)
+- [ ] Análise de anúncios no Google Ads (presença em search, palavras-chave pagas)
+- [ ] Análise de presença no Google Meu Negócio (quando aplicável)
+- [ ] Inteligência de conteúdo viral: busca o que está viralizando no nicho (TikTok, Instagram, Facebook)
+- [ ] Transcrição e análise de vídeos virais: IA transcreve, identifica gancho, corpo e CTA
+- [ ] Modelagem automática de criativos: IA gera roteiros de vídeo com gancho, corpo e CTA
+- [ ] Síntese com IA: consolida todos os dados e gera recomendações estratégicas acionáveis
+- [ ] Dashboard/relatório visual com os resultados organizados
+- [ ] Exportação de relatórios em PDF
+- [ ] Modo Completo: usuário informa dados do próprio negócio, sistema cruza com concorrentes
+- [ ] Recomendações personalizadas no Modo Completo (comparativas)
+- [ ] Persistência de dados: resultados salvos por categoria de nicho
+- [ ] Histórico de pesquisas acessível
+- [ ] Interface web responsiva, didática e autoexplicativa (sem autenticação)
+- [ ] Progresso em tempo real durante a cascata de extração
+
+### Out of Scope
+
+- Monitoramento contínuo/agendado de concorrentes — backlog futuro, alta complexidade
+- Histórico de tendências por nicho ao longo do tempo — backlog futuro
+- Descoberta automática via Google Maps pra negócios locais — backlog futuro
+- Autenticação e contas de usuário — não necessário pra MVP
+- API pública pra integração — backlog futuro
+- Execução de campanhas (agendar posts, subir campanhas, automatizar anúncios) — fora do escopo do produto
+- CRM ou gerenciamento de clientes — fora do escopo do produto
+- Automação de marketing (nutrição de leads, email marketing, funis) — fora do escopo do produto
+- Real-time chat — alta complexidade, não é core
+- Video posts — custo de storage/bandwidth
+- OAuth login — email/password suficiente (na verdade, sem auth no MVP)
+- Mobile app nativo — web-first
+
+## Context
+
+- **Personas:** Profissional de marketing (agência/in-house) e dono de pequeno/médio negócio
+- **Stack definida:** Next.js 14+ (App Router), TypeScript, Supabase (PostgreSQL), Tailwind CSS, Trigger.dev 3.x (jobs assíncronos), Google Gemini API (gemini-2.0-flash), Apify (scraping), Assembly AI (transcrição), Bunny CDN + Storage (mídia), Vitest (testes)
+- **Deploy:** Vercel
+- **Interface em PT-BR:** Toda a interface e recomendações em português brasileiro
+- **Sem autenticação:** Produto funciona sem login. Pesquisas salvas no banco sem associação a usuário
+- **Dois modos:** Modo Rápido (só nicho) e Modo Completo (nicho + dados do negócio)
+- **Cascata independente:** Cada etapa de extração é independente — falha em uma não impede as outras
+- **Fluxo de mídia:** Apify → download → Bunny Storage → Assembly AI (transcrição)
+- **Cache:** Reutilizar dados de pesquisas recentes < 24h por nicho
+- **Prazo:** Entrega até 30/03/2026 às 14h (projeto de demonstração para desafio)
+- **Prioridade:** Produto funcional no ar. Polimento visual é secundário.
+
+## Constraints
+
+- **Timeline**: Entrega até 30/03/2026 14h — projeto de demonstração para desafio de recrutamento
+- **Tech stack**: Next.js 14+ App Router, TypeScript, Supabase, Tailwind, Trigger.dev, Gemini API, Apify, Assembly AI, Bunny CDN — stack já definida e aprovada
+- **Budget**: Free tiers dos serviços (Apify créditos gratuitos, Supabase free, Gemini free tier, Vercel free) — volume baixo (<50 pesquisas)
+- **No auth**: Sem autenticação por requisito do desafio
+- **Performance**: Camada de entendimento < 5s, cascata completa 1-3 min com progresso real-time, dashboard < 2s após extração
+- **Compatibility**: Desktop Chrome/Firefox/Safari últimas 2 versões, mobile responsivo 375px+
+- **Availability**: 24/7 durante período de avaliação
+
+## Key Decisions
+
+| Decision | Rationale | Outcome |
+|----------|-----------|---------|
+| Apify como hub central de scraping | Actors prontos, evita manter scrapers próprios | — Pending |
+| Gemini API (gemini-2.0-flash) como IA | Free tier, boa qualidade pra entendimento e síntese | — Pending |
+| Trigger.dev pra jobs assíncronos | Cascata pode levar 1-3 min, precisa background processing | — Pending |
+| Bunny CDN + Storage pra mídia | Necessário hospedar vídeos pra transcrição, CDN pra performance | — Pending |
+| Sem autenticação no MVP | Requisito do desafio, simplifica UX | — Pending |
+| Interface em PT-BR | Público-alvo brasileiro, desafio em português | — Pending |
+
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
+---
+*Last updated: 2026-03-27 after initialization*
