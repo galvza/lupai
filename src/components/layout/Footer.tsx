@@ -1,45 +1,18 @@
-/**
- * Rodapé do dashboard.
- *
- * Exibe fontes de dados, link pro repositório GitHub
- * e créditos do projeto.
- */
+import { Search } from "lucide-react";
 
-/** Rodapé com créditos, fontes e link do repositório. */
-const Footer = () => {
+/** Rodapé global */
+export const Footer = () => {
   return (
-    <footer
-      className="py-8 mt-12 font-ui"
-      style={{ borderTop: "1px solid var(--border)" }}
-    >
-      <div
-        className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-4"
-        style={{ fontSize: "var(--fs-body-sm)", color: "var(--text-secondary)" }}
-      >
-        <span>Dados: BCB (API SGS) &middot; DIEESE &middot; ANP &middot; IBGE (SIDRA) &middot; FipeZAP</span>
-        <a
-          href="https://github.com/galvza/calmai"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:underline"
-          style={{ color: "var(--text-primary)" }}
-        >
-          Ver código no GitHub &#x2197;
-        </a>
+    <footer className="bg-[#0A0A0A] px-6 py-6">
+      <div className="max-w-6xl mx-auto flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Search color="#C8FF3C" size={14} strokeWidth={1.5} />
+          <span className="text-xs font-medium text-[#555]">LupAI</span>
+        </div>
+        <p className="text-[11px] text-[#444]">
+          Feito por Gabriel Alves · Desafio Human Academy 2026
+        </p>
       </div>
-
-      <p
-        style={{
-          fontSize: "12px",
-          color: "var(--text-tertiary)",
-          lineHeight: 1.5,
-        }}
-      >
-        Projeto de portfólio. Dados públicos. Sem opinião partidária. Os números
-        estão aí — você decide o que eles significam.
-      </p>
     </footer>
   );
 };
-
-export default Footer;

@@ -14,130 +14,63 @@ html {
   scroll-behavior: smooth;
 }
 
-:root {
-  --text-primary: #1a1a1a;
-  --text-secondary: #595959;
-  --text-tertiary: #9b9b9b;
-  --border: #e5e5e5;
-  --bg-surface: #f7f7f5;
-  --accent-red: #e24b4a;
-  --accent-green: #0f6e56;
-
-  --font-serif: 'Georgia', 'Times New Roman', 'Times', serif;
-  --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
-
-  /* Responsive font-size tokens (overridden on mobile) */
-  --fs-micro: 10px;
-  --fs-label: 11px;
-  --fs-body-sm: 13px;
-}
-
 body {
-  color: var(--text-primary);
-  background: #ffffff;
-  font-family: var(--font-serif);
+  color: #ffffff;
+  background: #0F0F0F;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: 16px;
-  line-height: 1.8;
-  letter-spacing: 0.01em;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-/* === Headings === */
-h1 {
-  font-family: var(--font-serif);
-  font-weight: 700;
-  font-size: 28px;
-  line-height: 1.2;
-  letter-spacing: -0.5px;
+/* Instrument Serif for headlines */
+.font-headline {
+  font-family: "Instrument Serif", Georgia, serif;
 }
 
-h2 {
-  font-family: var(--font-serif);
-  font-weight: 700;
-  font-size: 22px;
-  line-height: 1.3;
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-h3 {
-  font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 1.4;
+::-webkit-scrollbar-track {
+  background: #0F0F0F;
 }
 
-/* === Narrative body text === */
-.narrative-text {
-  font-family: var(--font-serif);
-  font-size: 16px;
-  line-height: 1.8;
-  letter-spacing: 0.01em;
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
 }
 
-.narrative-text p {
-  margin-bottom: 1.5rem;
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
-.narrative-text p:last-child {
-  margin-bottom: 0;
+/* Terminal log styling */
+.terminal-log {
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 11px;
+  line-height: 1.6;
 }
 
-.narrative-text strong {
-  color: var(--text-primary);
-  font-weight: 600;
+/* Fade animation for rotating placeholders */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* === Sans-serif utility class for labels, badges, KPIs, meta === */
-.font-ui {
-  font-family: var(--font-sans);
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
 }
 
-/* === Pull quote === */
-blockquote p {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  font-style: italic;
-  font-size: 18px;
-  line-height: 1.65;
-}
-
-/* === Sections === */
+/* Section transitions */
 section {
-  margin-top: 3rem;
+  position: relative;
 }
 
-/* === CTA hover === */
-.cta-link:hover {
-  background: var(--bg-surface);
-}
-
-/* === Prevent horizontal overflow === */
+/* Prevent horizontal overflow */
 main {
   overflow-x: hidden;
-}
-
-/* === Mobile adjustments === */
-@media (max-width: 640px) {
-  :root {
-    --fs-micro: 12px;
-    --fs-label: 12px;
-    --fs-body-sm: 14px;
-  }
-
-  body {
-    font-size: 17px;
-  }
-
-  h1 {
-    font-size: 24px;
-  }
-
-  h2 {
-    font-size: 20px;
-  }
-
-  blockquote p {
-    font-size: 17px;
-  }
 }
