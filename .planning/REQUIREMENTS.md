@@ -7,12 +7,12 @@
 
 ### Foundation & Setup
 
-- [ ] **FOUND-01**: Project initialized with Next.js 15.5+, TypeScript, Tailwind v4, Supabase, Trigger.dev v4
+- [x] **FOUND-01**: Project initialized with Next.js 15.5+, TypeScript, Tailwind v4, Supabase, Trigger.dev v4
 - [ ] **FOUND-02**: Database schema created in Supabase (analyses, competitors, viral content, recommendations)
 - [ ] **FOUND-03**: All service clients configured (Apify, Gemini, Assembly AI, Bunny Storage, Trigger.dev)
-- [ ] **FOUND-04**: TypeScript types defined for all domain entities (analysis, competitor, viral content, recommendation)
+- [x] **FOUND-04**: TypeScript types defined for all domain entities (analysis, competitor, viral content, recommendation)
 - [ ] **FOUND-05**: Fixture/mock infrastructure for development without burning API credits
-- [ ] **FOUND-06**: Environment variables configured with .env.example
+- [x] **FOUND-06**: Environment variables configured with .env.example
 
 ### Input & AI Understanding
 
@@ -157,12 +157,12 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
+| FOUND-01 | Phase 1 | Complete |
 | FOUND-02 | Phase 1 | Pending |
 | FOUND-03 | Phase 1 | Pending |
-| FOUND-04 | Phase 1 | Pending |
+| FOUND-04 | Phase 1 | Complete |
 | FOUND-05 | Phase 1 | Pending |
-| FOUND-06 | Phase 1 | Pending |
+| FOUND-06 | Phase 1 | Complete |
 | INPT-01 | Phase 2 | Pending |
 | INPT-02 | Phase 2 | Pending |
 | INPT-03 | Phase 2 | Pending |

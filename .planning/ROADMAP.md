@@ -38,7 +38,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Scaffold Next.js project, install deps, define TypeScript types, env config (Wave 1)
+- [x] 01-01-PLAN.md — Scaffold Next.js project, install deps, define TypeScript types, env config (Wave 1)
 - [ ] 01-02-PLAN.md — Supabase migration, client, queries, and all service client wrappers (Wave 2)
 - [ ] 01-03-PLAN.md — Fixture/mock infrastructure and initial tests (Wave 2)
 
