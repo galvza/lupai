@@ -16,5 +16,11 @@ export const nicheInterpretedSchema = z.object({
   region: z.string().min(1),
 });
 
+/** Schema de validacao do request POST /api/analyze/understand */
+export const understandRequestSchema = z.object({
+  nicheInput: z.string().min(1, 'Input nao pode ser vazio').max(500, 'Input muito longo'),
+});
+
 export type AnalysisInputValidated = z.infer<typeof analysisInputSchema>;
 export type NicheInterpretedValidated = z.infer<typeof nicheInterpretedSchema>;
+export type UnderstandRequestValidated = z.infer<typeof understandRequestSchema>;
