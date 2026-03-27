@@ -18,11 +18,14 @@ Entregar em minutos o que hoje leva horas: uma análise completa do mercado/nich
 - ✓ TypeScript domain types defined (17+ interfaces, zero `any`) — Phase 1
 - ✓ Fixture/mock infrastructure (11 JSON, 6 factories, 23 tests passing) — Phase 1
 - ✓ Environment configuration with Zod validation — Phase 1
+- ✓ Input classification (5 categories: MINIMAL/MEDIUM/URL/EXCESSIVE/NONSENSE) with pre-Gemini validation — Phase 2
+- ✓ AI understanding: Gemini interprets niche input with branching per classification — Phase 2
+- ✓ API routes: POST /api/analyze/understand + POST /api/analyze (thin dispatchers < 10s) — Phase 2
+- ✓ Trigger.dev analyze-market task stub ready for Phase 3 orchestration — Phase 2
 
 ### Active
 
-- [ ] Input simples: campo de texto livre onde o usuário descreve o nicho/segmento
-- [ ] Camada de entendimento: IA interpreta o input e identifica nicho, segmento e região
+- [ ] Descoberta de concorrentes: sistema encontra 3-4 concorrentes relevantes do nicho
 - [ ] Descoberta de concorrentes: sistema encontra 3-4 concorrentes relevantes do nicho
 - [ ] Análise do site (posicionamento, oferta, preços, meta tags)
 - [ ] Análise de SEO (autoridade estimada, palavras-chave principais, tráfego estimado)
@@ -111,4 +114,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-27 after Phase 1 completion*
+*Last updated: 2026-03-27 after Phase 2 completion*

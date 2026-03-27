@@ -37,3 +37,26 @@ export interface AnalysisUpdate {
   status?: AnalysisStatus;
   triggerRunId?: string;
 }
+
+/** Classificacao do input antes de enviar ao Gemini (per D-19) */
+export type InputClassification = 'MINIMAL' | 'MEDIUM' | 'URL' | 'EXCESSIVE' | 'NONSENSE';
+
+/** Etapas do fluxo na homepage */
+export type FlowStep = 'input' | 'understanding' | 'confirmation' | 'starting' | 'error';
+
+/** Resposta do endpoint POST /api/analyze/understand */
+export interface UnderstandResponse {
+  classification: InputClassification;
+  interpreted?: NicheInterpreted;
+  followUpQuestions?: string[];
+  urlDetected?: string;
+  error?: string;
+}
+
+/** Resposta do endpoint POST /api/analyze */
+export interface StartAnalysisResponse {
+  analysisId: string;
+  runId: string;
+  publicAccessToken: string;
+  redirectUrl: string;
+}

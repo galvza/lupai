@@ -17,7 +17,7 @@
 ### Input & AI Understanding
 
 - [ ] **INPT-01**: User can type a free-text description of their niche/segment in a central input field
-- [ ] **INPT-02**: AI interprets the input and identifies niche, segment, and region (< 5 seconds)
+- [x] **INPT-02**: AI interprets the input and identifies niche, segment, and region (< 5 seconds)
 - [ ] **INPT-03**: System confirms interpretation with user before proceeding (e.g., "Entendi: e-commerce de suplementos esportivos no Brasil. Correto?")
 - [ ] **INPT-04**: User can adjust the interpretation before starting the analysis
 
@@ -116,7 +116,7 @@
 
 - [ ] **ORCH-01**: Cascade of extraction runs as background jobs via Trigger.dev (not in API routes)
 - [ ] **ORCH-02**: Each extraction step is independent — failure in one does not block others
-- [ ] **ORCH-03**: API routes are thin dispatchers (< 10s execution to respect Vercel timeout)
+- [x] **ORCH-03**: API routes are thin dispatchers (< 10s execution to respect Vercel timeout)
 
 ## v2 Requirements
 
@@ -164,7 +164,7 @@
 | FOUND-05 | Phase 1 | Complete |
 | FOUND-06 | Phase 1 | Complete |
 | INPT-01 | Phase 2 | Pending |
-| INPT-02 | Phase 2 | Pending |
+| INPT-02 | Phase 2 | Complete |
 | INPT-03 | Phase 2 | Pending |
 | INPT-04 | Phase 2 | Pending |
 | COMP-01 | Phase 3 | Pending |
@@ -208,7 +208,7 @@
 | DASH-06 | Phase 9 | Pending |
 | ORCH-01 | Phase 3 | Pending |
 | ORCH-02 | Phase 3 | Pending |
-| ORCH-03 | Phase 2 | Pending |
+| ORCH-03 | Phase 2 | Complete |
 | HIST-01 | Phase 10 | Pending |
 | HIST-02 | Phase 10 | Pending |
 | HIST-03 | Phase 10 | Pending |

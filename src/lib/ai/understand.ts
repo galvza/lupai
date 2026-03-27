@@ -1,6 +1,8 @@
 import { GoogleGenAI } from '@google/genai';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 
 import type { NicheInterpreted } from '@/types/analysis';
+import { nicheInterpretedSchema } from '@/utils/validators';
 import { UNDERSTAND_NICHE_PROMPT } from './prompts';
 
 /**
@@ -17,6 +19,7 @@ export const understandNiche = async (userInput: string): Promise<NicheInterpret
       contents: `${UNDERSTAND_NICHE_PROMPT}\n\nInput do usuario: "${userInput}"`,
       config: {
         responseMimeType: 'application/json',
+        responseJsonSchema: zodToJsonSchema(nicheInterpretedSchema),
       },
     });
 
