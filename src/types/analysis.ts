@@ -2,7 +2,7 @@
 export type AnalysisMode = 'quick' | 'complete';
 
 /** Status possiveis de uma analise */
-export type AnalysisStatus = 'pending' | 'processing' | 'completed' | 'failed';
+export type AnalysisStatus = 'pending' | 'processing' | 'discovering' | 'waiting_confirmation' | 'extracting' | 'completed' | 'failed';
 
 /** Interpretacao do nicho pela IA */
 export interface NicheInterpreted {
