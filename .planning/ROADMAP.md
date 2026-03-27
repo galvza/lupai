@@ -68,11 +68,11 @@ Plans:
   2. Discovered competitors are presented to the user for confirmation (user can remove or adjust before full extraction)
   3. The Trigger.dev orchestrator fans out to parallel sub-tasks and each sub-task runs independently (failure in one does not block others)
   4. Real-time status updates flow from Trigger.dev to the frontend showing which extraction step is running
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [ ] 03-01-PLAN.md — Types, DB migration, Google Search wrapper, blocklist/dedup utilities, Gemini scoring, fixtures and tests (Wave 1)
+- [ ] 03-02-PLAN.md — Discovery sub-tasks, extraction stubs, full orchestrator with waitpoint confirmation, confirmation API route, tests (Wave 2)
 
 **UI hint**: yes
 
@@ -195,7 +195,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4/5/6 (parallelizable) -> 7 -> 8
 |-------|----------------|--------|-----------|
 | 1. Foundation & Project Setup | 0/3 | Planning complete | - |
 | 2. Input & AI Understanding | 0/2 | Planning complete | - |
-| 3. Competitor Discovery & Orchestration | 0/2 | Not started | - |
+| 3. Competitor Discovery & Orchestration | 0/2 | Planning complete | - |
 | 4. Website, SEO & Social Extraction | 0/2 | Not started | - |
 | 5. Ads Intelligence | 0/2 | Not started | - |
 | 6. Viral Content & Transcription | 0/2 | Not started | - |
