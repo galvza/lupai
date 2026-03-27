@@ -35,12 +35,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. All external service clients (Apify, Gemini, AssemblyAI, Bunny, Trigger.dev) are configured and importable with type-safe wrappers
   4. TypeScript types for all domain entities exist and are used across the codebase (no `any` for domain data)
   5. Mock/fixture data exists for every external service so development can proceed without burning API credits
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md — Scaffold Next.js project, install deps, define TypeScript types, env config (Wave 1)
+- [ ] 01-02-PLAN.md — Supabase migration, client, queries, and all service client wrappers (Wave 2)
+- [ ] 01-03-PLAN.md — Fixture/mock infrastructure and initial tests (Wave 2)
 
 ### Phase 2: Input & AI Understanding
 **Goal**: Users can describe their niche in plain text and see the AI's interpretation before starting analysis
@@ -193,7 +193,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4/5/6 (parallelizable) -> 7 -> 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Project Setup | 0/3 | Not started | - |
+| 1. Foundation & Project Setup | 0/3 | Planning complete | - |
 | 2. Input & AI Understanding | 0/2 | Not started | - |
 | 3. Competitor Discovery & Orchestration | 0/2 | Not started | - |
 | 4. Website, SEO & Social Extraction | 0/2 | Not started | - |
