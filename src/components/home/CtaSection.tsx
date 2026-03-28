@@ -34,15 +34,15 @@ export const CtaSection = () => {
         <div
           className="md:w-[60%] p-10 md:p-12 lg:p-16 flex flex-col justify-center"
           style={{
-            background: "linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 100%)",
+            background: "linear-gradient(135deg, #C8C4BC 0%, #A8A49C 100%)",
           }}
         >
-          <h2 className="font-serif text-3xl md:text-4xl text-white leading-tight">
+          <h2 className="font-serif text-3xl md:text-4xl text-[#1A1A1A] leading-tight">
             De horas de pesquisa manual pra{" "}
-            <em className="italic text-accent">minutos</em> de inteligência
+            <em className="italic text-[#1A1A1A]">minutos</em> de inteligência
             real.
           </h2>
-          <p className="text-[14px] text-white/80 mt-4">
+          <p className="text-[14px] text-[#1A1A1A]/70 mt-4">
             Sem login. Sem cartão. Sem setup. Descreve e vai.
           </p>
           <div className="mt-8">
@@ -52,7 +52,7 @@ export const CtaSection = () => {
                   .getElementById("hero-input")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
-              className="bg-accent text-dark-bg text-lg font-semibold px-8 py-4 rounded-lg hover:brightness-110 transition-all shadow-[0_0_20px_rgba(200,255,60,0.3)]"
+              className="bg-accent text-[#1A1A1A] text-lg font-semibold px-8 py-4 rounded-lg hover:brightness-110 transition-all"
             >
               Analisar meu mercado agora
             </button>
