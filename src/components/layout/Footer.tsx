@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { LupaiLogo } from "@/components/ui/LupaiLogo";
 
 /** Rodapé global */
 export const Footer = () => {
@@ -6,7 +6,7 @@ export const Footer = () => {
     <footer className="bg-[#0A0A0A] px-6 py-6">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Search color="#C8FF3C" size={14} strokeWidth={1.5} />
+          <LupaiLogo size={18} variant="green" />
           <span className="text-xs font-medium text-[#555]">LupAI</span>
         </div>
         <p className="text-[11px] text-[#444]">

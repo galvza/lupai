@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
+import { LupaiLogo } from "@/components/ui/LupaiLogo";
 
 const NAV_ITEMS = [
   { label: "Home", href: "#hero" },
@@ -85,10 +85,7 @@ export const Nav = () => {
       {/* Mobile — fixed top bar */}
       <nav className="md:hidden fixed top-0 left-0 w-full bg-[#0F0F0F] py-3 px-4 z-50 border-b border-[#222] flex items-center justify-between">
         <a href="#hero" className="flex items-center gap-2">
-          <Search color="#C8FF3C" size={18} strokeWidth={1.5} />
-          <span className="text-xs font-semibold tracking-wider text-white">
-            LUPAI
-          </span>
+          <LupaiLogo size={24} variant="green" withText textSize="text-xs" />
         </a>
         <button
           onClick={scrollToInput}
