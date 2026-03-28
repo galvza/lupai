@@ -24,6 +24,8 @@ export const APIFY_ACTORS = {
   googleMaps: 'compass/google-maps-scraper',
   googleAds: 'memo23/google-ad-transparency-scraper-cheerio',
   website: 'apify/website-content-crawler',
+  viralTiktok: 'clockworks/tiktok-hashtag-scraper',
+  viralInstagram: 'apify/instagram-hashtag-scraper',
 } as const;
 
 export type ApifyConfig = z.infer<typeof apifyConfigSchema>;

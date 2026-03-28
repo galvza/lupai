@@ -27,6 +27,7 @@ const MOCK_ANALYSIS = {
   status: 'waiting_confirmation' as const,
   userBusinessUrl: null,
   triggerRunId: 'run-abc',
+  viralPatterns: null,
   createdAt: '2026-01-01T00:00:00Z',
   updatedAt: '2026-01-01T00:00:00Z',
 };

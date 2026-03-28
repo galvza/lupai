@@ -2,7 +2,7 @@ import { createServerClient } from './client';
 
 import type { Analysis, AnalysisStatus, NicheInterpreted } from '@/types/analysis';
 import type { Competitor } from '@/types/competitor';
-import type { ViralContent, ContentPlatform, EngagementMetrics } from '@/types/viral';
+import type { ViralContent, ContentPlatform, EngagementMetrics, HookBodyCta, ViralPatterns } from '@/types/viral';
 import type { Synthesis, Recommendation, CreativeScript, ComparativeAnalysis } from '@/types/database';
 
 // --- Analysis queries ---
@@ -153,6 +153,11 @@ export const createViralContent = async (input: {
   platform: ContentPlatform;
   sourceUrl: string;
   engagementMetrics: EngagementMetrics;
+  bunnyUrl?: string | null;
+  caption?: string | null;
+  creatorHandle?: string | null;
+  durationSeconds?: number | null;
+  postDate?: string | null;
 }): Promise<ViralContent> => {
   const supabase = createServerClient();
   const { data, error } = await supabase
@@ -162,6 +167,11 @@ export const createViralContent = async (input: {
       platform: input.platform,
       source_url: input.sourceUrl,
       engagement_metrics: input.engagementMetrics,
+      bunny_url: input.bunnyUrl ?? null,
+      caption: input.caption ?? null,
+      creator_handle: input.creatorHandle ?? null,
+      duration_seconds: input.durationSeconds ?? null,
+      post_date: input.postDate ?? null,
     })
     .select()
     .single();
@@ -186,6 +196,40 @@ export const getViralContentByAnalysis = async (analysisId: string): Promise<Vir
   }
 
   return (data ?? []).map(mapViralContentRow);
+};
+
+/** Atualiza campos de um registro de conteudo viral */
+export const updateViralContent = async (
+  id: string,
+  updates: {
+    bunnyUrl?: string;
+    transcription?: string;
+    hookBodyCta?: HookBodyCta;
+  }
+): Promise<void> => {
+  const supabase = createServerClient();
+  const { error } = await supabase
+    .from('viral_content')
+    .update({
+      ...(updates.bunnyUrl !== undefined && { bunny_url: updates.bunnyUrl }),
+      ...(updates.transcription !== undefined && { transcription: updates.transcription }),
+      ...(updates.hookBodyCta !== undefined && { hook_body_cta: updates.hookBodyCta }),
+    })
+    .eq('id', id);
+  if (error) throw new Error(`Erro ao atualizar conteudo viral ${id}: ${error.message}`);
+};
+
+/** Salva padroes virais cross-video na analise */
+export const updateAnalysisViralPatterns = async (
+  analysisId: string,
+  viralPatterns: ViralPatterns
+): Promise<void> => {
+  const supabase = createServerClient();
+  const { error } = await supabase
+    .from('analyses')
+    .update({ viral_patterns: viralPatterns })
+    .eq('id', analysisId);
+  if (error) throw new Error(`Erro ao salvar padroes virais para analise ${analysisId}: ${error.message}`);
 };
 
 // --- Synthesis queries ---
@@ -244,6 +288,7 @@ const mapAnalysisRow = (row: Record<string, unknown>): Analysis => ({
   status: row.status as AnalysisStatus,
   userBusinessUrl: row.user_business_url as string | null,
   triggerRunId: row.trigger_run_id as string | null,
+  viralPatterns: (row.viral_patterns as ViralPatterns | null) ?? null,
   createdAt: row.created_at as string,
   updatedAt: row.updated_at as string,
 });
@@ -271,6 +316,10 @@ const mapViralContentRow = (row: Record<string, unknown>): ViralContent => ({
   transcription: row.transcription as string | null,
   hookBodyCta: row.hook_body_cta as ViralContent['hookBodyCta'],
   engagementMetrics: row.engagement_metrics as ViralContent['engagementMetrics'],
+  caption: row.caption as string | null,
+  creatorHandle: row.creator_handle as string | null,
+  durationSeconds: row.duration_seconds as number | null,
+  postDate: row.post_date as string | null,
   createdAt: row.created_at as string,
 });
 

@@ -1,6 +1,6 @@
 import type { AnalysisMode, AnalysisStatus, NicheInterpreted } from './analysis';
 import type { WebsiteData, SeoData, SocialData, MetaAdsData, GoogleAdsData, GmbData } from './competitor';
-import type { ContentPlatform, EngagementMetrics, HookBodyCta } from './viral';
+import type { ContentPlatform, EngagementMetrics, HookBodyCta, ViralPatterns } from './viral';
 
 /** Recomendacao estrategica gerada pela IA */
 export interface Recommendation {
@@ -56,6 +56,7 @@ export interface Database {
           status: AnalysisStatus;
           user_business_url: string | null;
           trigger_run_id: string | null;
+          viral_patterns: ViralPatterns | null;
           created_at: string;
           updated_at: string;
         };
@@ -67,6 +68,7 @@ export interface Database {
           status?: AnalysisStatus;
           user_business_url?: string | null;
           trigger_run_id?: string | null;
+          viral_patterns?: ViralPatterns | null;
         };
         Update: {
           niche_interpreted?: NicheInterpreted | null;
@@ -74,6 +76,7 @@ export interface Database {
           status?: AnalysisStatus;
           user_business_url?: string | null;
           trigger_run_id?: string | null;
+          viral_patterns?: ViralPatterns | null;
         };
         Relationships: [
           {
@@ -141,6 +144,10 @@ export interface Database {
           transcription: string | null;
           hook_body_cta: HookBodyCta | null;
           engagement_metrics: EngagementMetrics;
+          caption: string | null;
+          creator_handle: string | null;
+          duration_seconds: number | null;
+          post_date: string | null;
           created_at: string;
         };
         Insert: {
@@ -152,6 +159,10 @@ export interface Database {
           transcription?: string | null;
           hook_body_cta?: HookBodyCta | null;
           engagement_metrics: EngagementMetrics;
+          caption?: string | null;
+          creator_handle?: string | null;
+          duration_seconds?: number | null;
+          post_date?: string | null;
         };
         Update: {
           platform?: ContentPlatform;
@@ -160,6 +171,10 @@ export interface Database {
           transcription?: string | null;
           hook_body_cta?: HookBodyCta | null;
           engagement_metrics?: EngagementMetrics;
+          caption?: string | null;
+          creator_handle?: string | null;
+          duration_seconds?: number | null;
+          post_date?: string | null;
         };
         Relationships: [
           {
@@ -223,4 +238,4 @@ export type Tables<T extends keyof Database['public']['Tables']> = Database['pub
 /** Re-export domain types for convenience */
 export type { Analysis, AnalysisMode, AnalysisStatus, NicheInterpreted } from './analysis';
 export type { Competitor, WebsiteData, SeoData, SocialData, MetaAdsData, GoogleAdsData, GmbData } from './competitor';
-export type { ViralContent, ContentPlatform, EngagementMetrics, HookBodyCta } from './viral';
+export type { ViralContent, ContentPlatform, EngagementMetrics, HookBodyCta, ViralPatterns } from './viral';

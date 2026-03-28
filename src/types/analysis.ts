@@ -1,3 +1,5 @@
+import type { ViralPatterns } from './viral';
+
 /** Modos de analise disponiveis */
 export type AnalysisMode = 'quick' | 'complete';
 
@@ -27,6 +29,7 @@ export interface Analysis {
   status: AnalysisStatus;
   userBusinessUrl: string | null;
   triggerRunId: string | null;
+  viralPatterns: ViralPatterns | null;
   createdAt: string;
   updatedAt: string;
 }

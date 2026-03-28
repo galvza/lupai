@@ -17,6 +17,7 @@ export const createAnalysis = (overrides?: Partial<Analysis>): Analysis => ({
   status: 'completed',
   userBusinessUrl: null,
   triggerRunId: null,
+  viralPatterns: null,
   createdAt: '2026-03-27T12:00:00Z',
   updatedAt: '2026-03-27T12:05:00Z',
   ...overrides,
@@ -54,6 +55,10 @@ export const createViralContent = (overrides?: Partial<ViralContent>): ViralCont
     shares: 45,
     saves: 120,
   },
+  caption: null,
+  creatorHandle: null,
+  durationSeconds: null,
+  postDate: null,
   createdAt: '2026-03-27T12:02:00Z',
   ...overrides,
 });

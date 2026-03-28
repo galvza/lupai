@@ -29,6 +29,10 @@ export interface ViralContent {
   transcription: string | null;
   hookBodyCta: HookBodyCta | null;
   engagementMetrics: EngagementMetrics;
+  caption: string | null;
+  creatorHandle: string | null;
+  durationSeconds: number | null;
+  postDate: string | null;
   createdAt: string;
 }
 
@@ -38,4 +42,61 @@ export interface ViralContentInput {
   platform: ContentPlatform;
   sourceUrl: string;
   engagementMetrics: EngagementMetrics;
+  bunnyUrl?: string | null;
+  caption?: string | null;
+  creatorHandle?: string | null;
+  durationSeconds?: number | null;
+  postDate?: string | null;
+}
+
+/** Candidato a video viral pre-download (output dos Apify actors filtrado) */
+export interface ViralVideoCandidate {
+  videoUrl: string;
+  caption: string;
+  creatorHandle: string;
+  platform: ContentPlatform;
+  postDate: string;
+  durationSeconds: number;
+  engagement: EngagementMetrics;
+}
+
+/** Padrao de hook identificado em multiplos videos */
+export interface HookPattern {
+  pattern: string;
+  frequency: number;
+  examples: string[];
+}
+
+/** Estrutura de corpo identificada em multiplos videos */
+export interface BodyStructure {
+  structure: string;
+  frequency: number;
+}
+
+/** Padrao de CTA identificado em multiplos videos */
+export interface CtaPattern {
+  pattern: string;
+  frequency: number;
+  examples: string[];
+}
+
+/** Formula recorrente em multiplos videos */
+export interface RecurringFormula {
+  formula: string;
+  videoCount: number;
+}
+
+/** Resultado da analise de padroes cross-video (per D-30 to D-34) */
+export interface ViralPatterns {
+  hookPatterns: HookPattern[];
+  bodyStructures: BodyStructure[];
+  ctaPatterns: CtaPattern[];
+  dominantTone: string;
+  bestPerformingDuration: {
+    averageSeconds: number;
+    range: string;
+  };
+  recurringFormulas: RecurringFormula[];
+  totalVideosAnalyzed: number;
+  analysisConfidence: 'high' | 'medium' | 'low';
 }

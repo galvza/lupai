@@ -142,3 +142,75 @@ export const gmbDataSchema = z
   .refine((data) => data.name !== null, {
     message: 'Dados de GMB invalidos: name deve estar presente',
   });
+
+// --- Schemas de Viral Content (Phase 6) ---
+
+/** Schema para metricas de engajamento */
+export const engagementMetricsSchema = z.object({
+  views: z.number().nullable(),
+  likes: z.number(),
+  comments: z.number(),
+  shares: z.number().nullable(),
+  saves: z.number().nullable(),
+});
+
+/** Schema para candidato a video viral (pre-download, per D-12, D-13) */
+export const viralVideoCandidateSchema = z.object({
+  videoUrl: z.string().min(1),
+  caption: z.string(),
+  creatorHandle: z.string(),
+  platform: z.enum(['tiktok', 'instagram', 'facebook']),
+  postDate: z.string(),
+  durationSeconds: z.number().min(0).max(240),
+  engagement: engagementMetricsSchema,
+});
+
+/** Schema para estrutura Hook/Body/CTA (per D-26, D-27) */
+export const hookBodyCtaSchema = z.object({
+  hook: z.string().min(1),
+  body: z.string().min(1),
+  cta: z.string().min(1),
+  hookDurationSeconds: z.number().nullable(),
+  totalDurationSeconds: z.number().nullable(),
+});
+
+/** Schema para padrao de hook */
+const hookPatternSchema = z.object({
+  pattern: z.string().min(1),
+  frequency: z.number().min(0),
+  examples: z.array(z.string()),
+});
+
+/** Schema para estrutura de corpo */
+const bodyStructureSchema = z.object({
+  structure: z.string().min(1),
+  frequency: z.number().min(0),
+});
+
+/** Schema para padrao de CTA */
+const ctaPatternSchema = z.object({
+  pattern: z.string().min(1),
+  frequency: z.number().min(0),
+  examples: z.array(z.string()),
+});
+
+/** Schema para formula recorrente */
+const recurringFormulaSchema = z.object({
+  formula: z.string().min(1),
+  videoCount: z.number().min(0),
+});
+
+/** Schema para padroes cross-video (per D-30 to D-34) */
+export const viralPatternsSchema = z.object({
+  hookPatterns: z.array(hookPatternSchema),
+  bodyStructures: z.array(bodyStructureSchema),
+  ctaPatterns: z.array(ctaPatternSchema),
+  dominantTone: z.string().min(1),
+  bestPerformingDuration: z.object({
+    averageSeconds: z.number().min(0),
+    range: z.string().min(1),
+  }),
+  recurringFormulas: z.array(recurringFormulaSchema),
+  totalVideosAnalyzed: z.number().min(0),
+  analysisConfidence: z.enum(['high', 'medium', 'low']),
+});
