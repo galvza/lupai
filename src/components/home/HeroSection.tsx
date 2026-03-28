@@ -18,7 +18,7 @@ export const HeroSection = () => {
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           className="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white text-center leading-tight max-w-4xl mb-6"
         >
           Veja tudo que seus concorrentes fazem online.{" "}
@@ -29,7 +29,7 @@ export const HeroSection = () => {
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+          transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
           className="text-sm md:text-base lg:text-lg text-[#888] text-center max-w-xl mb-10 md:mb-12 leading-relaxed"
         >
           Descreva seu nicho e receba análise competitiva, conteúdos virais e
@@ -39,7 +39,7 @@ export const HeroSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35, ease: "easeOut" }}
+          transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
           className="w-full max-w-2xl mx-auto"
         >
           <HeroInput />
