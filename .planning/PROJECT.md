@@ -127,4 +127,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-28 after Phase 5 completion*
+*Last updated: 2026-03-28 after Phase 9 completion — Dashboard backend API layer (results aggregation route, status fallback, section status derivation)*
