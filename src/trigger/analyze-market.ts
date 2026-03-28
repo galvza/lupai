@@ -235,7 +235,13 @@ export const analyzeMarket = task({
         })),
         ...savedCompetitors.map((comp) => ({
           task: extractAds,
-          payload: { analysisId: payload.analysisId, competitorId: comp.id, competitorName: comp.name, websiteUrl: comp.websiteUrl ?? '' },
+          payload: {
+            analysisId: payload.analysisId,
+            competitorId: comp.id,
+            competitorName: comp.name,
+            websiteUrl: comp.websiteUrl ?? '',
+            region: payload.region,
+          },
         })),
       ];
 

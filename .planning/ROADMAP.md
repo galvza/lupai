@@ -100,11 +100,11 @@ Plans:
   1. Active Meta ads per competitor are extracted (creatives, copy, format, time running) and stored
   2. Google Ads presence per competitor is detected (search ads, paid keywords) and stored
   3. Google My Business data is extracted when applicable, and the system gracefully handles businesses without GMB presence
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [x] 05-01-PLAN.md — Enhance Apify wrappers (Meta Ads pageUrl, Google Ads domain), add Zod schemas, update actor ID (Wave 1)
+- [x] 05-02-PLAN.md — Full extract-ads compound task, orchestrator region wiring, comprehensive tests (Wave 2)
 
 ### Phase 6: Viral Content & Transcription
 **Goal**: Viral niche content is discovered, downloaded, transcribed, and structurally analyzed
@@ -198,7 +198,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4/5/6 (parallelizable) -> 7 -> 8
 | 2. Input & AI Understanding | 0/2 | Planning complete | - |
 | 3. Competitor Discovery & Orchestration | 0/2 | Planning complete | - |
 | 4. Website, SEO & Social Extraction | 0/3 | Planning complete | - |
-| 5. Ads Intelligence | 0/2 | Not started | - |
+| 5. Ads Intelligence | 0/2 | Planning complete | - |
 | 6. Viral Content & Transcription | 0/2 | Not started | - |
 | 7. AI Synthesis & Creative Modeling | 0/2 | Not started | - |
 | 8. Modo Completo | 0/1 | Not started | - |
