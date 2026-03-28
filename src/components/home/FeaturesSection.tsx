@@ -33,7 +33,7 @@ const FEATURES = [
 /** Seção de features — grid 2x2 */
 export const FeaturesSection = () => {
   return (
-    <section className="bg-light-bg py-20 lg:py-24 px-8 lg:px-16 border-t border-[#E8E8E4]">
+    <section className="bg-light-bg py-20 lg:py-24 px-8 lg:px-16">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0 }}

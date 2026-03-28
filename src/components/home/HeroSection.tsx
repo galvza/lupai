@@ -8,7 +8,7 @@ import { HeroInput } from "./HeroInput";
 /** Seção hero com headline, input e banner */
 export const HeroSection = () => {
   return (
-    <section id="hero" className="bg-dark-bg border-b border-[#1A1A1A]">
+    <section id="hero" className="bg-dark-bg">
       <Nav />
 
       <div className="flex flex-col items-center px-8 lg:px-16 pt-16 md:pt-20 pb-16 md:pb-20">

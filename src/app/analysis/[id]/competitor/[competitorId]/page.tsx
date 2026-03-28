@@ -6,6 +6,7 @@ import { SocialSection } from "@/components/dashboard/SocialSection";
 import { AdsSection } from "@/components/dashboard/AdsSection";
 import { LessonsSection } from "@/components/dashboard/LessonsSection";
 import { Footer } from "@/components/layout/Footer";
+import { DarkToLightDivider, LightToDarkDivider } from "@/components/ui/SectionDivider";
 import { MOCK_ANALYSIS_RESULT } from "@/utils/mock-analysis";
 
 /** Página deep dive de um concorrente */
@@ -29,9 +30,13 @@ export default function CompetitorDeepDivePage({
   return (
     <main>
       <CompetitorHeader competitor={competitor} analysisId={params.id} />
+      <DarkToLightDivider />
       <SiteSeoSection competitor={competitor} />
+      <LightToDarkDivider />
       <SocialSection competitor={competitor} />
+      <DarkToLightDivider />
       <AdsSection competitor={competitor} />
+      <LightToDarkDivider />
       <LessonsSection competitor={competitor} />
       <Footer />
     </main>

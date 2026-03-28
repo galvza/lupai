@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 /** Seção CTA final */
 export const CtaSection = () => {
   return (
-    <section id="cta" className="bg-dark-bg py-20 lg:py-24 px-8 lg:px-16 border-b border-[#1A1A1A]">
+    <section id="cta" className="bg-dark-bg py-20 lg:py-24 px-8 lg:px-16">
       <div className="max-w-4xl mx-auto text-center">
         <motion.h2
           initial={{ opacity: 0, y: 16 }}
