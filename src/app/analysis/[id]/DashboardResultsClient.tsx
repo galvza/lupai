@@ -16,6 +16,7 @@ import type { AnalysisResult } from "@/types/analysis";
 export const DashboardResultsClient = ({ id }: { id: string }) => {
   const [data, setData] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Phase 9: setError will be used by real API call
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
