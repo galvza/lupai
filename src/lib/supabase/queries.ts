@@ -1,6 +1,6 @@
 import { createServerClient } from './client';
 
-import type { Analysis, AnalysisStatus, NicheInterpreted } from '@/types/analysis';
+import type { Analysis, AnalysisMode, AnalysisStatus, AnalysisSummary, NicheInterpreted } from '@/types/analysis';
 import type { Competitor } from '@/types/competitor';
 import type { ViralContent, ContentPlatform, EngagementMetrics, HookBodyCta, ViralPatterns } from '@/types/viral';
 import type { Synthesis, Recommendation, CreativeScript, ComparativeAnalysis } from '@/types/database';
@@ -86,6 +86,66 @@ export const listAnalyses = async (limit = 20): Promise<Analysis[]> => {
   }
 
   return (data ?? []).map(mapAnalysisRow);
+};
+
+/** Busca analise em cache: mesma niche_interpreted + mode completada nas ultimas 24h (per D-01 to D-06) */
+export const findCachedAnalysis = async (params: {
+  niche: string;
+  segment: string;
+  region: string;
+  mode: 'quick' | 'complete';
+}): Promise<Analysis | null> => {
+  const supabase = createServerClient();
+  const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
+  const { data, error } = await supabase
+    .from('analyses')
+    .select()
+    .ilike('niche_interpreted->>niche', params.niche.toLowerCase())
+    .ilike('niche_interpreted->>segment', params.segment.toLowerCase())
+    .ilike('niche_interpreted->>region', params.region.toLowerCase())
+    .eq('status', 'completed')
+    .eq('mode', params.mode)
+    .gt('created_at', twentyFourHoursAgo)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return mapAnalysisRow(data);
+};
+
+/** Lista analises com paginacao cursor-based para historico (per D-07 to D-11) */
+export const listAnalysesPaginated = async (options: {
+  cursor?: string;
+  limit?: number;
+  status?: AnalysisStatus;
+}): Promise<{ analyses: AnalysisSummary[]; nextCursor: string | null }> => {
+  const supabase = createServerClient();
+  const limit = Math.min(options.limit ?? 20, 50);
+
+  let query = supabase
+    .from('analyses')
+    .select('id, niche_input, niche_interpreted, mode, status, created_at')
+    .order('created_at', { ascending: false })
+    .limit(limit + 1);
+
+  if (options.cursor) {
+    query = query.lt('created_at', options.cursor);
+  }
+  if (options.status) {
+    query = query.eq('status', options.status);
+  }
+
+  const { data, error } = await query;
+  if (error) throw new Error(`Erro ao listar analises: ${error.message}`);
+
+  const rows = (data ?? []).map(mapAnalysisSummaryRow);
+  const hasMore = rows.length > limit;
+  const analyses = hasMore ? rows.slice(0, limit) : rows;
+  const nextCursor = hasMore ? analyses[analyses.length - 1].createdAt : null;
+
+  return { analyses, nextCursor };
 };
 
 // --- Competitor queries ---
@@ -308,6 +368,15 @@ const mapAnalysisRow = (row: Record<string, unknown>): Analysis => ({
   viralPatterns: (row.viral_patterns as ViralPatterns | null) ?? null,
   createdAt: row.created_at as string,
   updatedAt: row.updated_at as string,
+});
+
+const mapAnalysisSummaryRow = (row: Record<string, unknown>): AnalysisSummary => ({
+  id: row.id as string,
+  nicheInput: row.niche_input as string,
+  nicheInterpreted: row.niche_interpreted as NicheInterpreted | null,
+  mode: row.mode as AnalysisMode,
+  status: row.status as AnalysisStatus,
+  createdAt: row.created_at as string,
 });
 
 const mapCompetitorRow = (row: Record<string, unknown>): Competitor => ({

@@ -58,12 +58,23 @@ export interface UnderstandResponse {
   error?: string;
 }
 
+/** Resumo leve de uma analise para listagem no historico (per D-09) */
+export interface AnalysisSummary {
+  id: string;
+  nicheInput: string;
+  nicheInterpreted: NicheInterpreted | null;
+  mode: AnalysisMode;
+  status: AnalysisStatus;
+  createdAt: string;
+}
+
 /** Resposta do endpoint POST /api/analyze */
 export interface StartAnalysisResponse {
   analysisId: string;
   runId: string;
   publicAccessToken: string;
   redirectUrl: string;
+  cached?: boolean;
 }
 
 /** Status de uma secao individual do dashboard (per D-07) */
