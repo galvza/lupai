@@ -340,18 +340,18 @@ describe('extractViral compound task', () => {
 
     await getRunFn()(MOCK_PAYLOAD);
 
-    const progressCalls = mockMetadata.set.mock.calls
-      .filter(([key]: [string]) => key === 'viralProgress');
+    const allCalls = mockMetadata.set.mock.calls as Array<[string, unknown]>;
+    const progressCalls = allCalls.filter(([key]) => key === 'viralProgress');
 
     // Should have multiple viralProgress updates across stages
     expect(progressCalls.length).toBeGreaterThanOrEqual(6);
 
     // Check stage transitions exist
-    const progressValues = progressCalls.map(([, val]: [string, unknown]) => val);
-    const hasDiscoverRunning = progressValues.some((p: Record<string, string>) => p.discover === 'running');
-    const hasDownloadRunning = progressValues.some((p: Record<string, string>) => p.download === 'running');
-    const hasTranscribeRunning = progressValues.some((p: Record<string, string>) => p.transcribe === 'running');
-    const hasHbcRunning = progressValues.some((p: Record<string, string>) => p.hbc === 'running');
+    const progressValues = progressCalls.map(([, val]) => val as Record<string, string>);
+    const hasDiscoverRunning = progressValues.some((p) => p.discover === 'running');
+    const hasDownloadRunning = progressValues.some((p) => p.download === 'running');
+    const hasTranscribeRunning = progressValues.some((p) => p.transcribe === 'running');
+    const hasHbcRunning = progressValues.some((p) => p.hbc === 'running');
 
     expect(hasDiscoverRunning).toBe(true);
     expect(hasDownloadRunning).toBe(true);
