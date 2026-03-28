@@ -31,14 +31,18 @@ Entregar em minutos o que hoje leva horas: uma análise completa do mercado/nich
 - ✓ Social media extraction: 3-tier discovery (website > Google Search > AI hints), Instagram + TikTok parallel — Phase 4
 - ✓ 2-batch sequential orchestrator: website+viral first, then social+ads with enriched social links — Phase 4
 - ✓ Extraction resilience: retry config, fallback chains, never-fail pattern, status objects — Phase 4
+- ✓ Meta Ads Library extraction: pageUrl-first search + keyword fallback, up to 20 ads per competitor — Phase 5
+- ✓ Google Ads detection: domain-based Ads Transparency + topic fallback, paid keywords extraction — Phase 5
+- ✓ Google My Business extraction: name+region search, graceful null for absent listings — Phase 5
+- ✓ Extract-ads compound task: 3-way parallel (Promise.allSettled), Zod validation, never-throw — Phase 5
 
 ### Active
 - [ ] Análise do site (posicionamento, oferta, preços, meta tags)
 - [ ] Análise de SEO (autoridade estimada, palavras-chave principais, tráfego estimado)
 - [ ] Descoberta e análise de redes sociais (posts recentes, frequência, engajamento)
-- [ ] Anúncios ativos na Biblioteca de Anúncios do Meta (criativos, copy, formato, tempo no ar)
-- [ ] Análise de anúncios no Google Ads (presença em search, palavras-chave pagas)
-- [ ] Análise de presença no Google Meu Negócio (quando aplicável)
+- [x] Anúncios ativos na Biblioteca de Anúncios do Meta (criativos, copy, formato, tempo no ar) — Phase 5 (backend extraction)
+- [x] Análise de anúncios no Google Ads (presença em search, palavras-chave pagas) — Phase 5 (backend extraction)
+- [x] Análise de presença no Google Meu Negócio (quando aplicável) — Phase 5 (backend extraction)
 - [ ] Inteligência de conteúdo viral: busca o que está viralizando no nicho (TikTok, Instagram, Facebook)
 - [ ] Transcrição e análise de vídeos virais: IA transcreve, identifica gancho, corpo e CTA
 - [ ] Modelagem automática de criativos: IA gera roteiros de vídeo com gancho, corpo e CTA
@@ -120,4 +124,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-28 after Phase 3 completion*
+*Last updated: 2026-03-28 after Phase 5 completion*
