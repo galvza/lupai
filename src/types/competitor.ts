@@ -8,6 +8,10 @@ export interface WebsiteData {
     description: string | null;
     keywords: string[];
   };
+  businessIdentifiers?: {
+    cnpj: string | null;
+    emailDomain: string | null;
+  };
 }
 
 /** Dados de SEO do concorrente */
@@ -43,6 +47,42 @@ export interface SocialPost {
   shares: number | null;
   postedAt: string | null;
 }
+
+/** Links de redes sociais extraidos de um site (per D-02, D-09) */
+export interface SocialLinks {
+  instagram: string | null;
+  tiktok: string | null;
+  facebook: string | null;
+  youtube: string | null;
+  linkedin: string | null;
+  twitter: string | null;
+}
+
+/** Input de perfil social com fonte de descoberta (per D-18) */
+export interface SocialProfileInput {
+  username: string;
+  source: 'website' | 'search_fallback' | 'ai_hint';
+}
+
+/** Resultado da extracao de website incluindo social links (per D-13) */
+export interface ExtractWebsiteResult {
+  competitorId: string;
+  websiteData: WebsiteData | null;
+  seoData: SeoData | null;
+  socialLinks: SocialLinks;
+  businessIdentifiers: { cnpj: string | null; emailDomain: string | null } | null;
+  warnings: string[];
+}
+
+/** Resultado da extracao de redes sociais */
+export interface ExtractSocialResult {
+  competitorId: string;
+  socialData: SocialData | null;
+  warnings: string[];
+}
+
+/** Sub-task status padronizado (per D-36) */
+export type ExtractionStatus = 'success' | 'partial' | 'fallback' | 'unavailable' | 'skipped';
 
 /** Dados de anuncios Meta do concorrente */
 export interface MetaAdsData {
