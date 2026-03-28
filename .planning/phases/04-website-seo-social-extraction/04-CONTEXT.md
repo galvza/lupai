@@ -59,11 +59,28 @@ Implement the full extraction logic for competitor website data, SEO metrics, an
 - **D-31:** Social data: platform-level validation — each platform (instagram, tiktok) validates independently; partial success is OK
 - **D-32:** On invalid/empty extraction: store null for that data category, update metadata with warning, do NOT fail the task
 
-### Error Handling
-- **D-33:** If website scraping fails for a competitor, still attempt social extraction using Phase 3 AI hints and Google search fallback
-- **D-34:** If SimilarWeb fails, store null for seo_data and proceed (non-blocking)
-- **D-35:** Update Trigger.dev metadata per-competitor for granular progress: `metadata.set('subTasks', { [competitorName]: { website: 'completed', seo: 'completed', social: 'running' } })`
-- **D-36:** All error messages in PT-BR per established convention
+### Trigger.dev Retry Configuration (User-Specified)
+- **D-33:** Orchestrator (`analyze-market`): `retry: { maxAttempts: 1 }` — orchestrator must NOT retry (would restart everything); individual sub-tasks handle their own retries
+- **D-34:** Extraction sub-tasks (`extract-website`, `extract-social`): `retry: { maxAttempts: 3, minTimeoutInMs: 2000, maxTimeoutInMs: 10000, factor: 2 }` — try 3 times, 2s→4s→10s exponential backoff
+- **D-35:** On final failure, sub-tasks return `{ status: "unavailable", data: null, reason: error.message }` — NEVER throw unhandled errors
+- **D-36:** Sub-task return type is always `{ status: "success" | "partial" | "fallback" | "unavailable" | "skipped", data: T | null, reason?: string }`
+
+### Fallback Chains (User-Specified)
+- **D-37:** WEBSITE SCRAPING: Primary: Apify Website Content Crawler → Fallback 1: simple fetch + cheerio parse (basic HTML) → Fallback 2: mark "site_unavailable", continue with other sources
+- **D-38:** SOCIAL DISCOVERY: Primary: extract links from website HTML → Fallback 1: Google Search "[brand] instagram/tiktok" → Fallback 2: mark "not_found" for that competitor, continue
+- **D-39:** SEO/SIMILARWEB: Primary: SimilarWeb actor → Fallback 1: use basic data from website scrape (meta tags) → Fallback 2: mark "seo_limited" with partial data
+- **D-40:** INSTAGRAM: Primary: Apify Instagram Scraper → Fallback 1: if rate limited, wait 10s retry once → Fallback 2: return basic profile only (no posts), mark "partial" → Fallback 3: mark "unavailable", continue with other platforms
+- **D-41:** TIKTOK: Same pattern as Instagram (D-40)
+
+### Error Handling & Resilience (User-Specified)
+- **D-42:** THE GOLDEN RULE: An analysis with partial data is INFINITELY better than a failed analysis with no data. System ALWAYS produces a result.
+- **D-43:** Every extraction step reports status to DB: "success" | "partial" | "fallback" | "unavailable" | "skipped"
+- **D-44:** If website scraping fails for a competitor, still attempt social extraction using Phase 3 AI hints and Google search fallback
+- **D-45:** If SimilarWeb fails, store null for seo_data and proceed (non-blocking)
+- **D-46:** Circuit breaker: if Apify returns errors on 3+ consecutive actor calls, stop new Apify calls for 30 seconds, show "Servico de analise temporariamente lento. Tentando novamente...", resume after cooldown
+- **D-47:** Update Trigger.dev metadata per-competitor for granular progress: `metadata.set('subTasks', { [competitorName]: { website: 'completed', seo: 'completed', social: 'running' } })`
+- **D-48:** All error messages in PT-BR per established convention
+- **D-49:** Orchestrator uses batch.triggerByTaskAndWait and handles results where some may be "unavailable" — passes whatever data it has to downstream tasks
 
 ### Claude's Discretion
 - Social link regex patterns and parsing implementation details
@@ -72,6 +89,8 @@ Implement the full extraction logic for competitor website data, SEO metrics, an
 - SimilarWeb data mapping nuances (global rank → estimated authority)
 - Zod schema strictness levels for validation
 - How to parse Google Search results for social profile URLs
+- Exact cheerio fallback implementation for website scraping
+- Circuit breaker implementation details (in-memory counter vs shared state)
 
 </decisions>
 
