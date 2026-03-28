@@ -1,4 +1,7 @@
+"use client";
+
 import { CheckSquare, User } from "lucide-react";
+import { motion } from "framer-motion";
 
 const AUDIENCES = [
   {
@@ -18,15 +21,26 @@ export const PraQuemSection = () => {
   return (
     <section id="pra-quem" className="bg-light-bg py-20 px-6">
       <div className="max-w-4xl mx-auto">
-        <h2 className="font-serif text-[24px] sm:text-[28px] text-[#1A1A1A] text-center mb-12">
+        <motion.h2
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="font-serif text-[24px] sm:text-[28px] text-[#1A1A1A] text-center mb-12"
+        >
           Se você faz marketing, isso é{" "}
           <em className="italic">pra você</em>.
-        </h2>
+        </motion.h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {AUDIENCES.map(({ icon: Icon, title, body }) => (
-            <div
+          {AUDIENCES.map(({ icon: Icon, title, body }, i) => (
+            <motion.div
               key={title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.4, delay: i * 0.15 }}
+              whileHover={{ y: -3, transition: { duration: 0.2 } }}
               className="bg-light-card border border-light-border rounded-xl p-6"
             >
               <div className="flex items-center gap-3 mb-4">
@@ -38,7 +52,7 @@ export const PraQuemSection = () => {
               <p className="text-[13px] text-[#666] leading-relaxed">
                 {body}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

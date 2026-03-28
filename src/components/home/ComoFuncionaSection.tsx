@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 const STEPS = [
   {
     number: "1",
@@ -24,17 +28,36 @@ export const ComoFuncionaSection = () => {
   return (
     <section id="como-funciona" className="bg-light-bg py-20 px-6">
       <div className="max-w-4xl mx-auto text-center">
-        <h2 className="font-serif text-[24px] sm:text-[28px] text-[#1A1A1A] mb-2">
+        <motion.h2
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="font-serif text-[24px] sm:text-[28px] text-[#1A1A1A] mb-2"
+        >
           Quantas horas você ainda perde pesquisando{" "}
           <em className="italic">concorrente</em>?
-        </h2>
-        <p className="text-[13px] text-[#999] mb-14">
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="text-[13px] text-[#999] mb-14"
+        >
           Três passos. Cinco minutos. Nenhum trabalho manual.
-        </p>
+        </motion.p>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
-          {STEPS.map((step) => (
-            <div key={step.number} className="flex flex-col items-center">
+          {STEPS.map((step, i) => (
+            <motion.div
+              key={step.number}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.4, delay: i * 0.15 }}
+              className="flex flex-col items-center"
+            >
               <div className="w-12 h-12 rounded-full border-2 border-accent flex items-center justify-center mb-4">
                 <span className="text-accent font-semibold text-lg">
                   {step.number}
@@ -46,7 +69,7 @@ export const ComoFuncionaSection = () => {
               <p className="text-[12px] text-[#999] leading-relaxed max-w-[260px]">
                 {step.description}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

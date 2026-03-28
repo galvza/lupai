@@ -1,4 +1,7 @@
+"use client";
+
 import { Search, Play, TrendingUp, Target } from "lucide-react";
+import { motion } from "framer-motion";
 
 const FEATURES = [
   {
@@ -32,13 +35,26 @@ export const FeaturesSection = () => {
   return (
     <section className="bg-light-bg py-16 px-6">
       <div className="max-w-4xl mx-auto">
-        <p className="text-[11px] text-[#999] uppercase tracking-widest text-center mb-12">
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+          className="text-[11px] text-[#999] uppercase tracking-widest text-center mb-12"
+        >
           O QUE O LUPAI ENTREGA
-        </p>
+        </motion.p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-          {FEATURES.map(({ icon: Icon, title, description }) => (
-            <div key={title} className="flex gap-4">
+          {FEATURES.map(({ icon: Icon, title, description }, i) => (
+            <motion.div
+              key={title}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.4, delay: i * 0.1 }}
+              className="flex gap-4"
+            >
               <div className="shrink-0 mt-1">
                 <Icon color="#C8FF3C" size={22} strokeWidth={1.5} />
               </div>
@@ -50,7 +66,7 @@ export const FeaturesSection = () => {
                   {description}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
