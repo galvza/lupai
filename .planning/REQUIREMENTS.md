@@ -72,16 +72,16 @@
 
 ### Creative Modeling
 
-- [ ] **CRTV-01**: AI generates 3-5 video script suggestions (roteiros) with explicit hook, body, and CTA
-- [ ] **CRTV-02**: Scripts are adapted to the user's product/niche based on patterns found in viral content
-- [ ] **CRTV-03**: Each script includes format recommendation (Reels, TikTok, etc.) and estimated duration
+- [x] **CRTV-01**: AI generates 3-5 video script suggestions (roteiros) with explicit hook, body, and CTA
+- [x] **CRTV-02**: Scripts are adapted to the user's product/niche based on patterns found in viral content
+- [x] **CRTV-03**: Each script includes format recommendation (Reels, TikTok, etc.) and estimated duration
 - [ ] **CRTV-04**: Results display creative scripts in structured, copy-friendly format
 
 ### AI Synthesis & Recommendations
 
-- [ ] **SYNTH-01**: AI consolidates all collected data into a strategic overview
-- [ ] **SYNTH-02**: Recommendations are specific and actionable (not generic — e.g., "seus concorrentes ranqueiam pra 'whey protein isolado' e você não tem conteúdo sobre isso")
-- [ ] **SYNTH-03**: Results display recommendations in prioritized, actionable list
+- [x] **SYNTH-01**: AI consolidates all collected data into a strategic overview
+- [x] **SYNTH-02**: Recommendations are specific and actionable (not generic — e.g., "seus concorrentes ranqueiam pra 'whey protein isolado' e você não tem conteúdo sobre isso")
+- [x] **SYNTH-03**: Results display recommendations in prioritized, actionable list
 
 ### Modo Completo (Comparative Analysis)
 
@@ -189,13 +189,13 @@
 | TRNS-01 | Phase 6 | Complete |
 | TRNS-02 | Phase 6 | Complete |
 | TRNS-03 | Phase 6 | Complete |
-| CRTV-01 | Phase 7 | Pending |
-| CRTV-02 | Phase 7 | Pending |
-| CRTV-03 | Phase 7 | Pending |
+| CRTV-01 | Phase 7 | Complete |
+| CRTV-02 | Phase 7 | Complete |
+| CRTV-03 | Phase 7 | Complete |
 | CRTV-04 | Phase 7 | Pending |
-| SYNTH-01 | Phase 7 | Pending |
-| SYNTH-02 | Phase 7 | Pending |
-| SYNTH-03 | Phase 7 | Pending |
+| SYNTH-01 | Phase 7 | Complete |
+| SYNTH-02 | Phase 7 | Complete |
+| SYNTH-03 | Phase 7 | Complete |
 | MODO-01 | Phase 8 | Pending |
 | MODO-02 | Phase 8 | Pending |
 | MODO-03 | Phase 8 | Pending |

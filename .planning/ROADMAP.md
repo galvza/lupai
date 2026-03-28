@@ -135,7 +135,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Update types (Recommendation, CreativeScript per D-08/D-12), Zod schemas, upgrade synthesize.ts and creative.ts to structured output, prompts, fixtures, tests (Wave 1)
+- [x] 07-01-PLAN.md — Update types (Recommendation, CreativeScript per D-08/D-12), Zod schemas, upgrade synthesize.ts and creative.ts to structured output, prompts, fixtures, tests (Wave 1)
 - [ ] 07-02-PLAN.md — Trigger.dev synthesize compound task, orchestrator integration with synthesis step after extraction, tests (Wave 2)
 
 ### Phase 8: Modo Completo
