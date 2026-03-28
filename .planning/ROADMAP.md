@@ -147,10 +147,12 @@ Plans:
   2. The system runs the same extraction cascade on the user's business as it does on competitors
   3. A comparative analysis is generated showing the user's business vs competitors side-by-side
   4. Recommendations in Modo Completo are personalized and comparative (e.g., "seu concorrente X posta 5x por semana e voce posta 2x")
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 08-01: TBD
+- [ ] 08-01-PLAN.md — DB migration (role column), type updates (Competitor role, ComparativeAnalysis), query updates, factories, tests (Wave 1)
+- [ ] 08-02-PLAN.md — Orchestrator user extraction wiring for Modo Completo with graceful degradation (Wave 2)
+- [ ] 08-03-PLAN.md — Comparative synthesis: schema extension, prompt, synthesizeAnalysis update, task integration, tests (Wave 2)
 
 ### Phase 9: Dashboard & Results UI
 **Goal**: Users see all analysis results in a polished, organized, responsive interface with real-time progress feedback
@@ -202,6 +204,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4/5/6 (parallelizable) -> 7 -> 8
 | 5. Ads Intelligence | 0/2 | Planning complete | - |
 | 6. Viral Content & Transcription | 0/3 | Planning complete | - |
 | 7. AI Synthesis & Creative Modeling | 0/2 | Planning complete | - |
-| 8. Modo Completo | 0/1 | Not started | - |
+| 8. Modo Completo | 0/3 | Planning complete | - |
 | 9. Dashboard & Results UI | 0/3 | Not started | - |
 | 10. History, Cache & PDF Export | 0/2 | Not started | - |
