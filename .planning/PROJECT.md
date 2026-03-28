@@ -22,11 +22,12 @@ Entregar em minutos o que hoje leva horas: uma análise completa do mercado/nich
 - ✓ AI understanding: Gemini interprets niche input with branching per classification — Phase 2
 - ✓ API routes: POST /api/analyze/understand + POST /api/analyze (thin dispatchers < 10s) — Phase 2
 - ✓ Trigger.dev analyze-market task stub ready for Phase 3 orchestration — Phase 2
+- ✓ Competitor discovery: 4 parallel Apify sources + Gemini AI scoring (70+ threshold, top 3-4) — Phase 3
+- ✓ Trigger.dev orchestrator: full 11-step pipeline with batch fan-out and independent sub-tasks — Phase 3
+- ✓ Waitpoint confirmation: user confirms competitors before extraction via API route — Phase 3
+- ✓ Extraction stub fan-out: 4 extraction stubs wired for Phases 4/5/6 — Phase 3
 
 ### Active
-
-- [ ] Descoberta de concorrentes: sistema encontra 3-4 concorrentes relevantes do nicho
-- [ ] Descoberta de concorrentes: sistema encontra 3-4 concorrentes relevantes do nicho
 - [ ] Análise do site (posicionamento, oferta, preços, meta tags)
 - [ ] Análise de SEO (autoridade estimada, palavras-chave principais, tráfego estimado)
 - [ ] Descoberta e análise de redes sociais (posts recentes, frequência, engajamento)
@@ -114,4 +115,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-27 after Phase 2 completion*
+*Last updated: 2026-03-28 after Phase 3 completion*
