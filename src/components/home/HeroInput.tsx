@@ -163,11 +163,6 @@ export const HeroInput = () => {
           />
         </div>
       )}
-
-      {/* Trust line */}
-      <p className="text-center text-[12px] text-[#555] mt-6">
-        Sem login · Sem cartão · Resultado em minutos
-      </p>
     </div>
   );
 };

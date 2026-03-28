@@ -25,17 +25,6 @@ export const HeroSection = () => {
           <em className="italic text-accent">Domine</em> seu nicho.
         </motion.h1>
 
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-          className="text-sm md:text-base lg:text-lg text-[#888] text-center max-w-xl mb-10 md:mb-12 leading-relaxed"
-        >
-          Descreva seu nicho e receba análise competitiva, conteúdos virais e
-          recomendações estratégicas — em minutos.
-        </motion.p>
-
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
