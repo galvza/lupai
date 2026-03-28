@@ -29,17 +29,17 @@
 
 ### Website Analysis
 
-- [ ] **SITE-01**: System extracts competitor website data (positioning, offer, pricing when visible, meta tags)
+- [x] **SITE-01**: System extracts competitor website data (positioning, offer, pricing when visible, meta tags)
 - [ ] **SITE-02**: Results display website analysis per competitor in organized cards
 
 ### SEO Analysis
 
-- [ ] **SEO-01**: System extracts SEO data per competitor (estimated authority, top keywords, estimated traffic)
+- [x] **SEO-01**: System extracts SEO data per competitor (estimated authority, top keywords, estimated traffic)
 - [ ] **SEO-02**: Results display SEO analysis per competitor with key metrics
 
 ### Social Media Analysis
 
-- [ ] **SOCL-01**: System discovers and analyzes competitor social media presence (Instagram, TikTok)
+- [x] **SOCL-01**: System discovers and analyzes competitor social media presence (Instagram, TikTok)
 - [ ] **SOCL-02**: System extracts posting frequency, follower counts, engagement rates, top recent posts
 - [ ] **SOCL-03**: Results display social media overview per competitor
 
@@ -170,11 +170,11 @@
 | COMP-01 | Phase 3 | Complete |
 | COMP-02 | Phase 3 | Pending |
 | COMP-03 | Phase 3 | Pending |
-| SITE-01 | Phase 4 | Pending |
+| SITE-01 | Phase 4 | Complete |
 | SITE-02 | Phase 4 | Pending |
-| SEO-01 | Phase 4 | Pending |
+| SEO-01 | Phase 4 | Complete |
 | SEO-02 | Phase 4 | Pending |
-| SOCL-01 | Phase 4 | Pending |
+| SOCL-01 | Phase 4 | Complete |
 | SOCL-02 | Phase 4 | Pending |
 | SOCL-03 | Phase 4 | Pending |
 | ADS-01 | Phase 5 | Pending |
