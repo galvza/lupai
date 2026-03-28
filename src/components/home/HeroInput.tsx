@@ -70,7 +70,7 @@ export const HeroInput = () => {
   return (
     <div id="hero-input" className="w-full">
       {/* Textarea */}
-      <div className={`relative bg-[#1A1A1A] border rounded-xl p-4 transition-colors ${
+      <div className={`relative bg-[#1A1A1A] border rounded-xl p-3 transition-colors ${
         isFocused && !query.trim() ? "border-pulse border-[#333]" : "border-[#333]"
       } focus-within:border-accent/40`}>
         <textarea
@@ -81,7 +81,7 @@ export const HeroInput = () => {
           onBlur={() => setIsFocused(false)}
           placeholder={visible ? placeholder : ""}
           rows={1}
-          className="w-full bg-transparent text-white text-base md:text-lg placeholder:text-[#555] resize-none outline-none leading-relaxed min-h-[48px] max-h-[120px] overflow-hidden pr-24"
+          className="w-full bg-transparent text-white text-base md:text-lg placeholder:text-[#555] resize-none outline-none leading-relaxed min-h-[44px] max-h-[120px] overflow-hidden pr-24"
           style={{
             transition: "opacity 0.3s ease",
           }}
@@ -89,7 +89,7 @@ export const HeroInput = () => {
         <button
           onClick={handleSubmit}
           disabled={isSubmitting || (!query.trim() && !url.trim())}
-          className={`absolute bottom-4 right-4 text-sm font-semibold px-5 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 ${
+          className={`absolute bottom-3 right-3 text-sm font-semibold px-5 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 ${
             isSubmitting || (!query.trim() && !url.trim())
               ? "bg-[#333] text-[#666] cursor-not-allowed"
               : "bg-accent text-dark-bg hover:brightness-110"

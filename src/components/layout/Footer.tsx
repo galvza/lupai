@@ -21,22 +21,12 @@ export const Footer = () => {
           </a>{" "}
           · Desafio Human Academy 2026
         </p>
-        <div className="flex items-center gap-3 text-sm text-[#999]">
-          <a
-            href="mailto:bielalvestrafego@gmail.com"
-            className="hover:text-white transition-colors"
-          >
-            Contato
-          </a>
-          <span className="text-[#666]">·</span>
-          <a href="#" className="hover:text-white transition-colors">
-            Política de Privacidade
-          </a>
-          <span className="text-[#666]">·</span>
-          <a href="#" className="hover:text-white transition-colors">
-            Termos de Uso
-          </a>
-        </div>
+        <a
+          href="mailto:bielalvestrafego@gmail.com"
+          className="text-sm text-[#999] hover:text-white transition-colors"
+        >
+          Contato
+        </a>
       </div>
     </footer>
   );
