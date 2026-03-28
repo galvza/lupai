@@ -4,14 +4,18 @@ import { motion } from "framer-motion";
 import { Nav } from "@/components/layout/Nav";
 import { FirstTimeBanner } from "./FirstTimeBanner";
 import { HeroInput } from "./HeroInput";
+import { Marquee } from "./Marquee";
 
-/** Seção hero com headline, input e banner */
+/** Seção hero com headline, input, marquee e cantos arredondados */
 export const HeroSection = () => {
   return (
-    <section id="hero" className="bg-dark-bg">
+    <section
+      id="hero"
+      className="bg-dark-bg rounded-b-[32px] md:rounded-b-[48px] relative z-10"
+    >
       <Nav />
 
-      <div className="flex flex-col items-center px-8 lg:px-16 pt-16 md:pt-20 pb-16 md:pb-20">
+      <div className="flex flex-col items-center px-8 lg:px-16 pt-16 md:pt-20 pb-10 md:pb-14">
         <FirstTimeBanner />
 
         {/* Headline */}
@@ -45,6 +49,8 @@ export const HeroSection = () => {
           <HeroInput />
         </motion.div>
       </div>
+
+      <Marquee />
     </section>
   );
 };

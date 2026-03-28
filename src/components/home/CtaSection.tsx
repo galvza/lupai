@@ -3,10 +3,13 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-/** Seção CTA final */
+/** Seção CTA final com cantos arredondados */
 export const CtaSection = () => {
   return (
-    <section id="cta" className="bg-dark-bg py-20 lg:py-24 px-8 lg:px-16">
+    <section
+      id="cta"
+      className="bg-dark-bg py-20 lg:py-24 px-8 lg:px-16 rounded-t-[32px] md:rounded-t-[48px] rounded-b-[32px] md:rounded-b-[48px] relative z-10"
+    >
       <div className="max-w-4xl mx-auto text-center">
         <motion.h2
           initial={{ opacity: 0, y: 16 }}

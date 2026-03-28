@@ -6,7 +6,7 @@ export const SocialSection = ({ competitor }: { competitor: Competitor }) => {
   if (!competitor.socialAnalysis) return null;
 
   return (
-    <section className="bg-dark-bg px-6 py-10">
+    <section className="bg-dark-bg px-6 py-10 rounded-t-[32px] md:rounded-t-[48px] rounded-b-[32px] md:rounded-b-[48px] relative z-10">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-2 mb-4">
           <Share2 color="#C8FF3C" size={18} strokeWidth={1.5} />

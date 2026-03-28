@@ -13,7 +13,7 @@ export const CompetitorHeader = ({
   analysisId: string;
 }) => {
   return (
-    <section className="bg-dark-bg px-6 py-8">
+    <section className="bg-dark-bg px-6 py-8 rounded-b-[32px] md:rounded-b-[48px] relative z-10">
       <div className="max-w-4xl mx-auto">
         {/* Back */}
         <Link
