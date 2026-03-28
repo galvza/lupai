@@ -104,6 +104,16 @@ main {
   animation: subtle-pulse 2s ease-in-out infinite;
 }
 
+/* Floating pill animation — ambient movement in hero */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
 /* Accessibility: skip animations for users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .motion-safe-hidden {

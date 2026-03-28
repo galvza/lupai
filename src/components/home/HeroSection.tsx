@@ -3,15 +3,16 @@
 import { motion } from "framer-motion";
 import { FirstTimeBanner } from "./FirstTimeBanner";
 import { HeroInput } from "./HeroInput";
+import { FloatingPills } from "./FloatingPills";
 
 /** Seção hero com headline, input e cantos arredondados */
 export const HeroSection = () => {
   return (
     <section
       id="hero"
-      className="bg-dark-bg rounded-b-[32px] md:rounded-b-[48px] relative z-10"
+      className="bg-dark-bg rounded-b-[32px] md:rounded-b-[48px] relative z-10 overflow-hidden"
     >
-      <div className="flex flex-col items-center px-8 lg:px-16 pt-20 md:pt-28 pb-10 md:pb-14">
+      <div className="flex flex-col items-center px-8 lg:px-16 pt-20 md:pt-28 pb-10 md:pb-14 relative z-10">
         <FirstTimeBanner />
 
         {/* Headline */}
@@ -25,16 +26,7 @@ export const HeroSection = () => {
           <em className="italic text-accent">Domine</em> seu nicho.
         </motion.h1>
 
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-          className="text-sm md:text-base lg:text-lg text-[#888] text-center max-w-xl mb-10 md:mb-12 leading-relaxed"
-        >
-          Descreva seu nicho e receba análise competitiva, conteúdos virais e
-          recomendações estratégicas — em minutos.
-        </motion.p>
+        <FloatingPills />
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}
