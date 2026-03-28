@@ -1,4 +1,6 @@
-import type { ViralPatterns } from './viral';
+import type { ViralPatterns, ViralContent } from './viral';
+import type { Competitor } from './competitor';
+import type { Synthesis } from './database';
 
 /** Modos de analise disponiveis */
 export type AnalysisMode = 'quick' | 'complete';
@@ -62,4 +64,22 @@ export interface StartAnalysisResponse {
   runId: string;
   publicAccessToken: string;
   redirectUrl: string;
+}
+
+/** Status de uma secao individual do dashboard (per D-07) */
+export interface SectionStatus {
+  section: string;
+  status: 'available' | 'partial' | 'unavailable' | 'failed';
+  message?: string;
+}
+
+/** Resposta completa do endpoint GET /api/analysis/[id] (per D-03, D-06) */
+export interface AnalysisResultsResponse {
+  analysis: Analysis;
+  competitors: Competitor[];
+  userBusiness: Competitor | null;
+  viralContent: ViralContent[];
+  synthesis: Synthesis | null;
+  viralPatterns: ViralPatterns | null;
+  sectionStatuses: SectionStatus[];
 }
