@@ -155,7 +155,7 @@ Plans:
 - [x] 08-03-PLAN.md — Comparative synthesis: schema extension, prompt, synthesizeAnalysis update, task integration, tests (Wave 2)
 
 ### Phase 9: Dashboard & Results UI
-**Goal**: Users see all analysis results in a polished, organized, responsive interface with real-time progress feedback
+**Goal**: Backend API layer delivers all analysis data in a single aggregated response with section-level status indicators for the frontend dashboard to consume
 **Depends on**: Phase 7
 **Requirements**: DASH-01, DASH-02, DASH-03, DASH-04, DASH-05, DASH-06
 **Success Criteria** (what must be TRUE):
@@ -164,12 +164,11 @@ Plans:
   3. When an extraction step fails or returns no data, the dashboard shows what succeeded with clear indicators and does not break
   4. The interface works on desktop and mobile (375px+) with responsive layout
   5. All text, labels, and AI-generated content is in Portuguese (PT-BR)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 09-01: TBD
-- [ ] 09-02: TBD
-- [ ] 09-03: TBD
+- [ ] 09-01-PLAN.md — Response types (SectionStatus, AnalysisResultsResponse) and section status derivation logic with tests (Wave 1)
+- [ ] 09-02-PLAN.md — Results aggregation API route and status fallback route with tests (Wave 2)
 
 **UI hint**: yes
 
@@ -205,5 +204,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4/5/6 (parallelizable) -> 7 -> 8
 | 6. Viral Content & Transcription | 0/3 | Planning complete | - |
 | 7. AI Synthesis & Creative Modeling | 0/2 | Planning complete | - |
 | 8. Modo Completo | 0/3 | Planning complete | - |
-| 9. Dashboard & Results UI | 0/3 | Not started | - |
+| 9. Dashboard & Results UI | 0/2 | Planning complete | - |
 | 10. History, Cache & PDF Export | 0/2 | Not started | - |
