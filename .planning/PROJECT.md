@@ -26,6 +26,11 @@ Entregar em minutos o que hoje leva horas: uma análise completa do mercado/nich
 - ✓ Trigger.dev orchestrator: full 11-step pipeline with batch fan-out and independent sub-tasks — Phase 3
 - ✓ Waitpoint confirmation: user confirms competitors before extraction via API route — Phase 3
 - ✓ Extraction stub fan-out: 4 extraction stubs wired for Phases 4/5/6 — Phase 3
+- ✓ Website extraction: Apify crawler + social link discovery + CNPJ/email extraction — Phase 4
+- ✓ SEO extraction: SimilarWeb parallel with website scraping, Zod validation — Phase 4
+- ✓ Social media extraction: 3-tier discovery (website > Google Search > AI hints), Instagram + TikTok parallel — Phase 4
+- ✓ 2-batch sequential orchestrator: website+viral first, then social+ads with enriched social links — Phase 4
+- ✓ Extraction resilience: retry config, fallback chains, never-fail pattern, status objects — Phase 4
 
 ### Active
 - [ ] Análise do site (posicionamento, oferta, preços, meta tags)

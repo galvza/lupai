@@ -1,15 +1,28 @@
 import { ApifyClient } from 'apify-client';
 
-import type { WebsiteData } from '@/types/competitor';
+import type { WebsiteData, SocialLinks } from '@/types/competitor';
+import { extractSocialLinksFromText } from '@/utils/socialLinks';
+import { extractBusinessIdentifiers } from '@/utils/businessIdentifiers';
+import type { BusinessIdentifiers } from '@/utils/businessIdentifiers';
 
 const ACTOR_ID = 'apify/website-content-crawler';
 
+/** Resultado completo do scraping de website incluindo social links e identificadores */
+export interface WebsiteScrapingResult {
+  websiteData: WebsiteData | null;
+  socialLinks: SocialLinks;
+  businessIdentifiers: BusinessIdentifiers;
+  rawPagesText: string;
+}
+
 /**
  * Extrai dados do site de um concorrente usando Apify Website Content Crawler.
+ * Retorna dados de website, links de redes sociais extraidos do texto,
+ * identificadores de negocio (CNPJ, email) e o texto bruto das paginas.
  * @param websiteUrl - URL do site a ser analisado
- * @returns Dados do site filtrados ou null se vazio
+ * @returns Resultado completo do scraping ou null se vazio
  */
-export const scrapeWebsite = async (websiteUrl: string): Promise<WebsiteData | null> => {
+export const scrapeWebsite = async (websiteUrl: string): Promise<WebsiteScrapingResult | null> => {
   const client = new ApifyClient({ token: process.env.APIFY_API_TOKEN });
 
   try {
@@ -29,7 +42,11 @@ export const scrapeWebsite = async (websiteUrl: string): Promise<WebsiteData | n
       .filter(Boolean)
       .join('\n');
 
-    return {
+    // Extrair social links e identificadores do texto concatenado (per D-09, D-03)
+    const socialLinks = extractSocialLinksFromText(allText);
+    const businessIds = extractBusinessIdentifiers(allText);
+
+    const websiteData: WebsiteData = {
       positioning: allText.slice(0, 500) || null,
       offer: null, // Extraido pela IA na fase de sintese
       pricing: null, // Extraido pela IA na fase de sintese
@@ -44,6 +61,14 @@ export const scrapeWebsite = async (websiteUrl: string): Promise<WebsiteData | n
           .map((k: string) => k.trim())
           .filter(Boolean),
       },
+      businessIdentifiers: businessIds,
+    };
+
+    return {
+      websiteData,
+      socialLinks,
+      businessIdentifiers: businessIds,
+      rawPagesText: allText,
     };
   } catch (error) {
     throw new Error(

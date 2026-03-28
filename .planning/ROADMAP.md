@@ -85,11 +85,12 @@ Plans:
   2. SEO data (estimated authority, top keywords, estimated traffic) is extracted per competitor and stored
   3. Social media data (follower counts, posting frequency, engagement rates, top posts) is extracted per competitor from Instagram and TikTok
   4. Each extraction sub-task validates its output (rejects empty/malformed data) and stores only filtered, relevant fields
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [x] 04-01-PLAN.md — Types, utilities (social links, fallback, business IDs), validation schemas, enhanced website scraper (Wave 1)
+- [x] 04-02-PLAN.md — extract-website compound task + extract-social task implementations with tests (Wave 2)
+- [x] 04-03-PLAN.md — Orchestrator 2-batch sequential refactoring with social link merging and fallback (Wave 3)
 
 ### Phase 5: Ads Intelligence
 **Goal**: Competitor advertising presence across Meta and Google is captured and stored
@@ -196,7 +197,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4/5/6 (parallelizable) -> 7 -> 8
 | 1. Foundation & Project Setup | 0/3 | Planning complete | - |
 | 2. Input & AI Understanding | 0/2 | Planning complete | - |
 | 3. Competitor Discovery & Orchestration | 0/2 | Planning complete | - |
-| 4. Website, SEO & Social Extraction | 0/2 | Not started | - |
+| 4. Website, SEO & Social Extraction | 0/3 | Planning complete | - |
 | 5. Ads Intelligence | 0/2 | Not started | - |
 | 6. Viral Content & Transcription | 0/2 | Not started | - |
 | 7. AI Synthesis & Creative Modeling | 0/2 | Not started | - |

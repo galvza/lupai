@@ -7,9 +7,11 @@ import { extractAds } from './extract-ads';
 import { extractViral } from './extract-viral';
 import { scoreCompetitorsWithAI } from '@/lib/ai/score-competitors';
 import { filterBlockedDomains, deduplicateCandidates } from '@/utils/competitors';
+import { findSocialProfilesViaSearch, mergeSocialSources } from '@/utils/socialFallback';
 import { createCompetitor, updateAnalysis } from '@/lib/supabase/queries';
 import type { RawCompetitorCandidate } from '@/utils/competitors';
 import type { ScoredCompetitor } from '@/lib/ai/score-competitors';
+import type { ExtractWebsiteResult, SocialLinks, SocialProfileInput } from '@/types/competitor';
 
 /** Payload para o job de analise de mercado */
 export interface AnalyzeMarketPayload {
@@ -142,44 +144,124 @@ export const analyzeMarket = task({
         )
       );
 
-      // Step 10: Fan-out extraction (D-20, D-21, D-22, D-23)
+      // Step 10a: Batch 1 — Website extraction + Viral (parallel, no deps on each other)
       await updateAnalysis(payload.analysisId, { status: 'extracting' });
       metadata.set('status', 'extracting');
-      metadata.set('step', 'Extraindo dados dos concorrentes...');
+      metadata.set('step', 'Extraindo dados dos sites...');
       metadata.set('progress', 65);
 
-      // Initialize sub-task progress tracking per D-27
+      // Initialize sub-task progress tracking per D-47
       const subTaskProgress: Record<string, Record<string, string>> = {};
       savedCompetitors.forEach((comp) => {
-        subTaskProgress[comp.name] = {
-          website: 'pending',
-          social: 'pending',
-          ads: 'pending',
-        };
+        subTaskProgress[comp.name] = { website: 'running', seo: 'running', social: 'pending', ads: 'pending' };
       });
       metadata.set('subTasks', subTaskProgress);
 
-      const extractionItems = [
-        ...savedCompetitors.flatMap((comp, i) => {
-          const scoredComp = confirmedCompetitors[i];
-          return [
-            { task: extractWebsite, payload: { analysisId: payload.analysisId, competitorId: comp.id, competitorName: comp.name, websiteUrl: comp.websiteUrl ?? '' } },
-            { task: extractSocial, payload: { analysisId: payload.analysisId, competitorId: comp.id, competitorName: comp.name, socialProfiles: scoredComp?.socialProfiles ?? { instagram: null, tiktok: null, facebook: null } } },
-            { task: extractAds, payload: { analysisId: payload.analysisId, competitorId: comp.id, competitorName: comp.name, websiteUrl: comp.websiteUrl ?? '' } },
-          ];
-        }),
+      const batch1Items = [
+        ...savedCompetitors.map((comp) => ({
+          task: extractWebsite,
+          payload: { analysisId: payload.analysisId, competitorId: comp.id, competitorName: comp.name, websiteUrl: comp.websiteUrl ?? '' },
+        })),
         { task: extractViral, payload: { analysisId: payload.analysisId, niche: payload.niche, segment: payload.segment, region: payload.region } },
       ];
 
-      const { runs: extractionRuns } = await batch.triggerByTaskAndWait(extractionItems);
+      const { runs: batch1Runs } = await batch.triggerByTaskAndWait(batch1Items);
 
-      // Step 11: Summarize results
-      const successCount = extractionRuns.filter((r) => r.ok).length;
-      const failCount = extractionRuns.filter((r) => !r.ok).length;
+      // Step 10b: Collect social links from Batch 1 and merge with AI hints
+      metadata.set('step', 'Descobrindo perfis sociais...');
+      metadata.set('progress', 75);
+
+      const websiteRuns = batch1Runs.slice(0, savedCompetitors.length);
+      const socialProfilesPerCompetitor: Array<{ instagram: SocialProfileInput | null; tiktok: SocialProfileInput | null }> = [];
+
+      const emptySocialLinks: SocialLinks = { instagram: null, tiktok: null, facebook: null, youtube: null, linkedin: null, twitter: null };
+
+      for (let i = 0; i < savedCompetitors.length; i++) {
+        const run = websiteRuns[i];
+        const scoredComp = confirmedCompetitors[i];
+        const aiHints = scoredComp?.socialProfiles ?? { instagram: null, tiktok: null, facebook: null };
+
+        let websiteLinks: SocialLinks = emptySocialLinks;
+        if (run.ok) {
+          const result = run.output as ExtractWebsiteResult;
+          websiteLinks = result.socialLinks ?? emptySocialLinks;
+          subTaskProgress[savedCompetitors[i].name].website = 'completed';
+          subTaskProgress[savedCompetitors[i].name].seo = 'completed';
+        } else {
+          subTaskProgress[savedCompetitors[i].name].website = 'failed';
+          subTaskProgress[savedCompetitors[i].name].seo = 'failed';
+        }
+
+        // Find missing platforms for Google Search fallback (per D-14, D-15)
+        const missingPlatforms: string[] = [];
+        if (!websiteLinks.instagram) missingPlatforms.push('instagram');
+        if (!websiteLinks.tiktok) missingPlatforms.push('tiktok');
+
+        let searchResults: Record<string, SocialProfileInput | null> = {};
+        if (missingPlatforms.length > 0) {
+          try {
+            searchResults = await findSocialProfilesViaSearch(savedCompetitors[i].name, missingPlatforms);
+          } catch {
+            // Per D-42: fallback failure is not critical, proceed with what we have
+          }
+        }
+
+        // Merge: website > search_fallback > ai_hint (per D-19, D-26)
+        const merged = mergeSocialSources(websiteLinks, searchResults, aiHints);
+        socialProfilesPerCompetitor.push(merged);
+      }
+
+      metadata.set('subTasks', subTaskProgress);
+
+      // Step 10c: Batch 2 — Social extraction + Ads (parallel, using data from Batch 1)
+      metadata.set('step', 'Extraindo redes sociais e anuncios...');
+      metadata.set('progress', 80);
+
+      savedCompetitors.forEach((comp) => {
+        subTaskProgress[comp.name].social = 'running';
+        subTaskProgress[comp.name].ads = 'running';
+      });
+      metadata.set('subTasks', subTaskProgress);
+
+      const batch2Items = [
+        ...savedCompetitors.map((comp, i) => ({
+          task: extractSocial,
+          payload: {
+            analysisId: payload.analysisId,
+            competitorId: comp.id,
+            competitorName: comp.name,
+            socialProfiles: socialProfilesPerCompetitor[i],
+          },
+        })),
+        ...savedCompetitors.map((comp) => ({
+          task: extractAds,
+          payload: { analysisId: payload.analysisId, competitorId: comp.id, competitorName: comp.name, websiteUrl: comp.websiteUrl ?? '' },
+        })),
+      ];
+
+      const { runs: batch2Runs } = await batch.triggerByTaskAndWait(batch2Items);
+
+      // Step 11: Summarize results from both batches
+      const allRuns = [...batch1Runs, ...batch2Runs];
+      const successCount = allRuns.filter((r) => r.ok).length;
+      const failCount = allRuns.filter((r) => !r.ok).length;
+
+      // Update final sub-task status
+      const socialRuns = batch2Runs.slice(0, savedCompetitors.length);
+      socialRuns.forEach((run, i) => {
+        subTaskProgress[savedCompetitors[i].name].social = run.ok ? 'completed' : 'failed';
+      });
+      const adsRuns = batch2Runs.slice(savedCompetitors.length);
+      adsRuns.forEach((run, i) => {
+        if (i < savedCompetitors.length) {
+          subTaskProgress[savedCompetitors[i].name].ads = run.ok ? 'completed' : 'failed';
+        }
+      });
+      metadata.set('subTasks', subTaskProgress);
 
       metadata.set('step', 'Extracao concluida');
       metadata.set('progress', 95);
-      metadata.set('extractionSummary', { success: successCount, failed: failCount, total: extractionRuns.length });
+      metadata.set('extractionSummary', { success: successCount, failed: failCount, total: allRuns.length });
 
       await updateAnalysis(payload.analysisId, { status: 'completed' });
       metadata.set('status', 'completed');

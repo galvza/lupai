@@ -54,9 +54,15 @@ vi.mock('./extract-viral', () => ({
   extractViral: { id: 'extract-viral' },
 }));
 
+vi.mock('@/utils/socialFallback', () => ({
+  findSocialProfilesViaSearch: vi.fn(),
+  mergeSocialSources: vi.fn(),
+}));
+
 import { scoreCompetitorsWithAI } from '@/lib/ai/score-competitors';
 import { filterBlockedDomains, deduplicateCandidates } from '@/utils/competitors';
 import { createCompetitor, updateAnalysis } from '@/lib/supabase/queries';
+import { findSocialProfilesViaSearch, mergeSocialSources } from '@/utils/socialFallback';
 
 // Force module load to capture run functions
 import '@/trigger/analyze-market';
@@ -66,6 +72,8 @@ const mockFilterBlocked = vi.mocked(filterBlockedDomains);
 const mockDeduplicate = vi.mocked(deduplicateCandidates);
 const mockCreateCompetitor = vi.mocked(createCompetitor);
 const mockUpdateAnalysis = vi.mocked(updateAnalysis);
+const mockFindSocialProfiles = vi.mocked(findSocialProfilesViaSearch);
+const mockMergeSocialSources = vi.mocked(mergeSocialSources);
 
 /** Get the orchestrator run function */
 const getOrchestratorRun = () => {
@@ -120,11 +128,30 @@ const MOCK_SAVED_COMPETITORS = [
   { id: 'comp-2', analysisId: 'analysis-123', name: 'Clinica B', websiteUrl: 'https://clinica-b.com', websiteData: null, seoData: null, socialData: null, metaAdsData: null, googleAdsData: null, gmbData: null, createdAt: '2026-01-01' },
 ];
 
-/** Setup padrao para fluxo completo */
+/** Mock ExtractWebsiteResult com social links */
+const MOCK_WEBSITE_RESULT_A = {
+  competitorId: 'comp-1',
+  websiteData: null,
+  seoData: null,
+  socialLinks: { instagram: '@clinicaa_site', tiktok: null, facebook: 'clinicaafb', youtube: null, linkedin: null, twitter: null },
+  businessIdentifiers: null,
+  warnings: [],
+};
+
+const MOCK_WEBSITE_RESULT_B = {
+  competitorId: 'comp-2',
+  websiteData: null,
+  seoData: null,
+  socialLinks: { instagram: null, tiktok: null, facebook: null, youtube: null, linkedin: null, twitter: null },
+  businessIdentifiers: null,
+  warnings: [],
+};
+
+/** Setup padrao para fluxo completo (2-batch pattern) */
 const setupHappyPath = () => {
   mockUpdateAnalysis.mockResolvedValue({} as ReturnType<typeof updateAnalysis> extends Promise<infer T> ? T : never);
 
-  // Discovery runs: all succeed
+  // Discovery runs: all succeed (call 1)
   mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
     runs: [
       { ok: true, output: [MOCK_CANDIDATES[0]] },
@@ -146,12 +173,25 @@ const setupHappyPath = () => {
     .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
     .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[1]);
 
-  // Extraction runs: all succeed
+  // Batch 1 runs: extractWebsite x2 + extractViral (call 2)
   mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
     runs: [
+      { ok: true, output: MOCK_WEBSITE_RESULT_A },
+      { ok: true, output: MOCK_WEBSITE_RESULT_B },
       { ok: true, output: {} },
-      { ok: true, output: {} },
-      { ok: true, output: {} },
+    ],
+  });
+
+  // Social fallback mocks (between batches)
+  mockFindSocialProfiles.mockResolvedValue({ tiktok: null });
+  mockMergeSocialSources.mockReturnValue({
+    instagram: { username: 'clinicaa_site', source: 'website' as const },
+    tiktok: null,
+  });
+
+  // Batch 2 runs: extractSocial x2 + extractAds x2 (call 3)
+  mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
+    runs: [
       { ok: true, output: {} },
       { ok: true, output: {} },
       { ok: true, output: {} },
@@ -215,20 +255,30 @@ describe('analyzeMarket orchestrator', () => {
     });
   });
 
-  it('deve fazer fan-out de extracao para sub-tasks', async () => {
+  it('deve fazer fan-out de extracao em 2 batches sequenciais', async () => {
     setupHappyPath();
     await getOrchestratorRun()(MOCK_PAYLOAD);
 
-    // Second call to batch.triggerByTaskAndWait is for extraction
-    const extractionCall = mockBatch.triggerByTaskAndWait.mock.calls[1][0];
-    // 2 competitors x 3 tasks each + 1 viral = 7
-    expect(extractionCall).toHaveLength(7);
+    // batch.triggerByTaskAndWait called 3 times: discovery, batch1, batch2
+    expect(mockBatch.triggerByTaskAndWait).toHaveBeenCalledTimes(3);
 
-    const taskIds = extractionCall.map((item: { task: { id: string } }) => item.task.id);
-    expect(taskIds).toContain('extract-website');
-    expect(taskIds).toContain('extract-social');
-    expect(taskIds).toContain('extract-ads');
-    expect(taskIds).toContain('extract-viral');
+    // Batch 1 (call 2): extractWebsite x2 + extractViral = 3
+    const batch1Call = mockBatch.triggerByTaskAndWait.mock.calls[1][0];
+    expect(batch1Call).toHaveLength(3);
+    const batch1Ids = batch1Call.map((item: { task: { id: string } }) => item.task.id);
+    expect(batch1Ids).toContain('extract-website');
+    expect(batch1Ids).toContain('extract-viral');
+    expect(batch1Ids).not.toContain('extract-social');
+    expect(batch1Ids).not.toContain('extract-ads');
+
+    // Batch 2 (call 3): extractSocial x2 + extractAds x2 = 4
+    const batch2Call = mockBatch.triggerByTaskAndWait.mock.calls[2][0];
+    expect(batch2Call).toHaveLength(4);
+    const batch2Ids = batch2Call.map((item: { task: { id: string } }) => item.task.id);
+    expect(batch2Ids).toContain('extract-social');
+    expect(batch2Ids).toContain('extract-ads');
+    expect(batch2Ids).not.toContain('extract-website');
+    expect(batch2Ids).not.toContain('extract-viral');
   });
 
   it('deve reportar erro se todas as fontes falharem', async () => {
@@ -250,7 +300,7 @@ describe('analyzeMarket orchestrator', () => {
   it('deve continuar se algumas fontes falharem', async () => {
     mockUpdateAnalysis.mockResolvedValue({} as ReturnType<typeof updateAnalysis> extends Promise<infer T> ? T : never);
 
-    // 2 succeed, 2 fail
+    // 2 succeed, 2 fail (discovery)
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
       runs: [
         { ok: true, output: [MOCK_CANDIDATES[0]] },
@@ -271,8 +321,21 @@ describe('analyzeMarket orchestrator', () => {
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[1]);
 
+    // Batch 1: website + viral
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
-      runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }, { ok: true }, { ok: true }, { ok: true }],
+      runs: [
+        { ok: true, output: MOCK_WEBSITE_RESULT_A },
+        { ok: true, output: MOCK_WEBSITE_RESULT_B },
+        { ok: true, output: {} },
+      ],
+    });
+
+    mockFindSocialProfiles.mockResolvedValue({ tiktok: null });
+    mockMergeSocialSources.mockReturnValue({ instagram: null, tiktok: null });
+
+    // Batch 2: social + ads
+    mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
+      runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
     });
 
     const result = await getOrchestratorRun()(MOCK_PAYLOAD);
@@ -318,8 +381,21 @@ describe('analyzeMarket orchestrator', () => {
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[1]);
 
+    // Batch 1: website + viral
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
-      runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }, { ok: true }, { ok: true }, { ok: true }],
+      runs: [
+        { ok: true, output: MOCK_WEBSITE_RESULT_A },
+        { ok: true, output: MOCK_WEBSITE_RESULT_B },
+        { ok: true, output: {} },
+      ],
+    });
+
+    mockFindSocialProfiles.mockResolvedValue({ tiktok: null });
+    mockMergeSocialSources.mockReturnValue({ instagram: null, tiktok: null });
+
+    // Batch 2: social + ads
+    mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
+      runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
     });
 
     const result = await getOrchestratorRun()(MOCK_PAYLOAD);
@@ -377,7 +453,214 @@ describe('analyzeMarket orchestrator', () => {
 
     expect(result.analysisId).toBe('analysis-123');
     expect(result.competitorsFound).toBe(2);
+    // Batch 1: 3 runs (2 website + 1 viral) + Batch 2: 4 runs (2 social + 2 ads) = 7 total
     expect(result.extractionSuccess).toBe(7);
     expect(result.extractionFailed).toBe(0);
+  });
+});
+
+describe('2-batch extraction pattern', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('runs Batch 1 (website+viral) then Batch 2 (social+ads) sequentially', async () => {
+    setupHappyPath();
+    await getOrchestratorRun()(MOCK_PAYLOAD);
+
+    // batch.triggerByTaskAndWait called 3 times: discovery, batch1, batch2
+    expect(mockBatch.triggerByTaskAndWait).toHaveBeenCalledTimes(3);
+
+    // Batch 1 (call index 1): contains extractWebsite + extractViral
+    const batch1 = mockBatch.triggerByTaskAndWait.mock.calls[1][0];
+    const batch1Ids = batch1.map((item: { task: { id: string } }) => item.task.id);
+    expect(batch1Ids.filter((id: string) => id === 'extract-website')).toHaveLength(2);
+    expect(batch1Ids.filter((id: string) => id === 'extract-viral')).toHaveLength(1);
+    expect(batch1Ids).not.toContain('extract-social');
+    expect(batch1Ids).not.toContain('extract-ads');
+
+    // Batch 2 (call index 2): contains extractSocial + extractAds
+    const batch2 = mockBatch.triggerByTaskAndWait.mock.calls[2][0];
+    const batch2Ids = batch2.map((item: { task: { id: string } }) => item.task.id);
+    expect(batch2Ids.filter((id: string) => id === 'extract-social')).toHaveLength(2);
+    expect(batch2Ids.filter((id: string) => id === 'extract-ads')).toHaveLength(2);
+    expect(batch2Ids).not.toContain('extract-website');
+    expect(batch2Ids).not.toContain('extract-viral');
+  });
+
+  it('collects social links from Batch 1 results and passes to Batch 2', async () => {
+    setupHappyPath();
+    // Override mergeSocialSources to return specific values per competitor
+    mockMergeSocialSources
+      .mockReturnValueOnce({
+        instagram: { username: 'clinicaa_site', source: 'website' as const },
+        tiktok: null,
+      })
+      .mockReturnValueOnce({
+        instagram: null,
+        tiktok: null,
+      });
+
+    await getOrchestratorRun()(MOCK_PAYLOAD);
+
+    // Batch 2 extractSocial payloads should contain merged social profiles
+    const batch2 = mockBatch.triggerByTaskAndWait.mock.calls[2][0];
+    const socialPayloads = batch2.filter((item: { task: { id: string } }) => item.task.id === 'extract-social');
+    expect(socialPayloads).toHaveLength(2);
+
+    // First competitor gets website-discovered instagram
+    expect(socialPayloads[0].payload.socialProfiles).toEqual({
+      instagram: { username: 'clinicaa_site', source: 'website' },
+      tiktok: null,
+    });
+
+    // Second competitor gets nothing (no profiles found)
+    expect(socialPayloads[1].payload.socialProfiles).toEqual({
+      instagram: null,
+      tiktok: null,
+    });
+  });
+
+  it('runs Google Search fallback for missing social profiles', async () => {
+    setupHappyPath();
+    await getOrchestratorRun()(MOCK_PAYLOAD);
+
+    // Competitor A has instagram from website but not tiktok -> fallback for tiktok only
+    // Competitor B has neither -> fallback for both
+    expect(mockFindSocialProfiles).toHaveBeenCalled();
+
+    // Verify findSocialProfilesViaSearch was called with missing platforms
+    const calls = mockFindSocialProfiles.mock.calls;
+    // At least one call should include 'tiktok' in missing platforms
+    const allMissingPlatforms = calls.flatMap(([, platforms]: [string, string[]]) => platforms);
+    expect(allMissingPlatforms).toContain('tiktok');
+  });
+
+  it('merges sources with website > search > ai_hint priority via mergeSocialSources', async () => {
+    setupHappyPath();
+    await getOrchestratorRun()(MOCK_PAYLOAD);
+
+    // mergeSocialSources should be called once per competitor
+    expect(mockMergeSocialSources).toHaveBeenCalledTimes(2);
+
+    // Verify first call has website social links from extractWebsite result
+    const firstCall = mockMergeSocialSources.mock.calls[0];
+    expect(firstCall[0]).toEqual(MOCK_WEBSITE_RESULT_A.socialLinks);
+    // Third arg should be AI hints from scored competitor
+    expect(firstCall[2]).toEqual(MOCK_SCORED[0].socialProfiles);
+
+    // Verify second call has empty social links (competitor B had no website links)
+    const secondCall = mockMergeSocialSources.mock.calls[1];
+    expect(secondCall[0]).toEqual(MOCK_WEBSITE_RESULT_B.socialLinks);
+    expect(secondCall[2]).toEqual(MOCK_SCORED[1].socialProfiles);
+  });
+
+  it('handles Batch 1 failures gracefully -- still runs Batch 2 with AI hints', async () => {
+    mockUpdateAnalysis.mockResolvedValue({} as ReturnType<typeof updateAnalysis> extends Promise<infer T> ? T : never);
+
+    // Discovery
+    mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
+      runs: [
+        { ok: true, output: MOCK_CANDIDATES },
+        { ok: true, output: [] },
+        { ok: true, output: [] },
+        { ok: true, output: [] },
+      ],
+    });
+
+    mockScoreCompetitors.mockResolvedValue(MOCK_SCORED);
+    mockWait.createToken.mockResolvedValue({ id: 'token-fail' });
+    mockWait.forToken.mockResolvedValue({
+      ok: true,
+      output: { competitors: MOCK_SCORED },
+    });
+
+    mockCreateCompetitor
+      .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
+      .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[1]);
+
+    // Batch 1: one website run fails
+    mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
+      runs: [
+        { ok: false, output: null },
+        { ok: true, output: MOCK_WEBSITE_RESULT_B },
+        { ok: true, output: {} },
+      ],
+    });
+
+    // mergeSocialSources still called for failed competitor (with empty social links)
+    mockFindSocialProfiles.mockResolvedValue({ instagram: null, tiktok: null });
+    mockMergeSocialSources.mockReturnValue({ instagram: null, tiktok: null });
+
+    // Batch 2 still runs
+    mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
+      runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
+    });
+
+    const result = await getOrchestratorRun()(MOCK_PAYLOAD) as Record<string, unknown>;
+    expect(result).toBeDefined();
+
+    // Batch 2 was called (3rd batch.triggerByTaskAndWait call)
+    expect(mockBatch.triggerByTaskAndWait).toHaveBeenCalledTimes(3);
+
+    // mergeSocialSources was called for both competitors, even the failed one
+    expect(mockMergeSocialSources).toHaveBeenCalledTimes(2);
+
+    // Failed competitor uses empty social links as first arg
+    const failedCompCall = mockMergeSocialSources.mock.calls[0];
+    expect(failedCompCall[0]).toEqual({
+      instagram: null, tiktok: null, facebook: null, youtube: null, linkedin: null, twitter: null,
+    });
+  });
+
+  it('handles findSocialProfilesViaSearch failure gracefully', async () => {
+    mockUpdateAnalysis.mockResolvedValue({} as ReturnType<typeof updateAnalysis> extends Promise<infer T> ? T : never);
+
+    // Discovery
+    mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
+      runs: [
+        { ok: true, output: MOCK_CANDIDATES },
+        { ok: true, output: [] },
+        { ok: true, output: [] },
+        { ok: true, output: [] },
+      ],
+    });
+
+    mockScoreCompetitors.mockResolvedValue(MOCK_SCORED);
+    mockWait.createToken.mockResolvedValue({ id: 'token-search-fail' });
+    mockWait.forToken.mockResolvedValue({
+      ok: true,
+      output: { competitors: MOCK_SCORED },
+    });
+
+    mockCreateCompetitor
+      .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
+      .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[1]);
+
+    // Batch 1
+    mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
+      runs: [
+        { ok: true, output: MOCK_WEBSITE_RESULT_A },
+        { ok: true, output: MOCK_WEBSITE_RESULT_B },
+        { ok: true, output: {} },
+      ],
+    });
+
+    // findSocialProfilesViaSearch throws
+    mockFindSocialProfiles.mockRejectedValue(new Error('Google Search API error'));
+    mockMergeSocialSources.mockReturnValue({ instagram: null, tiktok: null });
+
+    // Batch 2 still runs
+    mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
+      runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
+    });
+
+    const result = await getOrchestratorRun()(MOCK_PAYLOAD) as Record<string, unknown>;
+    expect(result).toBeDefined();
+
+    // Batch 2 was still called despite search failure
+    expect(mockBatch.triggerByTaskAndWait).toHaveBeenCalledTimes(3);
+    // mergeSocialSources still called (with empty search results)
+    expect(mockMergeSocialSources).toHaveBeenCalledTimes(2);
   });
 });

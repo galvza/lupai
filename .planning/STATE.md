@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-03-28T00:16:33.317Z"
+status: verifying
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-03-28T01:11:56.325Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 10
-  completed_phases: 2
-  total_plans: 7
-  completed_plans: 6
+  completed_phases: 3
+  total_plans: 10
+  completed_plans: 9
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Entregar em minutos o que hoje leva horas: analise completa do mercado/nicho com concorrentes mapeados, dados consolidados e recomendacoes estrategicas acionaveis.
-**Current focus:** Phase 03 — competitor-discovery-orchestration
+**Current focus:** Phase 04 — website-seo-social-extraction
 
 ## Current Position
 
-Phase: 4
+Phase: 5
 Plan: Not started
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-28
 
 Progress: [░░░░░░░░░░] 0%
@@ -57,6 +57,9 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P02 | 5min | 2 tasks | 17 files |
 | Phase 02 P01 | 5min | 3 tasks | 10 files |
 | Phase 03 P01 | 4min | 2 tasks | 12 files |
+| Phase 04 P01 | 6min | 2 tasks | 10 files |
+| Phase 04 P02 | 3min | 2 tasks | 4 files |
+| Phase 04 P03 | 4min | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -83,6 +86,14 @@ Recent decisions affecting current work:
 - [Phase 02]: responseJsonSchema via zod-to-json-schema for type-safe Gemini structured output
 - [Phase 03]: Used class syntax in vi.mock for constructor mocking (ApifyClient, GoogleGenAI)
 - [Phase 03]: Blocklist uses domain.includes() matching for subdomain coverage
+- [Phase 04]: Brand similarity uses 50% length ratio for inclusion check to avoid false positives on short handles
+- [Phase 04]: socialFallback merges only instagram and tiktok (2 scrape-able platforms per D-21)
+- [Phase 04]: ExtractSocialPayload uses SocialProfileInput type (username+source) for traceability
+- [Phase 04]: Both extraction tasks use retry 3 attempts with exponential backoff (2s-10s, factor 2)
+- [Phase 04]: validateOrNull pattern: null raw data skips validation; non-null failing data stores null with warning
+- [Phase 04]: Split extraction into 2 sequential batches: Batch 1 (website+viral) then Batch 2 (social+ads) because social needs website-discovered links
+- [Phase 04]: Google Search fallback only for specifically missing platforms (instagram/tiktok), not all, saving API calls
+- [Phase 04]: Sub-task progress uses 4 keys per competitor (website, seo, social, ads) for granular tracking
 
 ### Pending Todos
 
@@ -97,6 +108,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-27T21:36:41.174Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-03-28T01:07:20.430Z
+Stopped at: Completed 04-03-PLAN.md
 Resume file: None
