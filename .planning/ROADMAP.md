@@ -132,11 +132,11 @@ Plans:
   3. AI generates 3-5 video script suggestions with explicit hook, body, and CTA adapted to the user's niche
   4. Each script includes format recommendation (Reels, TikTok, etc.) and estimated duration
   5. Recommendations and scripts are stored in Supabase and displayed in a prioritized, structured format
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
+- [ ] 07-01-PLAN.md — Update types (Recommendation, CreativeScript per D-08/D-12), Zod schemas, upgrade synthesize.ts and creative.ts to structured output, prompts, fixtures, tests (Wave 1)
+- [ ] 07-02-PLAN.md — Trigger.dev synthesize compound task, orchestrator integration with synthesis step after extraction, tests (Wave 2)
 
 ### Phase 8: Modo Completo
 **Goal**: Users who provide their own business data get a comparative analysis showing exactly where they stand vs competitors
@@ -201,7 +201,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4/5/6 (parallelizable) -> 7 -> 8
 | 4. Website, SEO & Social Extraction | 0/3 | Planning complete | - |
 | 5. Ads Intelligence | 0/2 | Planning complete | - |
 | 6. Viral Content & Transcription | 0/3 | Planning complete | - |
-| 7. AI Synthesis & Creative Modeling | 0/2 | Not started | - |
+| 7. AI Synthesis & Creative Modeling | 0/2 | Planning complete | - |
 | 8. Modo Completo | 0/1 | Not started | - |
 | 9. Dashboard & Results UI | 0/3 | Not started | - |
 | 10. History, Cache & PDF Export | 0/2 | Not started | - |
