@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-28T13:51:36.409Z"
+status: verifying
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-28T13:57:04.965Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 10
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 12
-  completed_plans: 10
+  completed_plans: 11
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 
 Phase: 05 (ads-intelligence) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-28
 
 Progress: [░░░░░░░░░░] 0%
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04 P02 | 3min | 2 tasks | 4 files |
 | Phase 04 P03 | 4min | 1 tasks | 2 files |
 | Phase 05 P01 | 3min | 2 tasks | 5 files |
+| Phase 05 P02 | 3min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -98,6 +99,9 @@ Recent decisions affecting current work:
 - [Phase 05]: Google Ads actor changed to memo23/google-ad-transparency-scraper-cheerio (Cheerio-based, cheaper on credits)
 - [Phase 05]: Facebook Ads uses search field (not searchQuery) for keyword fallback
 - [Phase 05]: GMB schema uses .refine() for conditional name-not-null validation
+- [Phase 05]: Domain extraction uses new URL().hostname.replace(/^www\./, '') with fallback regex for malformed URLs
+- [Phase 05]: GMB null from scraper is valid (no listing) -- no warning, counts as null in determineStatus
+- [Phase 05]: Single updateCompetitor call stores all 3 ads JSONB columns atomically
 
 ### Pending Todos
 
@@ -112,6 +116,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28T13:51:36.406Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-03-28T13:57:04.962Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None

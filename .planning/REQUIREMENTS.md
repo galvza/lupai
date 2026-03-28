@@ -46,17 +46,17 @@
 ### Meta Ads Library
 
 - [x] **ADS-01**: System extracts active ads from Meta Ads Library per competitor (creatives, copy, format, time running)
-- [ ] **ADS-02**: Results display active ads per competitor with creative previews
+- [x] **ADS-02**: Results display active ads per competitor with creative previews
 
 ### Google Ads
 
 - [x] **GADS-01**: System detects competitor presence in Google Ads (search ads, paid keywords)
-- [ ] **GADS-02**: Results display Google Ads presence per competitor
+- [x] **GADS-02**: Results display Google Ads presence per competitor
 
 ### Google Meu Negócio
 
 - [x] **GMB-01**: System analyzes Google My Business presence when applicable (local businesses)
-- [ ] **GMB-02**: Results display GMB data when available, gracefully handles absence
+- [x] **GMB-02**: Results display GMB data when available, gracefully handles absence
 
 ### Viral Content Discovery
 
@@ -178,11 +178,11 @@
 | SOCL-02 | Phase 4 | Complete |
 | SOCL-03 | Phase 4 | Complete |
 | ADS-01 | Phase 5 | Complete |
-| ADS-02 | Phase 5 | Pending |
+| ADS-02 | Phase 5 | Complete |
 | GADS-01 | Phase 5 | Complete |
-| GADS-02 | Phase 5 | Pending |
+| GADS-02 | Phase 5 | Complete |
 | GMB-01 | Phase 5 | Complete |
-| GMB-02 | Phase 5 | Pending |
+| GMB-02 | Phase 5 | Complete |
 | VIRL-01 | Phase 6 | Pending |
 | VIRL-02 | Phase 6 | Pending |
 | VIRL-03 | Phase 6 | Pending |

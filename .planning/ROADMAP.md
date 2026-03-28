@@ -104,7 +104,7 @@ Plans:
 
 Plans:
 - [x] 05-01-PLAN.md — Enhance Apify wrappers (Meta Ads pageUrl, Google Ads domain), add Zod schemas, update actor ID (Wave 1)
-- [ ] 05-02-PLAN.md — Full extract-ads compound task, orchestrator region wiring, comprehensive tests (Wave 2)
+- [x] 05-02-PLAN.md — Full extract-ads compound task, orchestrator region wiring, comprehensive tests (Wave 2)
 
 ### Phase 6: Viral Content & Transcription
 **Goal**: Viral niche content is discovered, downloaded, transcribed, and structurally analyzed
