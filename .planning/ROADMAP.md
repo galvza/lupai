@@ -167,7 +167,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 09-01-PLAN.md — Response types (SectionStatus, AnalysisResultsResponse) and section status derivation logic with tests (Wave 1)
+- [x] 09-01-PLAN.md — Response types (SectionStatus, AnalysisResultsResponse) and section status derivation logic with tests (Wave 1)
 - [ ] 09-02-PLAN.md — Results aggregation API route and status fallback route with tests (Wave 2)
 
 **UI hint**: yes
