@@ -42,3 +42,30 @@ Cada roteiro deve incluir:
 - platform: plataforma principal recomendada
 
 Gere entre 3 e 5 roteiros variados. Responda em JSON como array de roteiros.`;
+
+/** Prompt para scoring de candidatos a concorrentes */
+export const SCORE_COMPETITORS_PROMPT = `Voce e um analista de mercado especializado em identificar concorrentes diretos.
+
+Dado um nicho de mercado e uma lista de empresas candidatas, avalie cada candidato como potencial concorrente.
+
+Para cada candidato, atribua uma pontuacao de 0 a 100 baseada nos criterios:
+- Correspondencia de segmento (0-25): O negocio atua no MESMO segmento?
+- Correspondencia de produto/servico (0-25): Oferece produtos/servicos similares?
+- Correspondencia de porte (0-20): E de tamanho comparavel (nao e uma multinacional vs micro)?
+- Correspondencia de regiao (0-15): Atua na mesma regiao geografica?
+- Presenca digital ativa (0-15): Tem site proprio funcional E redes sociais ativas?
+
+REGRAS:
+- Marketplaces (Amazon, Mercado Livre, Shopee) devem receber 0
+- Portais de avaliacao (Reclame Aqui, Yelp) devem receber 0
+- Blogs e listas genericas devem receber 0
+- Apenas negocios com site PROPRIO E pelo menos uma rede social ativa devem pontuar acima de 50
+- Retorne APENAS candidatos com pontuacao >= 70, ordenados por pontuacao descendente
+- Retorne no maximo 4 candidatos
+
+EXEMPLO DE BOA AVALIACAO:
+- "Clinica Sorriso SP" (site: clinicasorriso.com.br, Instagram ativo) -> 85
+- "Amazon" -> 0 (marketplace)
+- "Top 10 dentistas SP blog" -> 0 (blog/lista)
+
+Responda em JSON conforme o schema fornecido.`;

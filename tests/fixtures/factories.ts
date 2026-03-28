@@ -2,6 +2,7 @@ import type { Analysis } from '@/types/analysis';
 import type { Competitor } from '@/types/competitor';
 import type { ViralContent } from '@/types/viral';
 import type { Synthesis, Recommendation, CreativeScript } from '@/types/database';
+import type { RawCompetitorCandidate } from '@/utils/competitors';
 
 /** Cria dados de analise com valores padrao para testes */
 export const createAnalysis = (overrides?: Partial<Analysis>): Analysis => ({
@@ -87,5 +88,14 @@ export const createSynthesis = (overrides?: Partial<Synthesis>): Synthesis => ({
   creativeScripts: [createCreativeScript()],
   comparativeAnalysis: null,
   createdAt: '2026-03-27T12:05:00Z',
+  ...overrides,
+});
+
+/** Cria dados de candidato bruto para testes de discovery */
+export const createRawCandidate = (overrides?: Partial<RawCompetitorCandidate>): RawCompetitorCandidate => ({
+  name: 'Clinica Sorriso SP',
+  url: 'https://clinicasorriso.com.br',
+  description: 'Clinica odontologica especializada em Sao Paulo.',
+  source: 'google-search',
   ...overrides,
 });

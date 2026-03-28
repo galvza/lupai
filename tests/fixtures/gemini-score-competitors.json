@@ -1,0 +1,40 @@
+{
+  "competitors": [
+    {
+      "name": "Clinica Sorriso SP",
+      "url": "https://clinicasorriso.com.br",
+      "score": 88,
+      "segmentMatch": 23,
+      "productMatch": 22,
+      "sizeMatch": 15,
+      "regionMatch": 14,
+      "digitalPresence": 14,
+      "reasoning": "Clinica odontologica com site proprio e Instagram ativo, mesmo segmento e regiao.",
+      "socialProfiles": { "instagram": "@clinicasorriso", "tiktok": null, "facebook": "clinicasorrisosp" }
+    },
+    {
+      "name": "OdontoVida",
+      "url": "https://www.odontovida.com.br",
+      "score": 82,
+      "segmentMatch": 22,
+      "productMatch": 20,
+      "sizeMatch": 14,
+      "regionMatch": 13,
+      "digitalPresence": 13,
+      "reasoning": "Consultorio odontologico com servicos similares na mesma regiao.",
+      "socialProfiles": { "instagram": "@odontovida", "tiktok": "@odontovida", "facebook": null }
+    },
+    {
+      "name": "DentalPrime Clinica",
+      "url": "https://dentalprime.com.br",
+      "score": 75,
+      "segmentMatch": 20,
+      "productMatch": 18,
+      "sizeMatch": 12,
+      "regionMatch": 12,
+      "digitalPresence": 13,
+      "reasoning": "Clinica odontologica moderna no centro de SP.",
+      "socialProfiles": { "instagram": "@dentalprime", "tiktok": null, "facebook": null }
+    }
+  ]
+}
