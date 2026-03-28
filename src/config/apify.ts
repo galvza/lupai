@@ -16,7 +16,7 @@ export const APIFY_ACTORS = {
   facebookAds: 'apify/facebook-ads-scraper',
   similarweb: 'tri_angle/similarweb-scraper',
   googleMaps: 'compass/google-maps-scraper',
-  googleAds: 'apify/google-ads-scraper',
+  googleAds: 'memo23/google-ad-transparency-scraper-cheerio',
   website: 'apify/website-content-crawler',
 } as const;
 
