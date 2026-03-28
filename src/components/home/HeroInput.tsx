@@ -81,7 +81,7 @@ export const HeroInput = () => {
           onBlur={() => setIsFocused(false)}
           placeholder={visible ? placeholder : ""}
           rows={1}
-          className="w-full bg-transparent text-white text-base md:text-lg placeholder:text-[#888] resize-none outline-none leading-relaxed min-h-[40px] max-h-[120px] overflow-hidden pr-24"
+          className="w-full bg-transparent text-white text-sm md:text-base lg:text-lg placeholder:text-[#888] resize-none outline-none leading-relaxed min-h-[40px] max-h-[120px] overflow-hidden pr-24"
           style={{
             transition: "opacity 0.3s ease",
           }}
