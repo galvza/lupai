@@ -35,6 +35,9 @@ Entregar em minutos o que hoje leva horas: uma análise completa do mercado/nich
 - ✓ Google Ads detection: domain-based Ads Transparency + topic fallback, paid keywords extraction — Phase 5
 - ✓ Google My Business extraction: name+region search, graceful null for absent listings — Phase 5
 - ✓ Extract-ads compound task: 3-way parallel (Promise.allSettled), Zod validation, never-throw — Phase 5
+- ✓ Viral content extraction: TikTok + Instagram viral search, Bunny Storage upload, transcription pipeline — Phase 6
+- ✓ AI synthesis: Gemini structured output with 8 sections, creative modeling (roteiros com gancho/corpo/CTA) — Phase 7
+- ✓ Modo Completo: role-based competitor schema, user business extraction in orchestrator, comparative synthesis pipeline — Phase 8
 
 ### Active
 - [ ] Análise do site (posicionamento, oferta, preços, meta tags)
@@ -49,8 +52,8 @@ Entregar em minutos o que hoje leva horas: uma análise completa do mercado/nich
 - [ ] Síntese com IA: consolida todos os dados e gera recomendações estratégicas acionáveis
 - [ ] Dashboard/relatório visual com os resultados organizados
 - [ ] Exportação de relatórios em PDF
-- [ ] Modo Completo: usuário informa dados do próprio negócio, sistema cruza com concorrentes
-- [ ] Recomendações personalizadas no Modo Completo (comparativas)
+- [x] Modo Completo: usuário informa dados do próprio negócio, sistema cruza com concorrentes — Phase 8 (backend)
+- [x] Recomendações personalizadas no Modo Completo (comparativas) — Phase 8 (backend)
 - [ ] Persistência de dados: resultados salvos por categoria de nicho
 - [ ] Histórico de pesquisas acessível
 - [ ] Interface web responsiva, didática e autoexplicativa (sem autenticação)
