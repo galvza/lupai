@@ -108,9 +108,9 @@
 
 ### PDF Export
 
-- [ ] **PDF-01**: User can export the complete analysis as a PDF report
-- [ ] **PDF-02**: PDF includes all dashboard sections in clean, printable layout
-- [ ] **PDF-03**: PDF has cover with logo, date, and niche name
+- [x] **PDF-01**: User can export the complete analysis as a PDF report
+- [x] **PDF-02**: PDF includes all dashboard sections in clean, printable layout
+- [x] **PDF-03**: PDF has cover with logo, date, and niche name
 
 ### Orchestration & Resilience
 
@@ -213,9 +213,9 @@
 | HIST-02 | Phase 10 | Complete |
 | HIST-03 | Phase 10 | Complete |
 | HIST-04 | Phase 10 | Complete |
-| PDF-01 | Phase 10 | Pending |
-| PDF-02 | Phase 10 | Pending |
-| PDF-03 | Phase 10 | Pending |
+| PDF-01 | Phase 10 | Complete |
+| PDF-02 | Phase 10 | Complete |
+| PDF-03 | Phase 10 | Complete |
 
 **Coverage:**
 - v1 requirements: 59 total

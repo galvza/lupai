@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 7: AI Synthesis & Creative Modeling** - Strategic recommendations, Hook/Body/CTA analysis, script generation
 - [ ] **Phase 8: Modo Completo** - User business extraction, comparative analysis, personalized recommendations
 - [ ] **Phase 9: Dashboard & Results UI** - Full results dashboard with real-time progress, responsive layout, graceful degradation
-- [ ] **Phase 10: History, Cache & PDF Export** - Search history, 24h niche cache, PDF report generation
+- [x] **Phase 10: History, Cache & PDF Export** - Search history, 24h niche cache, PDF report generation (completed 2026-03-28)
 
 ## Phase Details
 
@@ -185,7 +185,7 @@ Plans:
 
 Plans:
 - [x] 10-01-PLAN.md — History API with cursor pagination, 24h cache check in analyze route, cache index migration (Wave 1)
-- [ ] 10-02-PLAN.md — PDF generation with jsPDF + Roboto font, section renderers, report API route (Wave 1)
+- [x] 10-02-PLAN.md — PDF generation with jsPDF + Roboto font, section renderers, report API route (Wave 1)
 
 **UI hint**: yes
 
@@ -205,4 +205,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4/5/6 (parallelizable) -> 7 -> 8
 | 7. AI Synthesis & Creative Modeling | 0/2 | Planning complete | - |
 | 8. Modo Completo | 0/3 | Planning complete | - |
 | 9. Dashboard & Results UI | 0/2 | Planning complete | - |
-| 10. History, Cache & PDF Export | 1/2 | In Progress|  |
+| 10. History, Cache & PDF Export | 2/2 | Complete   | 2026-03-28 |
