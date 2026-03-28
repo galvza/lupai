@@ -36,7 +36,7 @@ vi.mock('@/lib/supabase/queries', () => ({
   getCompetitorsByAnalysis: vi.fn(),
 }));
 
-vi.mock('./discover-competitors', () => ({
+vi.mock('@/trigger/discover-competitors', () => ({
   discoverFromGoogleSearch: { id: 'discover-google-search' },
   discoverFromGoogleMaps: { id: 'discover-google-maps' },
   discoverFromFacebookAds: { id: 'discover-facebook-ads' },
@@ -48,23 +48,23 @@ const { mockExtractWebsiteTriggerAndWait } = vi.hoisted(() => ({
   mockExtractWebsiteTriggerAndWait: vi.fn(),
 }));
 
-vi.mock('./extract-website', () => ({
+vi.mock('@/trigger/extract-website', () => ({
   extractWebsite: { id: 'extract-website', triggerAndWait: mockExtractWebsiteTriggerAndWait },
 }));
 
-vi.mock('./extract-social', () => ({
+vi.mock('@/trigger/extract-social', () => ({
   extractSocial: { id: 'extract-social' },
 }));
 
-vi.mock('./extract-ads', () => ({
+vi.mock('@/trigger/extract-ads', () => ({
   extractAds: { id: 'extract-ads' },
 }));
 
-vi.mock('./extract-viral', () => ({
+vi.mock('@/trigger/extract-viral', () => ({
   extractViral: { id: 'extract-viral' },
 }));
 
-vi.mock('./synthesize', () => ({
+vi.mock('@/trigger/synthesize', () => ({
   synthesizeTask: { id: 'synthesize', triggerAndWait: vi.fn().mockResolvedValue({ ok: true, output: { status: 'completed' } }) },
 }));
 
@@ -208,14 +208,29 @@ const setupModoCompleto = () => {
     output: MOCK_USER_WEBSITE_RESULT,
   });
 
-  // Social fallback for user business
+  // Social fallback for user business (and later for competitors)
   mockFindSocialProfiles.mockResolvedValue({ tiktok: null });
   mockMergeSocialSources.mockReturnValue({
     instagram: { username: 'minhaclinica', source: 'website' as const },
     tiktok: null,
   });
 
-  // Discovery runs: all succeed (call 1)
+  // createCompetitor: first call is for user_business (in user extraction block),
+  // next calls are for confirmed competitors
+  mockCreateCompetitor
+    .mockResolvedValueOnce(MOCK_USER_BUSINESS)
+    .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
+    .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[1]);
+
+  // Call 1: User Batch B — social + ads for user business
+  mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
+    runs: [
+      { ok: true, output: {} }, // extractSocial for user
+      { ok: true, output: {} }, // extractAds for user
+    ],
+  });
+
+  // Call 2: Discovery runs (4 sources)
   mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
     runs: [
       { ok: true, output: [MOCK_CANDIDATES[0]] },
@@ -233,14 +248,7 @@ const setupModoCompleto = () => {
     output: { competitors: MOCK_SCORED },
   });
 
-  // createCompetitor: first call is for user_business (in user extraction block),
-  // next calls are for confirmed competitors
-  mockCreateCompetitor
-    .mockResolvedValueOnce(MOCK_USER_BUSINESS)
-    .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
-    .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[1]);
-
-  // Batch 1 runs: extractWebsite x2 + extractViral (call 2)
+  // Call 3: Batch 1 — extractWebsite x2 + extractViral
   mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
     runs: [
       { ok: true, output: MOCK_WEBSITE_RESULT_A },
@@ -249,7 +257,7 @@ const setupModoCompleto = () => {
     ],
   });
 
-  // Batch 2 runs: extractSocial x2 + extractAds x2 (call 3)
+  // Call 4: Batch 2 — extractSocial x2 + extractAds x2
   mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
     runs: [
       { ok: true, output: {} },
@@ -334,20 +342,27 @@ describe('analyzeMarket Modo Completo', () => {
     setupModoCompleto();
     await getOrchestratorRun()(COMPLETE_PAYLOAD);
 
-    // After extractWebsite.triggerAndWait succeeds, batch.triggerByTaskAndWait
-    // should be called for user social+ads (this is BEFORE the discovery batch calls)
-    // The first batch call is for user social+ads, then discovery, batch1, batch2
-
-    // The user batch should include extractSocial and extractAds
+    // batch.triggerByTaskAndWait call order:
+    // Call 0: User Batch B (social + ads for user business) -- after extractWebsite.triggerAndWait
+    // Call 1: Discovery (4 sources)
+    // Call 2: Batch 1 (website + viral for competitors)
+    // Call 3: Batch 2 (social + ads for competitors)
     const allBatchCalls = mockBatch.triggerByTaskAndWait.mock.calls;
+    expect(allBatchCalls.length).toBe(4);
 
-    // Find the user batch call (should be first call, before discovery)
+    // First batch call should be for user social+ads
     const userBatchCall = allBatchCalls[0][0];
     const userBatchIds = userBatchCall.map((item: { task: { id: string } }) => item.task.id);
 
     // User batch should contain social + ads for user business
     expect(userBatchIds).toContain('extract-social');
     expect(userBatchIds).toContain('extract-ads');
+
+    // Verify payloads reference user business ID
+    const socialPayload = userBatchCall.find((item: { task: { id: string } }) => item.task.id === 'extract-social');
+    expect(socialPayload.payload.competitorId).toBe('user-biz-001');
+    const adsPayload = userBatchCall.find((item: { task: { id: string } }) => item.task.id === 'extract-ads');
+    expect(adsPayload.payload.competitorId).toBe('user-biz-001');
   });
 
   it('modo completo define metadata com step Analisando seu negocio', async () => {

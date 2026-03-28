@@ -4,10 +4,10 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import type { Competitor } from '@/types/competitor';
 import type { ViralContent } from '@/types/viral';
 import type { ViralPatterns } from '@/types/viral';
-import type { SynthesisOutput } from '@/types/database';
+import type { SynthesisOutput, ComparativeAnalysis } from '@/types/database';
 import { synthesisOutputSchema } from '@/lib/validation/synthesisSchemas';
 import { validateOrNull } from '@/lib/validation/extractionSchemas';
-import { SYNTHESIZE_PROMPT } from './prompts';
+import { SYNTHESIZE_PROMPT, COMPARATIVE_SYNTHESIS_SECTION } from './prompts';
 
 /**
  * Pre-sumariza dados dos concorrentes para contexto do Gemini (per D-28, D-29, D-30).
@@ -127,7 +127,8 @@ export const truncateContextIfNeeded = async (
 /**
  * Gera sintese estrategica a partir dos dados coletados usando Gemini.
  * Usa Zod + zodToJsonSchema + validateOrNull para output estruturado (per D-05).
- * @param input - Dados do nicho, concorrentes e conteudo viral
+ * Quando userBusiness e fornecido, inclui secoes comparativas no prompt (per D-17, D-19).
+ * @param input - Dados do nicho, concorrentes, conteudo viral e opcionalmente negocio do usuario
  * @returns SynthesisOutput estruturado ou null se falha
  */
 export const synthesizeAnalysis = async (input: {
@@ -137,6 +138,7 @@ export const synthesizeAnalysis = async (input: {
   competitors: Competitor[];
   viralContent: ViralContent[];
   viralPatterns: ViralPatterns | null;
+  userBusiness?: Competitor | null;
 }): Promise<SynthesisOutput | null> => {
   const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
@@ -149,6 +151,12 @@ export const synthesizeAnalysis = async (input: {
       `Dados dos concorrentes:\n${JSON.stringify(competitorCtx)}\n\n` +
       `Padroes virais:\n${JSON.stringify(viralCtx)}`;
 
+    // Append comparative section for Modo Completo (per D-17, D-20, D-21)
+    if (input.userBusiness) {
+      const userBusinessCtx = assembleCompetitorContext([input.userBusiness]);
+      fullPrompt += `\n\n${COMPARATIVE_SYNTHESIS_SECTION}${JSON.stringify(userBusinessCtx[0])}`;
+    }
+
     const truncated = await truncateContextIfNeeded(
       fullPrompt,
       competitorCtx,
@@ -160,6 +168,12 @@ export const synthesizeAnalysis = async (input: {
         `${SYNTHESIZE_PROMPT}\n\nNicho: ${input.niche}\nSegmento: ${input.segment}\nRegiao: ${input.region}\n\n` +
         `Dados dos concorrentes:\n${JSON.stringify(truncated.competitorContext)}\n\n` +
         `Padroes virais:\n${JSON.stringify(truncated.viralContext)}`;
+
+      // Re-append comparative section after truncation
+      if (input.userBusiness) {
+        const userBusinessCtx = assembleCompetitorContext([input.userBusiness]);
+        fullPrompt += `\n\n${COMPARATIVE_SYNTHESIS_SECTION}${JSON.stringify(userBusinessCtx[0])}`;
+      }
     }
 
     const response = await genai.models.generateContent({
@@ -180,4 +194,58 @@ export const synthesizeAnalysis = async (input: {
     console.warn(`Aviso: falha na sintese estrategica: ${(error as Error).message}`);
     return null;
   }
+};
+
+/**
+ * Constroi objeto ComparativeAnalysis a partir do output da sintese (per D-22, D-30).
+ * @param synthesisOutput - Output da sintese com campos comparativos opcionais
+ * @param userBusiness - Dados do negocio do usuario (null se indisponivel)
+ * @returns ComparativeAnalysis para armazenamento no banco
+ */
+export const buildComparativeAnalysis = (
+  synthesisOutput: SynthesisOutput | null,
+  userBusiness: Competitor | null
+): ComparativeAnalysis => {
+  if (!userBusiness) {
+    return {
+      comparativeStatus: 'unavailable',
+      userVsMarket: null,
+      gapsVsCompetitors: null,
+      competitiveAdvantages: null,
+      personalizedRecommendations: [],
+      degradedReason: 'Dados do negocio do usuario indisponiveis',
+    };
+  }
+
+  if (!synthesisOutput) {
+    return {
+      comparativeStatus: 'unavailable',
+      userVsMarket: null,
+      gapsVsCompetitors: null,
+      competitiveAdvantages: null,
+      personalizedRecommendations: [],
+      degradedReason: 'Sintese estrategica indisponivel',
+    };
+  }
+
+  const hasAll = synthesisOutput.userVsMarket && synthesisOutput.gapsVsCompetitors && synthesisOutput.competitiveAdvantages;
+  const hasAny = synthesisOutput.userVsMarket || synthesisOutput.gapsVsCompetitors || synthesisOutput.competitiveAdvantages;
+
+  let comparativeStatus: 'full' | 'partial' | 'unavailable';
+  if (hasAll) comparativeStatus = 'full';
+  else if (hasAny) comparativeStatus = 'partial';
+  else comparativeStatus = 'unavailable';
+
+  // Filter recommendations that contain comparative language
+  const comparativeRecs = synthesisOutput.recommendations.filter(
+    (r) => r.action.includes('concorrente') || r.reason.includes('concorrente') || r.action.includes('voce') || r.reason.includes('voce')
+  );
+
+  return {
+    comparativeStatus,
+    userVsMarket: synthesisOutput.userVsMarket ?? null,
+    gapsVsCompetitors: synthesisOutput.gapsVsCompetitors ?? null,
+    competitiveAdvantages: synthesisOutput.competitiveAdvantages ?? null,
+    personalizedRecommendations: comparativeRecs.length > 0 ? comparativeRecs : synthesisOutput.recommendations,
+  };
 };

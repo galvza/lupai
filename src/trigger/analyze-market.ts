@@ -37,12 +37,107 @@ export const analyzeMarket = task({
   id: 'analyze-market',
   maxDuration: 300,
   run: async (payload: AnalyzeMarketPayload) => {
+    const emptySocialLinks: SocialLinks = { instagram: null, tiktok: null, facebook: null, youtube: null, linkedin: null, twitter: null };
+
     try {
       // Step 1: Update status to discovering
       await updateAnalysis(payload.analysisId, { status: 'discovering' });
       metadata.set('status', 'discovering');
       metadata.set('step', 'Descobrindo concorrentes...');
       metadata.set('progress', 10);
+
+      // Step 1.5: User business extraction (Modo Completo per D-02, D-11)
+      if (payload.mode === 'complete' && payload.userBusinessUrl) {
+        metadata.set('step', 'Analisando seu negocio...');
+        metadata.set('progress', 5);
+
+        // Derive business name from URL (per research recommendation)
+        let userBusinessName: string;
+        try {
+          userBusinessName = new URL(payload.userBusinessUrl).hostname.replace(/^www\./, '');
+        } catch {
+          userBusinessName = payload.userBusinessUrl;
+        }
+
+        try {
+          // Create user business record (per D-05, D-12)
+          const userBusiness = await createCompetitor({
+            analysisId: payload.analysisId,
+            name: userBusinessName,
+            websiteUrl: payload.userBusinessUrl,
+            role: 'user_business',
+          });
+
+          // User Batch A: website extraction (per D-03, D-13)
+          const websiteResult = await extractWebsite.triggerAndWait({
+            analysisId: payload.analysisId,
+            competitorId: userBusiness.id,
+            competitorName: userBusiness.name,
+            websiteUrl: payload.userBusinessUrl,
+          });
+
+          if (websiteResult.ok) {
+            const result = websiteResult.output as ExtractWebsiteResult;
+            const userSocialLinks = result.socialLinks ?? emptySocialLinks;
+
+            metadata.set('step', 'Analisando suas redes sociais e anuncios...');
+            metadata.set('progress', 12);
+
+            // Social link fallback for missing platforms
+            const missingPlatforms: string[] = [];
+            if (!userSocialLinks.instagram) missingPlatforms.push('instagram');
+            if (!userSocialLinks.tiktok) missingPlatforms.push('tiktok');
+
+            let searchResults: Record<string, SocialProfileInput | null> = {};
+            if (missingPlatforms.length > 0) {
+              try {
+                searchResults = await findSocialProfilesViaSearch(userBusiness.name, missingPlatforms);
+              } catch { /* fallback failure not critical */ }
+            }
+
+            const merged = mergeSocialSources(
+              userSocialLinks,
+              searchResults,
+              { instagram: null, tiktok: null, facebook: null }
+            );
+
+            // User Batch B: social + ads (per D-03, D-13)
+            await batch.triggerByTaskAndWait([
+              {
+                task: extractSocial,
+                payload: {
+                  analysisId: payload.analysisId,
+                  competitorId: userBusiness.id,
+                  competitorName: userBusiness.name,
+                  socialProfiles: merged,
+                },
+              },
+              {
+                task: extractAds,
+                payload: {
+                  analysisId: payload.analysisId,
+                  competitorId: userBusiness.id,
+                  competitorName: userBusiness.name,
+                  websiteUrl: payload.userBusinessUrl,
+                  region: payload.region,
+                },
+              },
+            ]);
+          } else {
+            // Website extraction failed but we still continue per D-29
+            console.warn('Aviso: extracao do site do usuario falhou. Continuando com pipeline de concorrentes.');
+            metadata.set('modoCompleto', 'degraded');
+            metadata.set('modoCompletoReason', 'Nao foi possivel analisar seu site completamente. Mostrando analise do mercado com comparacao parcial.');
+          }
+
+          metadata.set('progress', 18);
+        } catch (error) {
+          // D-28: User extraction failure does NOT block competitor pipeline
+          console.warn(`Aviso: extracao do negocio do usuario falhou: ${(error as Error).message}`);
+          metadata.set('modoCompleto', 'degraded');
+          metadata.set('modoCompletoReason', 'Nao foi possivel analisar seu site. Mostrando analise do mercado sem comparacao.');
+        }
+      }
 
       // Step 2: Fan-out discovery via batch
       const { runs: discoveryRuns } = await batch.triggerByTaskAndWait([
@@ -174,8 +269,6 @@ export const analyzeMarket = task({
 
       const websiteRuns = batch1Runs.slice(0, savedCompetitors.length);
       const socialProfilesPerCompetitor: Array<{ instagram: SocialProfileInput | null; tiktok: SocialProfileInput | null }> = [];
-
-      const emptySocialLinks: SocialLinks = { instagram: null, tiktok: null, facebook: null, youtube: null, linkedin: null, twitter: null };
 
       for (let i = 0; i < savedCompetitors.length; i++) {
         const run = websiteRuns[i];
