@@ -1,0 +1,131 @@
+{
+  "marketOverview": {
+    "title": "Panorama do mercado de clinicas odontologicas em SP",
+    "summary": "O mercado de clinicas odontologicas em Sao Paulo e altamente competitivo, com mais de 15.000 estabelecimentos ativos. A presenca digital tornou-se fator decisivo de diferenciacao, com clinicas que investem em redes sociais gerando ate 4x mais agendamentos online. O segmento de estetica dental (lentes de contato, clareamento) lidera em volume de busca e engajamento nas redes.",
+    "metrics": {
+      "total_clinicas_regiao": 15200,
+      "crescimento_anual": "8.3%",
+      "ticket_medio_estetica": "R$ 2.800",
+      "busca_mensal_nicho": 42000,
+      "taxa_conversao_media_digital": "3.2%"
+    },
+    "tags": ["odontologia", "estetica dental", "sao paulo", "alta concorrencia", "digital first"],
+    "detailed_analysis": "A analise de mercado revela tres segmentos principais: (1) clinicas generalistas de bairro com foco em planos de saude, (2) clinicas especializadas em estetica dental com ticket alto, e (3) redes/franquias com marketing agressivo. O segmento de estetica dental apresenta o maior crescimento (12% a.a.) e as maiores margens. As clinicas com presenca ativa no Instagram (posting 4+ vezes por semana) reportam 67% mais agendamentos via canal digital do que as com presenca passiva. O TikTok esta emergindo como canal de aquisicao, com videos de procedimentos acumulando milhoes de visualizacoes. Google Ads continua sendo o canal de maior ROI direto para agendamentos, mas o custo por clique subiu 23% no ultimo ano."
+  },
+  "competitorAnalysis": {
+    "title": "Analise detalhada dos concorrentes diretos",
+    "summary": "Foram analisados 4 concorrentes diretos no nicho de clinicas odontologicas em SP. A Clinica Sorriso SP lidera em presenca digital com 15.4k seguidores no Instagram e taxa de engajamento de 4.2%. A Dental Excellence se destaca em SEO com trafego organico estimado em 8.200 visitas/mes. A OdontoVida SP investe pesado em Meta Ads com 12 anuncios ativos simultaneamente.",
+    "metrics": {
+      "total_concorrentes_analisados": 4,
+      "media_seguidores_instagram": 8750,
+      "media_engajamento_instagram": "3.1%",
+      "media_anuncios_ativos_meta": 6,
+      "concorrente_lider_digital": "Clinica Sorriso SP"
+    },
+    "tags": ["benchmark", "concorrencia direta", "presenca digital", "ads"],
+    "detailed_analysis": "Clinica Sorriso SP: 15.4k seguidores Instagram, 4.2% engajamento, posta 5x/semana com foco em antes/depois. SEO forte com 5.600 visitas/mes. 8 anuncios ativos no Meta focados em clareamento. Dental Excellence: 9.2k seguidores, 2.8% engajamento, posta 3x/semana. Lider em SEO com 8.200 visitas/mes e 45 keywords ranqueadas na primeira pagina. 4 anuncios Meta. OdontoVida SP: 6.8k seguidores, 2.4% engajamento, posta 2x/semana. 12 anuncios Meta ativos, maior investidor em paid media. Presenca no Google Ads com 15 keywords pagas. SmileCare SP: 3.6k seguidores, 1.9% engajamento, posta 1x/semana. Menor presenca digital, foco em Google Meu Negocio (4.8 estrelas, 342 avaliacoes)."
+  },
+  "gapsAndOpportunities": {
+    "title": "Gaps de mercado e oportunidades identificadas",
+    "summary": "Identificamos 5 gaps principais no mercado: (1) nenhum concorrente tem presenca consistente no TikTok, (2) conteudo educativo sobre procedimentos e sub-explorado, (3) poucos usam depoimentos em video como social proof, (4) Google Meu Negocio e negligenciado por 50% dos concorrentes, (5) remarketing via Meta Ads e pouco utilizado.",
+    "metrics": {
+      "gaps_identificados": 5,
+      "oportunidade_tiktok_potencial": "alto",
+      "concorrentes_sem_gmb_otimizado": 2,
+      "concorrentes_sem_tiktok": 4
+    },
+    "tags": ["oportunidades", "tiktok", "conteudo educativo", "gmb", "remarketing"],
+    "detailed_analysis": "O gap mais significativo e a ausencia total de conteudo no TikTok entre os concorrentes analisados. Videos de procedimentos odontologicos (especialmente estetica) viralizam consistentemente na plataforma, com o hashtag #antesedepois acumulando 2.1B de visualizacoes. Outro gap critico: apenas Clinica Sorriso SP usa depoimentos em video de pacientes. Estudos de mercado indicam que depoimentos em video aumentam conversao em 34%. Google Meu Negocio: OdontoVida SP e Dental Excellence nao tem perfis otimizados (sem fotos recentes, sem respostas a avaliacoes). Remarketing: nenhum concorrente roda campanhas de remarketing no Meta Ads, focando apenas em campanhas de aquisicao cold. Conteudo educativo: posts explicando procedimentos geram 2.8x mais saves que posts promocionais, mas representam menos de 15% do conteudo dos concorrentes."
+  },
+  "viralPatterns": {
+    "title": "Padroes de conteudo viral no nicho odontologico",
+    "summary": "Analisamos 18 videos virais do nicho. O padrao dominante e o formato antes/depois com hook provocativo nos primeiros 3 segundos. Videos com musica trending e transicoes rapidas tem 3.2x mais compartilhamentos. O tom emocional (transformacao, autoestima) supera o tom tecnico em engajamento.",
+    "metrics": {
+      "videos_analisados": 18,
+      "media_visualizacoes": 245000,
+      "formato_mais_viral": "antes/depois com hook provocativo",
+      "duracao_ideal_segundos": 22,
+      "taxa_compartilhamento_media": "5.8%"
+    },
+    "tags": ["viral", "antes depois", "hook provocativo", "transformacao", "tiktok trends"],
+    "detailed_analysis": "Tres padroes virais dominantes foram identificados: (1) Antes/depois dramatico - o hook questiona o espectador ('Voce acredita que isso e a mesma pessoa?'), mostra a transformacao com transicao rapida, e fecha com o resultado final. Media de 340k views. (2) Dia no consultorio - estilo vlog mostrando bastidores, humaniza o profissional. Funciona melhor com humor leve. Media de 180k views. (3) Desmistificando procedimentos - explica de forma simples e visual um procedimento comum (clareamento, lentes). Gera muitos saves e comentarios com duvidas. Media de 150k views. Hooks que funcionam: perguntas diretas, estatisticas chocantes, 'ninguem te conta isso sobre...'. CTAs mais efetivos: 'Salva pra quando precisar', 'Marca alguem que precisa ver isso'."
+  },
+  "recommendations": [
+    {
+      "action": "Seu concorrente Clinica Sorriso SP posta 5x por semana no Instagram e voce posta 2x — aumente para pelo menos 4x por semana, priorizando conteudo de antes/depois e depoimentos",
+      "reason": "Frequencia de postagem correlaciona diretamente com engajamento. A Clinica Sorriso SP tem 15.4k seguidores vs seus 2.1k, e a principal diferenca e a consistencia de conteudo (5x vs 2x/semana). Com 4x/semana voce pode atingir crescimento de 300% em 90 dias.",
+      "priority": "alta",
+      "effort": "medio",
+      "expected_impact": "Crescimento de 200-300% em seguidores e engajamento no Instagram em 90 dias"
+    },
+    {
+      "action": "Iniciar presenca no TikTok imediatamente com 3 videos por semana no formato antes/depois — nenhum concorrente esta na plataforma",
+      "reason": "Nenhum dos 4 concorrentes analisados tem presenca ativa no TikTok, representando um gap de mercado critico. O nicho odontologico viraliza naturalmente no TikTok com conteudo de transformacao.",
+      "priority": "alta",
+      "effort": "medio",
+      "expected_impact": "Potencial de atingir 50k+ seguidores em 6 meses como first mover no nicho local"
+    },
+    {
+      "action": "Seu concorrente Dental Excellence ranqueia para 45 keywords na primeira pagina e voce para apenas 8 — investir em SEO on-page otimizando paginas de servico para keywords de cauda longa",
+      "reason": "Dental Excellence gera 8.200 visitas organicas/mes vs suas 1.200. A diferenca principal esta na quantidade de paginas de servico otimizadas. Cada pagina de servico otimizada para uma keyword especifica pode trazer 200-400 visitas/mes adicionais.",
+      "priority": "alta",
+      "effort": "alto",
+      "expected_impact": "Aumento de 300-500% no trafego organico em 6 meses, gerando 15-25 agendamentos organicos adicionais por mes"
+    },
+    {
+      "action": "Otimizar perfil do Google Meu Negocio com fotos profissionais semanais, respostas a todas as avaliacoes e posts quinzenais — seu perfil tem 3.9 estrelas vs 4.8 da SmileCare SP",
+      "reason": "Google Meu Negocio e o principal canal de descoberta local para clinicas. SmileCare SP, mesmo com menor presenca digital geral, gera mais agendamentos locais gracas ao GMB otimizado (4.8 estrelas, 342 avaliacoes respondidas). Seu perfil com 3.9 estrelas e 67 avaliacoes precisa de atencao urgente.",
+      "priority": "alta",
+      "effort": "baixo",
+      "expected_impact": "Aumento de 40-60% em agendamentos via Google Maps em 60 dias"
+    },
+    {
+      "action": "Implementar campanha de remarketing no Meta Ads para visitantes do site que nao agendaram — nenhum concorrente usa essa estrategia",
+      "reason": "Todos os 4 concorrentes focam apenas em campanhas cold no Meta Ads. Remarketing tem custo 3-5x menor e conversao 2-3x maior. Com pixel instalado no seu site voce pode atingir visitantes que demonstraram interesse mas nao converteram.",
+      "priority": "media",
+      "effort": "medio",
+      "expected_impact": "Reducao de 40-60% no custo por agendamento via Meta Ads"
+    }
+  ],
+  "userVsMarket": {
+    "title": "Sua posicao no mercado",
+    "summary": "Seu negocio esta posicionado no quartil inferior em presenca digital comparado aos concorrentes diretos. Com 2.1k seguidores no Instagram, 1.200 visitas organicas/mes e 2 anuncios ativos no Meta, voce esta significativamente abaixo da media do mercado em todos os indicadores digitais analisados.",
+    "metrics": {
+      "seguidores_instagram_voce": 2100,
+      "seguidores_instagram_media_mercado": 8750,
+      "trafego_organico_voce": 1200,
+      "trafego_organico_media_mercado": 5200,
+      "anuncios_meta_voce": 2,
+      "anuncios_meta_media_mercado": 6,
+      "posicao_no_mercado": "quartil inferior"
+    },
+    "tags": ["posicionamento", "benchmark pessoal", "gap digital"],
+    "detailed_analysis": "Comparando seu negocio com os 4 concorrentes analisados: Instagram - voce tem 2.1k seguidores vs media de 8.750 (76% abaixo). Sua taxa de engajamento de 1.8% e inferior a media de 3.1%. SEO - seu site recebe 1.200 visitas/mes vs media de 5.200 (77% abaixo). Voce ranqueia para 8 keywords vs media de 28. Meta Ads - voce tem 2 anuncios ativos vs media de 6. Seus anuncios focam em promocao de preco, enquanto concorrentes focam em transformacao e resultados. Google Meu Negocio - sua nota de 3.9 estrelas com 67 avaliacoes esta abaixo da media de 4.4 estrelas com 198 avaliacoes. Ponto positivo: seu site tem boa velocidade de carregamento (LCP 1.8s vs media de 3.2s) e voce e um dos poucos com CNPJ visivel no site, transmitindo confianca."
+  },
+  "gapsVsCompetitors": {
+    "title": "Gaps vs concorrentes",
+    "summary": "Seus maiores gaps em relacao aos concorrentes sao: frequencia de postagem no Instagram (2x vs 5x da Clinica Sorriso SP), volume de keywords organicas (8 vs 45 da Dental Excellence), e investimento em Meta Ads (2 vs 12 anuncios da OdontoVida SP). Voce tem 3 gaps criticos que precisam ser endererecados urgentemente.",
+    "metrics": {
+      "gaps_criticos": 3,
+      "gap_frequencia_posts": "2x vs 5x/semana",
+      "gap_keywords_organicas": "8 vs 45",
+      "gap_anuncios_meta": "2 vs 12",
+      "gap_nota_gmb": "3.9 vs 4.8"
+    },
+    "tags": ["gaps", "frequencia", "seo", "ads", "gmb"],
+    "detailed_analysis": "Gap 1 - Frequencia de conteudo: Clinica Sorriso SP posta 5x/semana e voce 2x. Isso explica a diferenca de 7x em seguidores (15.4k vs 2.1k). O algoritmo do Instagram favorece contas com postagem consistente. Gap 2 - SEO e conteudo organico: Dental Excellence tem 45 keywords na primeira pagina vs suas 8. Eles tem paginas de servico otimizadas para cada procedimento (clareamento, implante, lentes de contato dental), enquanto seu site tem apenas 3 paginas de servico. Gap 3 - Volume de anuncios: OdontoVida SP roda 12 anuncios simultaneamente testando diferentes criativos e publicos. Voce tem apenas 2 anuncios com o mesmo criativo desde ha 3 meses. Gap 4 - Google Meu Negocio: SmileCare SP tem 4.8 estrelas com 342 avaliacoes (todas respondidas) vs suas 3.9 estrelas com 67 avaliacoes (23 sem resposta). Cada avaliacao sem resposta reduz a confianca de potenciais pacientes."
+  },
+  "competitiveAdvantages": {
+    "title": "Vantagens competitivas identificadas",
+    "summary": "Apesar dos gaps, seu negocio tem vantagens competitivas reais: site com melhor performance tecnica (LCP 1.8s), transparencia empresarial (CNPJ visivel), especializacao em estetica dental (maior ticket), e localizacao privilegiada na zona sul de SP com menos concorrencia direta.",
+    "metrics": {
+      "vantagens_identificadas": 4,
+      "lcp_seu_site": "1.8s",
+      "lcp_media_concorrentes": "3.2s",
+      "ticket_medio_seu": "R$ 3.200",
+      "ticket_medio_mercado": "R$ 2.800"
+    },
+    "tags": ["vantagens", "performance", "especializacao", "localizacao"],
+    "detailed_analysis": "Vantagem 1 - Performance tecnica do site: seu site carrega em 1.8s (LCP) vs media de 3.2s dos concorrentes. Google prioriza sites rapidos no ranking. Isso pode ser alavancado com SEO on-page para ganhar posicoes rapidamente. Vantagem 2 - Transparencia: voce e o unico com CNPJ e informacoes empresariais claras no site. Em um mercado com desconfianca crescente, isso gera credibilidade. Vantagem 3 - Especializacao em estetica: seu foco em estetica dental permite ticket medio de R$ 3.200 vs R$ 2.800 do mercado. Concorrentes generalistas nao podem competir nesse segmento tao efetivamente. Vantagem 4 - Localizacao: a zona sul de SP onde voce esta tem menor densidade de clinicas especializadas em estetica dental (3 clinicas/km2 vs 7/km2 no centro). Essa vantagem geografica pode ser amplificada com SEO local e Google Meu Negocio otimizado."
+  }
+}
