@@ -43,6 +43,41 @@ Cada roteiro deve incluir:
 
 Gere entre 3 e 5 roteiros variados. Responda em JSON como array de roteiros.`;
 
+/** Prompt para extracao de Hook/Body/CTA de uma transcricao individual (per D-25, D-26) */
+export const HBC_EXTRACTION_PROMPT = `Voce e um analista de conteudo viral para redes sociais.
+Dada a transcricao de um video viral, identifique a estrutura de gancho (hook), corpo (body) e chamada para acao (CTA).
+
+Analise a transcricao e extraia:
+- hook: O texto exato do gancho que prende a atencao nos primeiros segundos do video. Inclua a frase de abertura que faz o espectador parar de rolar.
+- body: Descricao da estrutura do corpo — como o video mantem a atencao apos o gancho. Resuma o conteudo principal e a tecnica usada (storytelling, problema-solucao, antes-depois, etc).
+- cta: O texto exato da chamada para acao final. Se nao houver CTA explicito, descreva o CTA implicito (ex: "segue pra mais dicas").
+- hookDurationSeconds: Estimativa da duracao do gancho em segundos (geralmente 1-5 segundos). Null se impossivel estimar.
+- totalDurationSeconds: Duracao total do video em segundos. Use o valor fornecido se disponivel.
+
+REGRAS:
+- Se a transcricao estiver vazia ou ininteligivel, retorne hook e body como "Transcricao insuficiente" e cta como "N/A"
+- Responda APENAS em JSON conforme o schema fornecido
+- Todos os textos em portugues brasileiro`;
+
+/** Prompt para deteccao de padroes cross-video (per D-30, D-31) */
+export const VIRAL_PATTERNS_PROMPT = `Voce e um analista de tendencias de conteudo viral.
+Analise TODAS as transcricoes fornecidas e identifique padroes recorrentes entre os videos.
+
+Identifique:
+1. hookPatterns: Padroes de gancho (primeiros 3 segundos). Quais tipos de abertura aparecem em multiplos videos? Exemplos: pergunta provocativa, afirmacao chocante, promessa de valor, curiosidade. Inclua exemplos reais das transcricoes.
+2. bodyStructures: Estruturas de corpo. Como os videos mantem a atencao? Exemplos: problema-solucao, lista de dicas, antes-depois, storytelling, tutorial passo-a-passo.
+3. ctaPatterns: Padroes de CTA. Quais chamadas para acao sao mais comuns? Exemplos: "segue pra mais", "comenta aqui", "compartilha com alguem", "link na bio".
+4. dominantTone: Tom de voz dominante nos videos. Um de: informativo, entretenimento, urgente, educacional, motivacional, humoristico, controverso.
+5. bestPerformingDuration: Duracao media que performa melhor (baseado nos videos analisados). Inclua media em segundos e faixa (ex: "15-45 segundos").
+6. recurringFormulas: Formulas recorrentes que aparecem em 2+ videos. Exemplos: "gancho provocativo + 3 dicas rapidas + CTA", "pergunta + resposta surpreendente + prova social".
+
+REGRAS:
+- frequency deve ser o numero absoluto de videos que usam aquele padrao (nao porcentagem)
+- examples devem ser trechos REAIS das transcricoes, nao inventados
+- analysisConfidence: "high" se 5+ videos analisados, "medium" se 3-4, "low" se 1-2
+- Responda APENAS em JSON conforme o schema fornecido
+- Todos os textos em portugues brasileiro`;
+
 /** Prompt para scoring de candidatos a concorrentes */
 export const SCORE_COMPETITORS_PROMPT = `Voce e um analista de mercado especializado em identificar concorrentes diretos.
 

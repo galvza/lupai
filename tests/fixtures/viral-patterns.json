@@ -1,0 +1,65 @@
+{
+  "hookPatterns": [
+    {
+      "pattern": "Pergunta provocativa com estatistica",
+      "frequency": 4,
+      "examples": [
+        "Voce sabia que 70% das pessoas fazem clareamento errado?",
+        "3 sinais de que voce precisa usar aparelho!"
+      ]
+    },
+    {
+      "pattern": "Afirmacao negativa proibitiva",
+      "frequency": 3,
+      "examples": [
+        "NUNCA faca isso antes de ir ao dentista",
+        "O segredo que nenhum dentista conta"
+      ]
+    }
+  ],
+  "bodyStructures": [
+    {
+      "structure": "Problema-solucao: apresenta erro comum, depois mostra a forma correta",
+      "frequency": 5
+    },
+    {
+      "structure": "Lista numerada: 3-5 dicas ou erros em sequencia rapida",
+      "frequency": 3
+    }
+  ],
+  "ctaPatterns": [
+    {
+      "pattern": "Engajamento por comentario: pede para comentar uma palavra ou responder pergunta",
+      "frequency": 4,
+      "examples": [
+        "Comenta 'EU' se voce ja cometeu algum desses erros",
+        "Comenta aqui qual dica voce nao sabia"
+      ]
+    },
+    {
+      "pattern": "Seguir para mais conteudo: convida a seguir o perfil",
+      "frequency": 6,
+      "examples": [
+        "Segue pra mais dicas de saude bucal",
+        "Salva esse reel e segue pra nao perder"
+      ]
+    }
+  ],
+  "dominantTone": "educacional",
+  "bestPerformingDuration": {
+    "averageSeconds": 30,
+    "range": "15-45 segundos"
+  },
+  "recurringFormulas": [
+    {
+      "formula": "Pergunta chocante + lista de erros/dicas + CTA de engajamento",
+      "videoCount": 4
+    },
+    {
+      "formula": "Antes/depois visual + explicacao tecnica simples + CTA de follow",
+      "videoCount": 3
+    }
+  ],
+  "totalVideosAnalyzed": 8,
+  "analysisConfidence": "high"
+}

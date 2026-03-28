@@ -1,0 +1,149 @@
+[
+  {
+    "id": "tt_viral_001",
+    "text": "3 erros que todo dentista comete no Instagram #dentista #odontologia",
+    "createTimeISO": "2026-03-15T10:30:00Z",
+    "webVideoUrl": "https://www.tiktok.com/@drdentes/video/001",
+    "videoUrl": "https://v16-webapp-prime.tiktok.com/video/tos/001.mp4",
+    "diggCount": 45200,
+    "shareCount": 3100,
+    "playCount": 890000,
+    "commentCount": 1820,
+    "collectCount": 5600,
+    "isAd": false,
+    "authorMeta": {
+      "name": "Dr. Dentes",
+      "nickName": "drdentes",
+      "fans": 125000,
+      "following": 340
+    },
+    "videoMeta": { "duration": 32, "width": 1080, "height": 1920 },
+    "hashtags": [{ "name": "dentista" }, { "name": "odontologia" }]
+  },
+  {
+    "id": "tt_viral_002",
+    "text": "Antes e depois REAL de lente de contato dental",
+    "createTimeISO": "2026-03-10T14:00:00Z",
+    "webVideoUrl": "https://www.tiktok.com/@sorrisolindo/video/002",
+    "videoUrl": "https://v16-webapp-prime.tiktok.com/video/tos/002.mp4",
+    "diggCount": 89000,
+    "shareCount": 12500,
+    "playCount": 2100000,
+    "commentCount": 4300,
+    "collectCount": 15000,
+    "isAd": false,
+    "authorMeta": {
+      "name": "Sorriso Lindo",
+      "nickName": "sorrisolindo",
+      "fans": 450000,
+      "following": 120
+    },
+    "videoMeta": { "duration": 18, "width": 1080, "height": 1920 },
+    "hashtags": [{ "name": "lentesdecontato" }, { "name": "dentista" }]
+  },
+  {
+    "id": "tt_viral_003",
+    "text": "Por que clareamento caseiro e PERIGOSO? Dentista explica #saude",
+    "createTimeISO": "2026-03-20T08:00:00Z",
+    "webVideoUrl": "https://www.tiktok.com/@dentalpro/video/003",
+    "videoUrl": null,
+    "diggCount": 23000,
+    "shareCount": 8900,
+    "playCount": 560000,
+    "commentCount": 2100,
+    "collectCount": 7800,
+    "isAd": false,
+    "authorMeta": {
+      "name": "Dental Pro",
+      "nickName": "dentalpro",
+      "fans": 89000,
+      "following": 200
+    },
+    "videoMeta": { "duration": 45, "width": 1080, "height": 1920 },
+    "hashtags": [{ "name": "saude" }, { "name": "dentista" }]
+  },
+  {
+    "id": "tt_viral_004",
+    "text": "Quanto custa um implante dentario em 2026?",
+    "createTimeISO": "2026-03-18T16:00:00Z",
+    "webVideoUrl": "https://www.tiktok.com/@implantecerto/video/004",
+    "videoUrl": "https://v16-webapp-prime.tiktok.com/video/tos/004.mp4",
+    "diggCount": 15400,
+    "shareCount": 4200,
+    "playCount": 410000,
+    "commentCount": 3500,
+    "collectCount": 2900,
+    "isAd": false,
+    "authorMeta": {
+      "name": "Implante Certo",
+      "nickName": "implantecerto",
+      "fans": 67000,
+      "following": 180
+    },
+    "videoMeta": { "duration": 58, "width": 1080, "height": 1920 },
+    "hashtags": [{ "name": "implante" }, { "name": "dentista" }]
+  },
+  {
+    "id": "tt_viral_005",
+    "text": "NUNCA faca isso antes de ir ao dentista",
+    "createTimeISO": "2026-03-22T12:00:00Z",
+    "webVideoUrl": "https://www.tiktok.com/@bocasaudavel/video/005",
+    "videoUrl": "https://v16-webapp-prime.tiktok.com/video/tos/005.mp4",
+    "diggCount": 67800,
+    "shareCount": 9200,
+    "playCount": 1500000,
+    "commentCount": 5600,
+    "collectCount": 11000,
+    "isAd": false,
+    "authorMeta": {
+      "name": "Boca Saudavel",
+      "nickName": "bocasaudavel",
+      "fans": 230000,
+      "following": 95
+    },
+    "videoMeta": { "duration": 22, "width": 1080, "height": 1920 },
+    "hashtags": [{ "name": "dentista" }, { "name": "dicas" }]
+  },
+  {
+    "id": "tt_viral_006",
+    "text": "Documentario completo sobre a historia da odontologia no Brasil",
+    "createTimeISO": "2026-03-05T09:00:00Z",
+    "webVideoUrl": "https://www.tiktok.com/@historiadental/video/006",
+    "videoUrl": "https://v16-webapp-prime.tiktok.com/video/tos/006.mp4",
+    "diggCount": 1200,
+    "shareCount": 300,
+    "playCount": 25000,
+    "commentCount": 150,
+    "collectCount": 400,
+    "isAd": false,
+    "authorMeta": {
+      "name": "Historia Dental",
+      "nickName": "historiadental",
+      "fans": 5000,
+      "following": 500
+    },
+    "videoMeta": { "duration": 350, "width": 1080, "height": 1920 },
+    "hashtags": [{ "name": "odontologia" }]
+  },
+  {
+    "id": "tt_viral_007",
+    "text": "AD: Melhor escova eletrica do mercado #publi",
+    "createTimeISO": "2026-03-25T11:00:00Z",
+    "webVideoUrl": "https://www.tiktok.com/@escovamania/video/007",
+    "videoUrl": "https://v16-webapp-prime.tiktok.com/video/tos/007.mp4",
+    "diggCount": 5000,
+    "shareCount": 800,
+    "playCount": 120000,
+    "commentCount": 350,
+    "collectCount": 1200,
+    "isAd": true,
+    "authorMeta": {
+      "name": "Escova Mania",
+      "nickName": "escovamania",
+      "fans": 15000,
+      "following": 250
+    },
+    "videoMeta": { "duration": 28, "width": 1080, "height": 1920 },
+    "hashtags": [{ "name": "publi" }, { "name": "escovaeletrica" }]
+  }
+]
