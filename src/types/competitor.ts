@@ -148,6 +148,7 @@ export interface Competitor {
   metaAdsData: MetaAdsData | null;
   googleAdsData: GoogleAdsData | null;
   gmbData: GmbData | null;
+  role: 'competitor' | 'user_business';
   createdAt: string;
 }
 
@@ -156,4 +157,5 @@ export interface CompetitorInput {
   analysisId: string;
   name: string;
   websiteUrl?: string | null;
+  role?: 'competitor' | 'user_business';
 }

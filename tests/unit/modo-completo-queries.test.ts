@@ -122,22 +122,7 @@ describe('Modo Completo: getCompetitorsByAnalysis filtra por role=competitor', (
       created_at: '2026-03-28T12:00:00Z',
     };
 
-    const chain = buildChain({ data: null, error: null });
-    // Override: getCompetitorsByAnalysis does not call .single(), it returns data as array
-    chain.eq = vi.fn().mockImplementation(() => chain);
-    // For getCompetitorsByAnalysis: the last .eq() resolves the query (no .single())
-    // We need to make the chain resolve when used as a promise (await)
-    const resolvedChain = {
-      select: vi.fn().mockReturnValue(resolvedChain as unknown),
-      eq: vi.fn().mockReturnValue(resolvedChain as unknown),
-      data: [competitorRow],
-      error: null,
-      then: (resolve: (val: unknown) => void) => {
-        resolve({ data: [competitorRow], error: null });
-        return resolvedChain;
-      },
-    } as unknown as Record<string, ReturnType<typeof vi.fn>>;
-    // Actually, Supabase client methods are thenable. Let me simplify.
+    // getCompetitorsByAnalysis: .from().select().eq(analysis_id).eq(role) — no .single()
     const lastEq = vi.fn().mockResolvedValue({ data: [competitorRow], error: null });
     const firstEq = vi.fn().mockReturnValue({ eq: lastEq });
     const selectFn = vi.fn().mockReturnValue({ eq: firstEq });
