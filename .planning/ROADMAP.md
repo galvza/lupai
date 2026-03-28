@@ -111,15 +111,16 @@ Plans:
 **Depends on**: Phase 3
 **Requirements**: VIRL-01, VIRL-02, VIRL-03, TRNS-01, TRNS-02, TRNS-03
 **Success Criteria** (what must be TRUE):
-  1. Viral content is discovered across TikTok, Instagram, and Facebook for the niche (not limited to discovered competitors)
+  1. Viral content is discovered across TikTok and Instagram for the niche (not limited to discovered competitors, per D-01 Facebook deferred)
   2. Viral videos are downloaded to Bunny Storage and accessible via CDN URL
   3. Videos in Bunny Storage are transcribed via AssemblyAI and transcriptions are stored
   4. AI identifies hook, body, and CTA structure in each transcribed video and the breakdown is stored per video
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
+- [ ] 06-01-PLAN.md — Extend types (ViralPatterns, ViralVideoCandidate), DB migration, Zod schemas, query extensions, Gemini prompts, fixtures (Wave 1)
+- [ ] 06-02-PLAN.md — TikTok/Instagram viral search Apify wrappers, Gemini HBC extraction + pattern detection modules, with tests (Wave 2)
+- [ ] 06-03-PLAN.md — Full extract-viral compound Trigger.dev task (6-stage pipeline: discover, filter, download, transcribe, HBC, patterns) with tests (Wave 3)
 
 ### Phase 7: AI Synthesis & Creative Modeling
 **Goal**: All collected data is consolidated into actionable strategic recommendations and ready-to-use creative scripts
@@ -199,7 +200,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4/5/6 (parallelizable) -> 7 -> 8
 | 3. Competitor Discovery & Orchestration | 0/2 | Planning complete | - |
 | 4. Website, SEO & Social Extraction | 0/3 | Planning complete | - |
 | 5. Ads Intelligence | 0/2 | Planning complete | - |
-| 6. Viral Content & Transcription | 0/2 | Not started | - |
+| 6. Viral Content & Transcription | 0/3 | Planning complete | - |
 | 7. AI Synthesis & Creative Modeling | 0/2 | Not started | - |
 | 8. Modo Completo | 0/1 | Not started | - |
 | 9. Dashboard & Results UI | 0/3 | Not started | - |
