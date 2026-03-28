@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { tasks } from '@trigger.dev/sdk/v3';
 
-import { createAnalysis, updateAnalysis } from '@/lib/supabase/queries';
+import { createAnalysis, updateAnalysis, findCachedAnalysis } from '@/lib/supabase/queries';
 import { nicheInterpretedSchema } from '@/utils/validators';
 import type { analyzeMarket } from '@/trigger/analyze-market';
 import type { StartAnalysisResponse } from '@/types/analysis';
@@ -24,6 +24,24 @@ export const POST = async (request: Request): Promise<NextResponse<StartAnalysis
   try {
     const body = await request.json();
     const validated = startAnalysisSchema.parse(body);
+
+    // Cache check: busca analise completada nas ultimas 24h com mesmo niche_interpreted + mode (per D-04)
+    const cached = await findCachedAnalysis({
+      niche: validated.nicheInterpreted.niche,
+      segment: validated.nicheInterpreted.segment,
+      region: validated.nicheInterpreted.region,
+      mode: validated.mode,
+    });
+
+    if (cached) {
+      return NextResponse.json({
+        analysisId: cached.id,
+        runId: cached.triggerRunId ?? '',
+        publicAccessToken: '',
+        redirectUrl: `/analysis/${cached.id}`,
+        cached: true,
+      });
+    }
 
     // 1. Criar registro no banco
     const analysis = await createAnalysis({

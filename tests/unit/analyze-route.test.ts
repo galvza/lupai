@@ -4,6 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('@/lib/supabase/queries', () => ({
   createAnalysis: vi.fn(),
   updateAnalysis: vi.fn(),
+  findCachedAnalysis: vi.fn(),
 }));
 
 // Mock Trigger.dev SDK
@@ -14,11 +15,12 @@ vi.mock('@trigger.dev/sdk/v3', () => ({
 }));
 
 import { POST } from '@/app/api/analyze/route';
-import { createAnalysis, updateAnalysis } from '@/lib/supabase/queries';
+import { createAnalysis, updateAnalysis, findCachedAnalysis } from '@/lib/supabase/queries';
 import { tasks } from '@trigger.dev/sdk/v3';
 
 const mockCreateAnalysis = vi.mocked(createAnalysis);
 const mockUpdateAnalysis = vi.mocked(updateAnalysis);
+const mockFindCachedAnalysis = vi.mocked(findCachedAnalysis);
 const mockTasksTrigger = vi.mocked(tasks.trigger);
 
 const MOCK_ANALYSIS = {
@@ -55,6 +57,7 @@ const createRequest = (body: unknown): Request =>
 describe('POST /api/analyze', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockFindCachedAnalysis.mockResolvedValue(null);
     mockCreateAnalysis.mockResolvedValue(MOCK_ANALYSIS);
     mockUpdateAnalysis.mockResolvedValue({
       ...MOCK_ANALYSIS,
@@ -177,5 +180,55 @@ describe('POST /api/analyze', () => {
         userBusinessUrl: 'https://meunegocio.com.br',
       })
     );
+  });
+
+  it('retorna cached:true e analysisId existente quando cache hit', async () => {
+    const cachedAnalysis = {
+      ...MOCK_ANALYSIS,
+      id: 'cached-uuid',
+      status: 'completed' as const,
+      triggerRunId: 'run-old',
+      nicheInterpreted: VALID_BODY.nicheInterpreted,
+    };
+    mockFindCachedAnalysis.mockResolvedValue(cachedAnalysis);
+
+    const request = createRequest(VALID_BODY);
+    const response = await POST(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.analysisId).toBe('cached-uuid');
+    expect(data.cached).toBe(true);
+    expect(data.redirectUrl).toBe('/analysis/cached-uuid');
+    expect(data.runId).toBe('run-old');
+  });
+
+  it('nao chama createAnalysis nem tasks.trigger quando cache hit', async () => {
+    mockFindCachedAnalysis.mockResolvedValue({
+      ...MOCK_ANALYSIS,
+      id: 'cached-uuid',
+      status: 'completed' as const,
+      triggerRunId: 'run-old',
+    });
+
+    const request = createRequest(VALID_BODY);
+    await POST(request);
+
+    expect(mockCreateAnalysis).not.toHaveBeenCalled();
+    expect(mockTasksTrigger).not.toHaveBeenCalled();
+    expect(mockUpdateAnalysis).not.toHaveBeenCalled();
+  });
+
+  it('segue fluxo normal quando findCachedAnalysis retorna null', async () => {
+    mockFindCachedAnalysis.mockResolvedValue(null);
+
+    const request = createRequest(VALID_BODY);
+    const response = await POST(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(data.cached).toBeUndefined();
+    expect(mockCreateAnalysis).toHaveBeenCalled();
+    expect(mockTasksTrigger).toHaveBeenCalled();
   });
 });
