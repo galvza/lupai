@@ -81,7 +81,7 @@ body {
 }
 
 .marquee-track-reverse {
-  animation: marquee-reverse 30s linear infinite;
+  animation: marquee-reverse 35s linear infinite;
 }
 
 /* Section transitions */
@@ -92,4 +92,22 @@ section {
 /* Prevent horizontal overflow */
 main {
   overflow-x: hidden;
+}
+
+/* Subtle border pulse — used by HeroInput when focused + empty */
+@keyframes subtle-pulse {
+  0%, 100% { border-color: #333; }
+  50% { border-color: #555; }
+}
+
+.border-pulse {
+  animation: subtle-pulse 2s ease-in-out infinite;
+}
+
+/* Accessibility: skip animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe-hidden {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

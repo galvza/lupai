@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Store, ShoppingCart, Link as LinkIcon, ArrowRight } from "lucide-react";
 import { useRotatingPlaceholder } from "@/hooks/useRotatingPlaceholder";
@@ -18,6 +18,9 @@ export const HeroInput = () => {
   const [mode, setMode] = useState<"rapido" | "completo">("rapido");
   const [url, setUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [selectedChip, setSelectedChip] = useState<string | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { placeholder, visible } = useRotatingPlaceholder();
   const router = useRouter();
 
@@ -46,24 +49,39 @@ export const HeroInput = () => {
     }
   };
 
+  const autoResize = () => {
+    const el = textareaRef.current;
+    if (el) {
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, 120) + "px";
+    }
+  };
+
   const handleChipClick = (label: string) => {
+    setSelectedChip(label);
     if (label === "Tenho URL") {
       setMode("completo");
     } else {
       setQuery((prev) => (prev ? `${prev} — ${label.toLowerCase()}` : label.toLowerCase()));
+      setTimeout(autoResize, 0);
     }
   };
 
   return (
     <div id="hero-input" className="w-full">
       {/* Textarea */}
-      <div className="relative bg-[#1A1A1A] border border-[#333] rounded-xl p-4 focus-within:border-accent/40 transition-colors">
+      <div className={`relative bg-[#1A1A1A] border rounded-xl p-4 transition-colors ${
+        isFocused && !query.trim() ? "border-pulse border-[#333]" : "border-[#333]"
+      } focus-within:border-accent/40`}>
         <textarea
+          ref={textareaRef}
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => { setQuery(e.target.value); setSelectedChip(null); autoResize(); }}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           placeholder={visible ? placeholder : ""}
-          rows={3}
-          className="w-full bg-transparent text-white text-base md:text-lg placeholder:text-[#555] resize-none outline-none leading-relaxed"
+          rows={1}
+          className="w-full bg-transparent text-white text-base md:text-lg placeholder:text-[#555] resize-none outline-none leading-relaxed min-h-[48px] max-h-[120px] overflow-hidden pr-24"
           style={{
             transition: "opacity 0.3s ease",
           }}
@@ -71,7 +89,11 @@ export const HeroInput = () => {
         <button
           onClick={handleSubmit}
           disabled={isSubmitting || (!query.trim() && !url.trim())}
-          className="absolute bottom-4 right-4 bg-accent text-dark-bg text-sm font-semibold px-5 py-2 rounded-lg hover:brightness-110 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+          className={`absolute bottom-4 right-4 text-sm font-semibold px-5 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 ${
+            isSubmitting || (!query.trim() && !url.trim())
+              ? "bg-[#333] text-[#666] cursor-not-allowed"
+              : "bg-accent text-dark-bg hover:brightness-110"
+          }`}
         >
           {isSubmitting ? "Analisando..." : "Analisar"}
           {!isSubmitting && <ArrowRight size={14} strokeWidth={2} />}
@@ -87,7 +109,11 @@ export const HeroInput = () => {
           <button
             key={label}
             onClick={() => handleChipClick(label)}
-            className="inline-flex items-center gap-1.5 bg-[#1F1F1F] border border-[#333] text-[#555] text-[12px] px-3 py-1.5 rounded-full hover:border-[#444] hover:text-[#888] transition-all"
+            className={`inline-flex items-center gap-1.5 bg-[#1F1F1F] text-[12px] px-3 py-1.5 rounded-full transition-all duration-200 ${
+                selectedChip === label
+                  ? "border border-[#C8FF3C] bg-[#C8FF3C]/10 text-white"
+                  : "border border-[#333] text-[#555] hover:border-[#555]"
+              }`}
           >
             <Icon size={12} strokeWidth={1.5} />
             {label}
@@ -119,6 +145,11 @@ export const HeroInput = () => {
           Modo Completo
         </button>
       </div>
+      <p className="text-[#666] text-xs mt-1 transition-opacity duration-200">
+        {mode === "rapido"
+          ? "Descreva seu nicho — análise em ~2 min"
+          : "Nicho + sua URL — análise comparativa em ~5 min"}
+      </p>
 
       {/* URL input for Modo Completo */}
       {mode === "completo" && (
