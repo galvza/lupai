@@ -60,15 +60,15 @@
 
 ### Viral Content Discovery
 
-- [ ] **VIRL-01**: System searches for viral content in the niche across TikTok, Instagram, and Facebook (not limited to discovered competitors)
-- [ ] **VIRL-02**: System downloads viral videos to Bunny Storage for transcription
-- [ ] **VIRL-03**: Results display viral content gallery with engagement metrics
+- [x] **VIRL-01**: System searches for viral content in the niche across TikTok, Instagram, and Facebook (not limited to discovered competitors)
+- [x] **VIRL-02**: System downloads viral videos to Bunny Storage for transcription
+- [x] **VIRL-03**: Results display viral content gallery with engagement metrics
 
 ### Video Transcription & Analysis
 
-- [ ] **TRNS-01**: System transcribes viral videos using Assembly AI
-- [ ] **TRNS-02**: AI identifies hook, body, and CTA structure in each transcribed video
-- [ ] **TRNS-03**: Results display transcription with hook/body/CTA breakdown per video
+- [x] **TRNS-01**: System transcribes viral videos using Assembly AI
+- [x] **TRNS-02**: AI identifies hook, body, and CTA structure in each transcribed video
+- [x] **TRNS-03**: Results display transcription with hook/body/CTA breakdown per video
 
 ### Creative Modeling
 
@@ -183,12 +183,12 @@
 | GADS-02 | Phase 5 | Complete |
 | GMB-01 | Phase 5 | Complete |
 | GMB-02 | Phase 5 | Complete |
-| VIRL-01 | Phase 6 | Pending |
-| VIRL-02 | Phase 6 | Pending |
-| VIRL-03 | Phase 6 | Pending |
-| TRNS-01 | Phase 6 | Pending |
-| TRNS-02 | Phase 6 | Pending |
-| TRNS-03 | Phase 6 | Pending |
+| VIRL-01 | Phase 6 | Complete |
+| VIRL-02 | Phase 6 | Complete |
+| VIRL-03 | Phase 6 | Complete |
+| TRNS-01 | Phase 6 | Complete |
+| TRNS-02 | Phase 6 | Complete |
+| TRNS-03 | Phase 6 | Complete |
 | CRTV-01 | Phase 7 | Pending |
 | CRTV-02 | Phase 7 | Pending |
 | CRTV-03 | Phase 7 | Pending |

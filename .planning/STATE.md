@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 6 context gathered (auto mode)
-last_updated: "2026-03-28T14:16:57.973Z"
+status: executing
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-03-28T14:56:27.701Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 10
   completed_phases: 4
-  total_plans: 12
-  completed_plans: 11
+  total_plans: 15
+  completed_plans: 12
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Entregar em minutos o que hoje leva horas: analise completa do mercado/nicho com concorrentes mapeados, dados consolidados e recomendacoes estrategicas acionaveis.
-**Current focus:** Phase 05 — ads-intelligence
+**Current focus:** Phase 06 — viral-content-transcription
 
 ## Current Position
 
-Phase: 6
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 06 (viral-content-transcription) — EXECUTING
+Plan: 2 of 3
+Status: Ready to execute
 Last activity: 2026-03-28
 
 Progress: [░░░░░░░░░░] 0%
@@ -62,6 +62,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04 P03 | 4min | 1 tasks | 2 files |
 | Phase 05 P01 | 3min | 2 tasks | 5 files |
 | Phase 05 P02 | 3min | 2 tasks | 3 files |
+| Phase 06 P01 | 6min | 2 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,9 @@ Recent decisions affecting current work:
 - [Phase 05]: Domain extraction uses new URL().hostname.replace(/^www\./, '') with fallback regex for malformed URLs
 - [Phase 05]: GMB null from scraper is valid (no listing) -- no warning, counts as null in determineStatus
 - [Phase 05]: Single updateCompetitor call stores all 3 ads JSONB columns atomically
+- [Phase 06]: ViralPatterns stored as JSONB on analyses table (not separate table) for simpler queries
+- [Phase 06]: ViralVideoCandidate as intermediate filtering type between Apify output and DB-stored ViralContent
+- [Phase 06]: HBC and viral patterns Gemini prompts enforce JSON-only PT-BR responses
 
 ### Pending Todos
 
@@ -116,6 +120,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28T14:16:57.969Z
-Stopped at: Phase 6 context gathered (auto mode)
-Resume file: .planning/phases/06-viral-content-transcription/06-CONTEXT.md
+Last session: 2026-03-28T14:56:27.697Z
+Stopped at: Completed 06-01-PLAN.md
+Resume file: None
