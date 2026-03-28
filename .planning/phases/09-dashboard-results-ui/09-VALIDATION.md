@@ -38,11 +38,9 @@ created: 2026-03-28
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 09-01-01 | 01 | 1 | DASH-01 | unit | `npm test -- --run` | ❌ W0 | ⬜ pending |
-| 09-01-02 | 01 | 1 | DASH-03 | unit | `npm test -- --run` | ❌ W0 | ⬜ pending |
-| 09-02-01 | 02 | 1 | DASH-02 | unit | `npm test -- --run` | ❌ W0 | ⬜ pending |
-| 09-03-01 | 03 | 2 | DASH-04 | unit | `npm test -- --run` | ❌ W0 | ⬜ pending |
-| 09-03-02 | 03 | 2 | DASH-05 | unit | `npm test -- --run` | ❌ W0 | ⬜ pending |
+| 09-01-01 | 01 | 1 | DASH-01, DASH-03 | unit | `npm test -- --run` | ❌ W0 | ⬜ pending |
+| 09-02-01 | 02 | 2 | DASH-01, DASH-02 | unit | `npm test -- --run` | ❌ W0 | ⬜ pending |
+| 09-02-02 | 02 | 2 | DASH-02, DASH-03 | unit | `npm test -- --run` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
