@@ -28,7 +28,7 @@ import {
   createCompetitor,
   createViralContent,
   createSynthesis,
-} from '@tests/fixtures/factories';
+} from '../fixtures/factories';
 import type { SectionStatus } from '@/types/analysis';
 
 const mockGetAnalysis = vi.mocked(getAnalysis);
