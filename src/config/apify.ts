@@ -4,10 +4,16 @@ const apifyConfigSchema = z.object({
   apiToken: z.string().min(1),
 });
 
-/** Configuracao da Apify validada via Zod */
-export const apifyConfig = apifyConfigSchema.parse({
-  apiToken: process.env.APIFY_API_TOKEN,
-});
+/** Configuracao da Apify validada via Zod (lazy — evita erro em testes sem env vars) */
+let _apifyConfig: z.infer<typeof apifyConfigSchema> | null = null;
+export const getApifyConfig = () => {
+  if (!_apifyConfig) {
+    _apifyConfig = apifyConfigSchema.parse({
+      apiToken: process.env.APIFY_API_TOKEN,
+    });
+  }
+  return _apifyConfig;
+};
 
 /** IDs dos actors da Apify usados no projeto */
 export const APIFY_ACTORS = {
