@@ -101,10 +101,10 @@
 
 ### History & Persistence
 
-- [ ] **HIST-01**: Analysis results are saved in Supabase by niche category
-- [ ] **HIST-02**: User can access a list of past analyses (history page)
-- [ ] **HIST-03**: User can view a previous analysis result
-- [ ] **HIST-04**: 24h cache: same niche queried within 24h serves cached results
+- [x] **HIST-01**: Analysis results are saved in Supabase by niche category
+- [x] **HIST-02**: User can access a list of past analyses (history page)
+- [x] **HIST-03**: User can view a previous analysis result
+- [x] **HIST-04**: 24h cache: same niche queried within 24h serves cached results
 
 ### PDF Export
 
@@ -209,10 +209,10 @@
 | ORCH-01 | Phase 3 | Pending |
 | ORCH-02 | Phase 3 | Pending |
 | ORCH-03 | Phase 2 | Complete |
-| HIST-01 | Phase 10 | Pending |
-| HIST-02 | Phase 10 | Pending |
-| HIST-03 | Phase 10 | Pending |
-| HIST-04 | Phase 10 | Pending |
+| HIST-01 | Phase 10 | Complete |
+| HIST-02 | Phase 10 | Complete |
+| HIST-03 | Phase 10 | Complete |
+| HIST-04 | Phase 10 | Complete |
 | PDF-01 | Phase 10 | Pending |
 | PDF-02 | Phase 10 | Pending |
 | PDF-03 | Phase 10 | Pending |

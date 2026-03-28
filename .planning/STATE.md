@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 10 context gathered
-last_updated: "2026-03-28T20:05:33.469Z"
+status: executing
+stopped_at: Completed 10-01-PLAN.md
+last_updated: "2026-03-28T21:40:24.075Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 10
   completed_phases: 8
-  total_plans: 22
-  completed_plans: 21
+  total_plans: 24
+  completed_plans: 22
   percent: 95
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Entregar em minutos o que hoje leva horas: analise completa do mercado/nicho com concorrentes mapeados, dados consolidados e recomendacoes estrategicas acionaveis.
-**Current focus:** Phase 09 — dashboard-results-ui
+**Current focus:** Phase 10 — history-cache-pdf-export
 
 ## Current Position
 
-Phase: 10
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 10 (history-cache-pdf-export) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-03-28
 
 Progress: [███████████████████░] 19/20 plans (95%)
@@ -72,6 +72,7 @@ Progress: [███████████████████░] 19/20 p
 | Phase 08 P03 | 7min | 2 tasks | 5 files |
 | Phase 09 P01 | 3min | 1 tasks | 3 files |
 | Phase 09 P02 | 3min | 2 tasks | 4 files |
+| Phase 10 P01 | 4min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,9 @@ Recent decisions affecting current work:
 - [Phase 09]: Ads section dual-layer check: metaAds/googleAds for available, any ads data including gmbData for partial
 - [Phase 09]: safeQuery<T> wrapper pattern: sub-query errors return typed fallback instead of crashing aggregation response
 - [Phase 09]: Cache-Control split: completed analyses get public max-age=3600, non-completed get no-cache/no-store
+- [Phase 10]: findCachedAnalysis uses ILIKE on JSONB ->> operators for case-insensitive matching on niche/segment/region
+- [Phase 10]: Cursor-based pagination uses limit+1 pattern (fetch N+1, return N, Nth createdAt as nextCursor)
+- [Phase 10]: Cache hit returns cached:true and skips Trigger.dev dispatch entirely
 
 ### Pending Todos
 
@@ -149,6 +153,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28T20:05:33.465Z
-Stopped at: Phase 10 context gathered
-Resume file: .planning/phases/10-history-cache-pdf-export/10-CONTEXT.md
+Last session: 2026-03-28T21:40:24.071Z
+Stopped at: Completed 10-01-PLAN.md
+Resume file: None
