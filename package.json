@@ -12,34 +12,36 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@google/genai": "^1",
+    "@supabase/supabase-js": "^2",
+    "@trigger.dev/react-hooks": "^4",
+    "@trigger.dev/sdk": "^4",
+    "apify-client": "^2",
+    "assemblyai": "^4",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.7",
+    "lucide-react": "^1",
+    "next": "15.5.14",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.5.14",
-    "@supabase/supabase-js": "^2",
-    "@google/genai": "^1",
-    "assemblyai": "^4",
-    "apify-client": "^2",
-    "@trigger.dev/sdk": "^4",
-    "@trigger.dev/react-hooks": "^4",
     "zod": "3.25.76",
-    "zod-to-json-schema": "^3",
-    "lucide-react": "^1"
+    "zod-to-json-schema": "^3"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@testing-library/dom": "^10",
+    "@testing-library/react": "^16",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "@vitejs/plugin-react": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.14",
-    "@eslint/eslintrc": "^3",
-    "vitest": "^4",
-    "@vitejs/plugin-react": "^4",
+    "tailwindcss": "^4",
+    "typescript": "^5",
     "vite-tsconfig-paths": "^4",
-    "@testing-library/react": "^16",
-    "@testing-library/dom": "^10"
+    "vitest": "^4"
   },
   "overrides": {
     "zod": "3.25.76"
