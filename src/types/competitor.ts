@@ -81,6 +81,25 @@ export interface ExtractSocialResult {
   warnings: string[];
 }
 
+/** Payload para extracao de dados de anuncios de um concorrente (Phase 5) */
+export interface ExtractAdsPayload {
+  analysisId: string;
+  competitorId: string;
+  competitorName: string;
+  websiteUrl: string;
+  region: string;
+}
+
+/** Resultado da extracao de anuncios */
+export interface ExtractAdsResult {
+  competitorId: string;
+  metaAds: MetaAdsData | null;
+  googleAds: GoogleAdsData | null;
+  gmb: GmbData | null;
+  warnings: string[];
+  status: ExtractionStatus;
+}
+
 /** Sub-task status padronizado (per D-36) */
 export type ExtractionStatus = 'success' | 'partial' | 'fallback' | 'unavailable' | 'skipped';
 

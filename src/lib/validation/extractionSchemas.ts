@@ -94,3 +94,51 @@ export const validateOrNull = <T>(schema: z.ZodType<T>, data: unknown): T | null
     return null;
   }
 };
+
+// --- Schemas de Ads Intelligence (Phase 5) ---
+
+/** Schema para anuncio individual do Meta */
+const metaAdSchema = z.object({
+  adId: z.string(),
+  creativeUrl: z.string().nullable(),
+  copyText: z.string().nullable(),
+  format: z.string().nullable(),
+  startedAt: z.string().nullable(),
+  isActive: z.boolean(),
+});
+
+/**
+ * Schema Zod para dados de Meta Ads.
+ * Regra D-28: valido se activeAdsCount >= 0 AND ads e array.
+ */
+export const metaAdsDataSchema = z.object({
+  activeAdsCount: z.number().min(0),
+  ads: z.array(metaAdSchema),
+});
+
+/**
+ * Schema Zod para dados de Google Ads.
+ * Regra D-29: valido se hasSearchAds e boolean.
+ */
+export const googleAdsDataSchema = z.object({
+  hasSearchAds: z.boolean(),
+  paidKeywords: z.array(z.string()),
+  estimatedBudget: z.string().nullable(),
+});
+
+/**
+ * Schema Zod para dados do Google Meu Negocio.
+ * Regra D-30: valido se ao menos name e nao-null.
+ */
+export const gmbDataSchema = z
+  .object({
+    name: z.string().nullable(),
+    rating: z.number().nullable(),
+    reviewCount: z.number().nullable(),
+    address: z.string().nullable(),
+    phone: z.string().nullable(),
+    categories: z.array(z.string()),
+  })
+  .refine((data) => data.name !== null, {
+    message: 'Dados de GMB invalidos: name deve estar presente',
+  });
