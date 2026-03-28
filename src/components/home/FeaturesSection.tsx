@@ -36,7 +36,7 @@ export const FeaturesSection = () => {
   const forceVisible = useAnimationSafety(2000);
 
   return (
-    <section id="features" className="bg-light-card py-16 md:py-20 px-8 lg:px-16">
+    <section id="features" className="bg-gradient-to-b from-[#F8F7F4] to-[#F0EFE9] py-16 md:py-20 px-8 lg:px-16">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0 }}
@@ -61,13 +61,13 @@ export const FeaturesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.1, margin: "-40px" }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
-              className={`flex gap-4 rounded-xl p-4 -m-4 ${i === 0 ? "border border-[#C8FF3C]/20" : ""}`}
+              className={`flex gap-4 rounded-xl p-4 -m-4 cursor-default transition-all duration-300 hover:border-[#C8FF3C]/30 hover:shadow-lg hover:scale-[1.02] ${i === 0 ? "border border-[#C8FF3C]/20" : "border border-transparent"}`}
             >
-              <div className="shrink-0 mt-1">
-                <Icon color="#1A1A1A" size={22} strokeWidth={1.5} />
+              <div className="shrink-0 w-10 h-10 rounded-full bg-[#C8FF3C]/10 flex items-center justify-center">
+                <Icon color="#1A1A1A" size={20} strokeWidth={1.5} />
               </div>
               <div className="flex-1">
-                <span className="text-[#C8FF3C] text-xs font-mono opacity-60 block mb-1">
+                <span className="bg-[#C8FF3C]/10 text-[#1A1A1A] text-xs font-mono px-2 py-0.5 rounded-full inline-block mb-1">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3 className="text-xl font-bold text-[#1A1A1A] mb-1.5">

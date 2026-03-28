@@ -27,7 +27,7 @@ export const PraQuemSection = () => {
   const forceVisible = useAnimationSafety(2000);
 
   return (
-    <section id="pra-quem" className="bg-light-card py-16 md:py-20 px-8 lg:px-16">
+    <section id="pra-quem" className="bg-gradient-to-b from-[#F8F7F4] to-[#F0EFE9] py-16 md:py-20 px-8 lg:px-16">
       <div className="max-w-5xl mx-auto">
         <motion.h2
           initial={{ opacity: 0, y: 16 }}
@@ -51,7 +51,7 @@ export const PraQuemSection = () => {
               viewport={{ once: true, amount: 0.1, margin: "-40px" }}
               transition={{ duration: 0.4, delay: i * 0.15 }}
               whileHover={{ y: -3, transition: { duration: 0.2 } }}
-              className="bg-light-card border border-light-border rounded-xl p-6"
+              className="bg-light-card border border-light-border rounded-xl p-6 transition-all duration-300 hover:border-[#C8FF3C]/30 hover:shadow-lg"
             >
               <div className="flex items-center gap-3 mb-4">
                 <Icon color="#1A1A1A" size={20} strokeWidth={1.5} />

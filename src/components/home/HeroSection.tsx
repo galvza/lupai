@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FirstTimeBanner } from "./FirstTimeBanner";
 import { HeroInput } from "./HeroInput";
 
 /** Seção hero com headline, input e cantos arredondados */
@@ -12,8 +11,6 @@ export const HeroSection = () => {
       className="bg-dark-bg rounded-b-[32px] md:rounded-b-[48px] relative z-10"
     >
       <div className="flex flex-col items-center px-8 lg:px-16 pt-20 md:pt-28 pb-10 md:pb-14">
-        <FirstTimeBanner />
-
         {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
