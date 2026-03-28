@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 8 planned and verified, ready for execution
-last_updated: "2026-03-28T18:52:46.303Z"
+status: planning
+stopped_at: Phase 9 context gathered (backend-only scope)
+last_updated: "2026-03-28T19:22:14.514Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 10
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 20
-  completed_plans: 16
-  percent: 0
+  completed_plans: 19
+  percent: 95
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Entregar em minutos o que hoje leva horas: analise completa do mercado/nicho com concorrentes mapeados, dados consolidados e recomendacoes estrategicas acionaveis.
-**Current focus:** Phase 07 — ai-synthesis-creative-modeling
+**Current focus:** Phase 09 — dashboard-&-results-ui
 
 ## Current Position
 
-Phase: 8
+Phase: 9
 Plan: Not started
-Status: Phase complete — ready for verification
+Status: Ready to plan
 Last activity: 2026-03-28
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███████████████████░] 19/20 plans (95%)
 
 ## Performance Metrics
 
@@ -67,6 +67,9 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 06 P03 | 5min | 1 tasks | 2 files |
 | Phase 07 P01 | 5min | 2 tasks | 11 files |
 | Phase 07 P02 | 4min | 2 tasks | 3 files |
+| Phase 08 P01 | 6min | 2 tasks | 7 files |
+| Phase 08 P02 | 5min | 1 tasks | 2 files |
+| Phase 08 P03 | 7min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -116,6 +119,15 @@ Recent decisions affecting current work:
 - [Phase 06]: Download batch size 5 and transcription batch 5 with 2s delay for rate limits
 - [Phase 07]: Recommendation fields use PT-BR priority/effort enums (alta/media/baixa) per D-08; token truncation at 200k drops viralContent first per D-29; creative scripts fallback to competitor data when viralPatterns null per D-14
 - [Phase 07]: vi.hoisted() used for Trigger.dev task capture in tests; synthesizeTask returns status enum without throwing; analysis marked completed regardless of synthesis outcome
+- [Phase 08]: Role column uses TEXT with CHECK constraint (not enum) for simpler migration
+- [Phase 08]: getUserBusinessByAnalysis returns null on error (graceful, never throws)
+- [Phase 08]: ComparativeAnalysis uses flat structure: comparativeStatus + 3 SynthesisSection fields + personalizedRecommendations
+- [Phase 08]: extractWebsite.triggerAndWait used directly (not batch) for single user URL extraction
+- [Phase 08]: Test mocks use @/trigger/* path aliases instead of relative paths for reliable Vitest module resolution
+- [Phase 08]: emptySocialLinks hoisted to function scope for reuse in both user and competitor extraction blocks
+- [Phase 08]: Optional comparative fields on synthesisOutputSchema instead of separate schema for single Gemini call
+- [Phase 08]: buildComparativeAnalysis exported as pure function for independent testability
+- [Phase 08]: Comparative recs filtered by keyword matching (concorrente/voce) from full recommendation set
 
 ### Pending Todos
 
@@ -130,6 +142,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28T18:52:46.300Z
-Stopped at: Phase 8 planned and verified, ready for execution
-Resume file: .planning/phases/08-modo-completo/08-01-PLAN.md
+Last session: 2026-03-28T19:22:14.511Z
+Stopped at: Phase 9 context gathered (backend-only scope)
+Resume file: .planning/phases/09-dashboard-results-ui/09-CONTEXT.md

@@ -150,9 +150,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — DB migration (role column), type updates (Competitor role, ComparativeAnalysis), query updates, factories, tests (Wave 1)
-- [ ] 08-02-PLAN.md — Orchestrator user extraction wiring for Modo Completo with graceful degradation (Wave 2)
-- [ ] 08-03-PLAN.md — Comparative synthesis: schema extension, prompt, synthesizeAnalysis update, task integration, tests (Wave 2)
+- [x] 08-01-PLAN.md — DB migration (role column), type updates (Competitor role, ComparativeAnalysis), query updates, factories, tests (Wave 1)
+- [x] 08-02-PLAN.md — Orchestrator user extraction wiring for Modo Completo with graceful degradation (Wave 2)
+- [x] 08-03-PLAN.md — Comparative synthesis: schema extension, prompt, synthesizeAnalysis update, task integration, tests (Wave 2)
 
 ### Phase 9: Dashboard & Results UI
 **Goal**: Users see all analysis results in a polished, organized, responsive interface with real-time progress feedback

@@ -90,11 +90,12 @@ export const listAnalyses = async (limit = 20): Promise<Analysis[]> => {
 
 // --- Competitor queries ---
 
-/** Cria um concorrente vinculado a uma analise */
+/** Cria um concorrente vinculado a uma analise (per D-07) */
 export const createCompetitor = async (input: {
   analysisId: string;
   name: string;
   websiteUrl?: string | null;
+  role?: 'competitor' | 'user_business';
 }): Promise<Competitor> => {
   const supabase = createServerClient();
   const { data, error } = await supabase
@@ -103,6 +104,7 @@ export const createCompetitor = async (input: {
       analysis_id: input.analysisId,
       name: input.name,
       website_url: input.websiteUrl ?? null,
+      role: input.role ?? 'competitor',
     })
     .select()
     .single();
@@ -114,19 +116,34 @@ export const createCompetitor = async (input: {
   return mapCompetitorRow(data);
 };
 
-/** Busca concorrentes de uma analise */
+/** Busca concorrentes de uma analise (exclui user_business per D-10) */
 export const getCompetitorsByAnalysis = async (analysisId: string): Promise<Competitor[]> => {
   const supabase = createServerClient();
   const { data, error } = await supabase
     .from('competitors')
     .select()
-    .eq('analysis_id', analysisId);
+    .eq('analysis_id', analysisId)
+    .eq('role', 'competitor');
 
   if (error) {
     throw new Error(`Erro ao buscar concorrentes: ${error.message}`);
   }
 
   return (data ?? []).map(mapCompetitorRow);
+};
+
+/** Busca o negocio do usuario vinculado a uma analise (per D-08) */
+export const getUserBusinessByAnalysis = async (analysisId: string): Promise<Competitor | null> => {
+  const supabase = createServerClient();
+  const { data, error } = await supabase
+    .from('competitors')
+    .select()
+    .eq('analysis_id', analysisId)
+    .eq('role', 'user_business')
+    .single();
+
+  if (error) return null;
+  return data ? mapCompetitorRow(data) : null;
 };
 
 /** Atualiza dados de um concorrente (JSONB columns) */
@@ -304,6 +321,7 @@ const mapCompetitorRow = (row: Record<string, unknown>): Competitor => ({
   metaAdsData: row.meta_ads_data as Competitor['metaAdsData'],
   googleAdsData: row.google_ads_data as Competitor['googleAdsData'],
   gmbData: row.gmb_data as Competitor['gmbData'],
+  role: (row.role as Competitor['role']) ?? 'competitor',
   createdAt: row.created_at as string,
 });
 

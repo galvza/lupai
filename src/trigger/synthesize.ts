@@ -1,14 +1,16 @@
 import { task, metadata } from '@trigger.dev/sdk';
 
-import { synthesizeAnalysis } from '@/lib/ai/synthesize';
+import { synthesizeAnalysis, buildComparativeAnalysis } from '@/lib/ai/synthesize';
 import { generateCreativeScripts } from '@/lib/ai/creative';
 import {
   getAnalysis,
   getCompetitorsByAnalysis,
   getViralContentByAnalysis,
+  getUserBusinessByAnalysis,
   upsertSynthesis,
 } from '@/lib/supabase/queries';
-import type { SynthesisOutput, CreativeScript } from '@/types/database';
+import type { Competitor } from '@/types/competitor';
+import type { SynthesisOutput, CreativeScript, ComparativeAnalysis } from '@/types/database';
 
 /** Payload para o task de sintese com IA */
 export interface SynthesizePayload {
@@ -95,6 +97,12 @@ export const synthesizeTask = task({
 
     const viralPatterns = analysis.viralPatterns ?? null;
 
+    // Fetch user business for Modo Completo (per D-25)
+    let userBusiness: Competitor | null = null;
+    if (payload.mode === 'complete') {
+      userBusiness = await getUserBusinessByAnalysis(payload.analysisId);
+    }
+
     // Stage 2: Call synthesizeAnalysis (per D-15, D-17)
     metadata.set('step', 'Gerando sintese e recomendacoes...');
     metadata.set('progress', 30);
@@ -108,6 +116,7 @@ export const synthesizeTask = task({
         competitors,
         viralContent,
         viralPatterns,
+        userBusiness,
       });
     } catch (error) {
       console.warn(`Aviso: sintese falhou: ${(error as Error).message}`);
@@ -154,12 +163,19 @@ export const synthesizeTask = task({
       reason = 'Gemini indisponivel. Dados de extracao preservados.';
     }
 
+    // Build comparative analysis for Modo Completo (per D-22, D-27)
+    let comparativeAnalysis: ComparativeAnalysis | null = null;
+    if (payload.mode === 'complete') {
+      comparativeAnalysis = buildComparativeAnalysis(synthesisResult, userBusiness);
+    }
+
     // Store in Supabase via upsert (per D-31, D-32, D-33)
     await upsertSynthesis({
       analysisId: payload.analysisId,
       strategicOverview,
       recommendations: synthesisResult?.recommendations ?? [],
       creativeScripts: scriptsResult ?? [],
+      comparativeAnalysis,
     });
 
     metadata.set('progress', 100);

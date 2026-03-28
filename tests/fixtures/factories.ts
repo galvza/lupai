@@ -1,7 +1,7 @@
 import type { Analysis } from '@/types/analysis';
 import type { Competitor } from '@/types/competitor';
 import type { ViralContent } from '@/types/viral';
-import type { Synthesis, Recommendation, CreativeScript } from '@/types/database';
+import type { Synthesis, Recommendation, CreativeScript, ComparativeAnalysis } from '@/types/database';
 import type { RawCompetitorCandidate } from '@/utils/competitors';
 
 /** Cria dados de analise com valores padrao para testes */
@@ -35,6 +35,7 @@ export const createCompetitor = (overrides?: Partial<Competitor>): Competitor =>
   metaAdsData: null,
   googleAdsData: null,
   gmbData: null,
+  role: 'competitor' as const,
   createdAt: '2026-03-27T12:01:00Z',
   ...overrides,
 });
@@ -104,5 +105,38 @@ export const createRawCandidate = (overrides?: Partial<RawCompetitorCandidate>):
   url: 'https://clinicasorriso.com.br',
   description: 'Clinica odontologica especializada em Sao Paulo.',
   source: 'google-search',
+  ...overrides,
+});
+
+/** Cria dados de analise comparativa com valores padrao (per D-22) */
+export const createComparativeAnalysis = (overrides?: Partial<ComparativeAnalysis>): ComparativeAnalysis => ({
+  comparativeStatus: 'full',
+  userVsMarket: {
+    title: 'Sua posicao no mercado',
+    summary: 'Analise da posicao do seu negocio no mercado de clinicas odontologicas em SP.',
+    metrics: { 'presenca_digital': 'media' },
+    tags: ['posicionamento'],
+    detailed_analysis: 'Detalhamento da posicao no mercado comparando metricas de presenca digital.',
+  },
+  gapsVsCompetitors: {
+    title: 'Gaps vs concorrentes',
+    summary: 'Lacunas identificadas entre seu negocio e os concorrentes.',
+    metrics: { 'gaps': 3 },
+    tags: ['gaps'],
+    detailed_analysis: 'Detalhamento dos gaps identificados comparando presenca em redes sociais e anuncios.',
+  },
+  competitiveAdvantages: {
+    title: 'Vantagens competitivas',
+    summary: 'Vantagens do seu negocio em relacao aos concorrentes.',
+    metrics: { 'vantagens': 2 },
+    tags: ['vantagens'],
+    detailed_analysis: 'Detalhamento das vantagens competitivas identificadas na analise.',
+  },
+  personalizedRecommendations: [
+    createRecommendation({
+      action: 'Seu concorrente Clinica Sorriso SP posta 5x por semana e voce posta 2x — aumente para pelo menos 4x',
+      reason: 'Frequencia de posts correlaciona com engajamento no nicho odontologico',
+    }),
+  ],
   ...overrides,
 });

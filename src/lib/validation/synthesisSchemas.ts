@@ -18,13 +18,27 @@ export const recommendationSchema = z.object({
   expected_impact: z.string().min(1),
 });
 
-/** Schema completo do output de sintese (per D-03 Modo Rapido) */
+/** Schema completo do output de sintese (per D-03 Modo Rapido + D-19 Modo Completo) */
 export const synthesisOutputSchema = z.object({
   marketOverview: synthesisSectionSchema,
   competitorAnalysis: synthesisSectionSchema,
   gapsAndOpportunities: synthesisSectionSchema,
   viralPatterns: synthesisSectionSchema,
   recommendations: z.array(recommendationSchema).min(3).max(10),
+  // Comparative sections (optional — Modo Completo only, per D-19)
+  userVsMarket: synthesisSectionSchema.optional(),
+  gapsVsCompetitors: synthesisSectionSchema.optional(),
+  competitiveAdvantages: synthesisSectionSchema.optional(),
+});
+
+/** Schema para analise comparativa armazenada no banco (per D-22) */
+export const comparativeAnalysisSchema = z.object({
+  comparativeStatus: z.enum(['full', 'partial', 'unavailable']),
+  userVsMarket: synthesisSectionSchema.nullable(),
+  gapsVsCompetitors: synthesisSectionSchema.nullable(),
+  competitiveAdvantages: synthesisSectionSchema.nullable(),
+  personalizedRecommendations: z.array(recommendationSchema),
+  degradedReason: z.string().optional(),
 });
 
 /** Schema para roteiro criativo individual (per D-12) */

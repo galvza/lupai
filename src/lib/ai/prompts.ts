@@ -91,6 +91,20 @@ REGRAS:
 - Responda APENAS em JSON conforme o schema fornecido
 - Todos os textos em portugues brasileiro`;
 
+/** Secao adicional do prompt de sintese para Modo Completo (per D-20, D-21) */
+export const COMPARATIVE_SYNTHESIS_SECTION = `
+MODO COMPLETO - SECOES COMPARATIVAS ADICIONAIS:
+Voce tambem recebeu dados do negocio do USUARIO. Gere 3 secoes comparativas adicionais alem das 4 secoes base:
+
+5. userVsMarket: "Sua posicao no mercado" — posicione o negocio do usuario vs o panorama do mercado analisado. Compare metricas especificas (seguidores, engajamento, keywords, ads).
+6. gapsVsCompetitors: "Gaps vs concorrentes" — identifique onde cada concorrente supera o usuario e vice-versa. Seja ESPECIFICO com numeros.
+7. competitiveAdvantages: "Vantagens competitivas identificadas" — destaque o que o usuario faz melhor que os concorrentes.
+
+As recomendacoes DEVEM ser comparativas: "Seu concorrente X posta 5x por semana e voce posta 2x — aumente para pelo menos 4x" — sempre cite dados do usuario E do concorrente com numeros especificos.
+
+DADOS DO NEGOCIO DO USUARIO:
+`;
+
 /** Prompt para scoring de candidatos a concorrentes */
 export const SCORE_COMPETITORS_PROMPT = `Voce e um analista de mercado especializado em identificar concorrentes diretos.
 

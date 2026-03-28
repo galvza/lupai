@@ -32,24 +32,26 @@ export interface SynthesisSection {
   detailed_analysis: string;
 }
 
-/** Resultado completo da sintese estrategica (per D-03) */
+/** Resultado completo da sintese estrategica (per D-03, D-18) */
 export interface SynthesisOutput {
   marketOverview: SynthesisSection;
   competitorAnalysis: SynthesisSection;
   gapsAndOpportunities: SynthesisSection;
   viralPatterns: SynthesisSection;
   recommendations: Recommendation[];
+  userVsMarket?: SynthesisSection;
+  gapsVsCompetitors?: SynthesisSection;
+  competitiveAdvantages?: SynthesisSection;
 }
 
-/** Analise comparativa (Modo Completo) */
+/** Analise comparativa (Modo Completo) - per D-22, D-18 */
 export interface ComparativeAnalysis {
-  userBusinessData: Record<string, unknown>;
-  comparisons: Array<{
-    competitorId: string;
-    competitorName: string;
-    insights: string[];
-  }>;
-  personalizedRecommendations: string[];
+  comparativeStatus: 'full' | 'partial' | 'unavailable';
+  userVsMarket: SynthesisSection | null;
+  gapsVsCompetitors: SynthesisSection | null;
+  competitiveAdvantages: SynthesisSection | null;
+  personalizedRecommendations: Recommendation[];
+  degradedReason?: string;
 }
 
 /** Sintese como retornada do banco */
@@ -120,6 +122,7 @@ export interface Database {
           meta_ads_data: MetaAdsData | null;
           google_ads_data: GoogleAdsData | null;
           gmb_data: GmbData | null;
+          role: 'competitor' | 'user_business';
           created_at: string;
         };
         Insert: {
@@ -133,6 +136,7 @@ export interface Database {
           meta_ads_data?: MetaAdsData | null;
           google_ads_data?: GoogleAdsData | null;
           gmb_data?: GmbData | null;
+          role?: 'competitor' | 'user_business';
         };
         Update: {
           name?: string;
@@ -143,6 +147,7 @@ export interface Database {
           meta_ads_data?: MetaAdsData | null;
           google_ads_data?: GoogleAdsData | null;
           gmb_data?: GmbData | null;
+          role?: 'competitor' | 'user_business';
         };
         Relationships: [
           {
