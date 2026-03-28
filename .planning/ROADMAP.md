@@ -181,11 +181,11 @@ Plans:
   2. User can access a history page listing all past analyses and click to view any previous result
   3. Querying the same niche within 24 hours serves cached results instantly without re-running the extraction cascade
   4. User can click "Export PDF" and receive a downloadable PDF containing all dashboard sections in a clean, printable layout with cover page
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 10-01: TBD
-- [ ] 10-02: TBD
+- [ ] 10-01-PLAN.md — History API with cursor pagination, 24h cache check in analyze route, cache index migration (Wave 1)
+- [ ] 10-02-PLAN.md — PDF generation with jsPDF + Roboto font, section renderers, report API route (Wave 1)
 
 **UI hint**: yes
 
@@ -205,4 +205,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4/5/6 (parallelizable) -> 7 -> 8
 | 7. AI Synthesis & Creative Modeling | 0/2 | Planning complete | - |
 | 8. Modo Completo | 0/3 | Planning complete | - |
 | 9. Dashboard & Results UI | 0/2 | Planning complete | - |
-| 10. History, Cache & PDF Export | 0/2 | Not started | - |
+| 10. History, Cache & PDF Export | 0/2 | Planning complete | - |
