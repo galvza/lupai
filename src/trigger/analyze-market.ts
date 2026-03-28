@@ -5,6 +5,7 @@ import { extractWebsite } from './extract-website';
 import { extractSocial } from './extract-social';
 import { extractAds } from './extract-ads';
 import { extractViral } from './extract-viral';
+import { synthesizeTask } from './synthesize';
 import { scoreCompetitorsWithAI } from '@/lib/ai/score-competitors';
 import { filterBlockedDomains, deduplicateCandidates } from '@/utils/competitors';
 import { findSocialProfilesViaSearch, mergeSocialSources } from '@/utils/socialFallback';
@@ -265,10 +266,28 @@ export const analyzeMarket = task({
       });
       metadata.set('subTasks', subTaskProgress);
 
-      metadata.set('step', 'Extracao concluida');
-      metadata.set('progress', 95);
+      metadata.set('step', 'Extracao concluida. Gerando sintese e recomendacoes...');
+      metadata.set('progress', 90);
       metadata.set('extractionSummary', { success: successCount, failed: failCount, total: allRuns.length });
 
+      // Step 12: AI Synthesis & Creative Modeling (per D-25, D-26)
+      let synthesisStatus = 'skipped';
+      try {
+        const synthesisResult = await synthesizeTask.triggerAndWait({
+          analysisId: payload.analysisId,
+          niche: payload.niche,
+          segment: payload.segment,
+          region: payload.region,
+          mode: payload.mode,
+        });
+
+        synthesisStatus = synthesisResult.ok ? synthesisResult.output.status : 'unavailable';
+      } catch {
+        synthesisStatus = 'unavailable';
+      }
+
+      // Per D-27: mark completed regardless of synthesis status
+      metadata.set('synthesisStatus', synthesisStatus);
       await updateAnalysis(payload.analysisId, { status: 'completed' });
       metadata.set('status', 'completed');
       metadata.set('progress', 100);
@@ -278,6 +297,7 @@ export const analyzeMarket = task({
         competitorsFound: savedCompetitors.length,
         extractionSuccess: successCount,
         extractionFailed: failCount,
+        synthesisStatus,
       };
     } catch (error) {
       await updateAnalysis(payload.analysisId, { status: 'failed' }).catch(() => {});
