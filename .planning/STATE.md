@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Phase 5 context gathered (auto mode)
-last_updated: "2026-03-28T13:26:32.333Z"
+status: executing
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-28T13:51:36.409Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 10
   completed_phases: 3
-  total_plans: 10
-  completed_plans: 9
+  total_plans: 12
+  completed_plans: 10
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-27)
 
 **Core value:** Entregar em minutos o que hoje leva horas: analise completa do mercado/nicho com concorrentes mapeados, dados consolidados e recomendacoes estrategicas acionaveis.
-**Current focus:** Phase 04 — website-seo-social-extraction
+**Current focus:** Phase 05 — ads-intelligence
 
 ## Current Position
 
-Phase: 5
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 05 (ads-intelligence) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-03-28
 
 Progress: [░░░░░░░░░░] 0%
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04 P01 | 6min | 2 tasks | 10 files |
 | Phase 04 P02 | 3min | 2 tasks | 4 files |
 | Phase 04 P03 | 4min | 1 tasks | 2 files |
+| Phase 05 P01 | 3min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,9 @@ Recent decisions affecting current work:
 - [Phase 04]: Split extraction into 2 sequential batches: Batch 1 (website+viral) then Batch 2 (social+ads) because social needs website-discovered links
 - [Phase 04]: Google Search fallback only for specifically missing platforms (instagram/tiktok), not all, saving API calls
 - [Phase 04]: Sub-task progress uses 4 keys per competitor (website, seo, social, ads) for granular tracking
+- [Phase 05]: Google Ads actor changed to memo23/google-ad-transparency-scraper-cheerio (Cheerio-based, cheaper on credits)
+- [Phase 05]: Facebook Ads uses search field (not searchQuery) for keyword fallback
+- [Phase 05]: GMB schema uses .refine() for conditional name-not-null validation
 
 ### Pending Todos
 
@@ -108,6 +112,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28T13:26:32.328Z
-Stopped at: Phase 5 context gathered (auto mode)
-Resume file: .planning/phases/05-ads-intelligence/05-CONTEXT.md
+Last session: 2026-03-28T13:51:36.406Z
+Stopped at: Completed 05-01-PLAN.md
+Resume file: None
