@@ -38,26 +38,30 @@ Entregar em minutos o que hoje leva horas: uma análise completa do mercado/nich
 - ✓ Viral content extraction: TikTok + Instagram viral search, Bunny Storage upload, transcription pipeline — Phase 6
 - ✓ AI synthesis: Gemini structured output with 8 sections, creative modeling (roteiros com gancho/corpo/CTA) — Phase 7
 - ✓ Modo Completo: role-based competitor schema, user business extraction in orchestrator, comparative synthesis pipeline — Phase 8
+- ✓ Dashboard results aggregation: status route, analysis results route, section status derivation — Phase 9
+- ✓ 24h niche cache: findCachedAnalysis with composite index, cache-first in /api/analyze — Phase 10
+- ✓ Paginated history API: GET /api/history with cursor/limit/status params — Phase 10
+- ✓ PDF report export: jsPDF with Roboto TTF (PT-BR), 9 section renderers, GET /api/report/[id] — Phase 10
 
 ### Active
-- [ ] Análise do site (posicionamento, oferta, preços, meta tags)
-- [ ] Análise de SEO (autoridade estimada, palavras-chave principais, tráfego estimado)
-- [ ] Descoberta e análise de redes sociais (posts recentes, frequência, engajamento)
-- [x] Anúncios ativos na Biblioteca de Anúncios do Meta (criativos, copy, formato, tempo no ar) — Phase 5 (backend extraction)
-- [x] Análise de anúncios no Google Ads (presença em search, palavras-chave pagas) — Phase 5 (backend extraction)
-- [x] Análise de presença no Google Meu Negócio (quando aplicável) — Phase 5 (backend extraction)
-- [ ] Inteligência de conteúdo viral: busca o que está viralizando no nicho (TikTok, Instagram, Facebook)
-- [ ] Transcrição e análise de vídeos virais: IA transcreve, identifica gancho, corpo e CTA
-- [ ] Modelagem automática de criativos: IA gera roteiros de vídeo com gancho, corpo e CTA
-- [ ] Síntese com IA: consolida todos os dados e gera recomendações estratégicas acionáveis
-- [ ] Dashboard/relatório visual com os resultados organizados
-- [ ] Exportação de relatórios em PDF
-- [x] Modo Completo: usuário informa dados do próprio negócio, sistema cruza com concorrentes — Phase 8 (backend)
-- [x] Recomendações personalizadas no Modo Completo (comparativas) — Phase 8 (backend)
-- [ ] Persistência de dados: resultados salvos por categoria de nicho
-- [ ] Histórico de pesquisas acessível
-- [ ] Interface web responsiva, didática e autoexplicativa (sem autenticação)
-- [ ] Progresso em tempo real durante a cascata de extração
+- [x] Análise do site (posicionamento, oferta, preços, meta tags) — Phase 4
+- [x] Análise de SEO (autoridade estimada, palavras-chave principais, tráfego estimado) — Phase 4
+- [x] Descoberta e análise de redes sociais (posts recentes, frequência, engajamento) — Phase 4
+- [x] Anúncios ativos na Biblioteca de Anúncios do Meta — Phase 5
+- [x] Análise de anúncios no Google Ads — Phase 5
+- [x] Análise de presença no Google Meu Negócio — Phase 5
+- [x] Inteligência de conteúdo viral (TikTok, Instagram) — Phase 6
+- [x] Transcrição e análise de vídeos virais — Phase 6
+- [x] Modelagem automática de criativos (roteiros com gancho/corpo/CTA) — Phase 7
+- [x] Síntese com IA: recomendações estratégicas acionáveis — Phase 7
+- [x] Dashboard/relatório visual com resultados — Phase 9 (backend API)
+- [x] Exportação de relatórios em PDF — Phase 10
+- [x] Modo Completo: cruzamento com concorrentes — Phase 8
+- [x] Recomendações personalizadas comparativas — Phase 8
+- [x] Persistência de dados por nicho — Phase 10 (24h cache)
+- [x] Histórico de pesquisas acessível — Phase 10 (history API)
+- [ ] Interface web responsiva (frontend) — deferred
+- [ ] Progresso em tempo real durante extração (frontend) — deferred
 
 ### Out of Scope
 
@@ -127,4 +131,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-28 after Phase 9 completion — Dashboard backend API layer (results aggregation route, status fallback, section status derivation)*
+*Last updated: 2026-03-28 after Phase 10 completion — All 10 phases complete. Backend fully implemented: cache, history API, PDF export. Frontend deferred.*
