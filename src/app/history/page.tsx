@@ -8,7 +8,6 @@ import {
   Plus,
 } from "lucide-react";
 import Link from "next/link";
-import { Nav } from "@/components/layout/Nav";
 import { Footer } from "@/components/layout/Footer";
 import { MOCK_HISTORY } from "@/utils/mock-analysis";
 import type { HistoryItem } from "@/types/analysis";
@@ -74,8 +73,7 @@ export default function HistoryPage() {
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <div className="bg-dark-bg">
-        <Nav />
-        <div className="px-6 pb-8 pt-4 max-w-4xl mx-auto flex items-center justify-between">
+        <div className="px-6 pb-8 pt-20 max-w-4xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="font-serif text-[22px] sm:text-[26px] text-white">
               Suas <em className="italic text-accent">análises</em>

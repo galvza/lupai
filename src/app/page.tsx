@@ -1,3 +1,4 @@
+import { Nav } from "@/components/layout/Nav";
 import { HeroSection } from "@/components/home/HeroSection";
 import { Marquee } from "@/components/home/Marquee";
 import { ComoFuncionaSection } from "@/components/home/ComoFuncionaSection";
@@ -10,6 +11,7 @@ import { Footer } from "@/components/layout/Footer";
 export default function HomePage() {
   return (
     <main>
+      <Nav />
       <HeroSection />
       <Marquee />
       <div className="w-full h-px bg-[#E0DDD5]" />

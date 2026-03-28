@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Nav } from "@/components/layout/Nav";
 import { FirstTimeBanner } from "./FirstTimeBanner";
 import { HeroInput } from "./HeroInput";
+
 /** Seção hero com headline, input e cantos arredondados */
 export const HeroSection = () => {
   return (
@@ -11,9 +11,7 @@ export const HeroSection = () => {
       id="hero"
       className="bg-dark-bg rounded-b-[32px] md:rounded-b-[48px] relative z-10"
     >
-      <Nav />
-
-      <div className="flex flex-col items-center px-8 lg:px-16 pt-16 md:pt-20 pb-10 md:pb-14">
+      <div className="flex flex-col items-center px-8 lg:px-16 pt-24 md:pt-28 pb-10 md:pb-14">
         <FirstTimeBanner />
 
         {/* Headline */}
