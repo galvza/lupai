@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-28T00:55:22.415Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-03-28T01:01:11.557Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 10
   completed_phases: 2
   total_plans: 10
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 ## Current Position
 
 Phase: 04 (website-seo-social-extraction) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-03-28
 
@@ -58,6 +58,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02 P01 | 5min | 3 tasks | 10 files |
 | Phase 03 P01 | 4min | 2 tasks | 12 files |
 | Phase 04 P01 | 6min | 2 tasks | 10 files |
+| Phase 04 P02 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,9 @@ Recent decisions affecting current work:
 - [Phase 03]: Blocklist uses domain.includes() matching for subdomain coverage
 - [Phase 04]: Brand similarity uses 50% length ratio for inclusion check to avoid false positives on short handles
 - [Phase 04]: socialFallback merges only instagram and tiktok (2 scrape-able platforms per D-21)
+- [Phase 04]: ExtractSocialPayload uses SocialProfileInput type (username+source) for traceability
+- [Phase 04]: Both extraction tasks use retry 3 attempts with exponential backoff (2s-10s, factor 2)
+- [Phase 04]: validateOrNull pattern: null raw data skips validation; non-null failing data stores null with warning
 
 ### Pending Todos
 
@@ -100,6 +104,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28T00:55:22.412Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-03-28T01:01:11.554Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None

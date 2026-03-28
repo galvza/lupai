@@ -89,7 +89,7 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md — Types, utilities (social links, fallback, business IDs), validation schemas, enhanced website scraper (Wave 1)
-- [ ] 04-02-PLAN.md — extract-website compound task + extract-social task implementations with tests (Wave 2)
+- [x] 04-02-PLAN.md — extract-website compound task + extract-social task implementations with tests (Wave 2)
 - [ ] 04-03-PLAN.md — Orchestrator 2-batch sequential refactoring with social link merging and fallback (Wave 3)
 
 ### Phase 5: Ads Intelligence
