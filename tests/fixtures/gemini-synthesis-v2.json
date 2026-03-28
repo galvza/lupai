@@ -1,0 +1,67 @@
+{
+  "marketOverview": {
+    "title": "Panorama do mercado odontologico em SP",
+    "summary": "O mercado de clinicas odontologicas em SP e altamente competitivo com forte presenca digital. Taxa media de engajamento de 3.2% no Instagram supera a media do setor.",
+    "metrics": { "concorrentes_analisados": 3, "engajamento_medio_instagram": 3.2, "investimento_meta_ads": "2 de 3 concorrentes ativos" },
+    "tags": ["competitivo", "digital-first", "instagram-forte"],
+    "detailed_analysis": "Os 3 concorrentes analisados apresentam presenca digital consolidada..."
+  },
+  "competitorAnalysis": {
+    "title": "Analise detalhada dos concorrentes",
+    "summary": "Clinica Sorriso SP lidera em engajamento social. DentalCare SP investe mais em Google Ads. OdontoPlus foca em preco.",
+    "metrics": { "lider_social": "Clinica Sorriso SP", "lider_seo": "DentalCare SP", "maior_investimento_ads": "DentalCare SP" },
+    "tags": ["sorriso-lider-social", "dentalcare-lider-seo"],
+    "detailed_analysis": "Clinica Sorriso SP: 12.5k seguidores Instagram, engajamento 4.1%..."
+  },
+  "gapsAndOpportunities": {
+    "title": "Lacunas e oportunidades identificadas",
+    "summary": "Nenhum concorrente investe em TikTok de forma consistente. Keywords de cauda longa como 'clareamento dental zona sul sp' nao estao sendo disputadas.",
+    "metrics": { "gap_tiktok": "0 de 3 com presenca ativa", "keywords_nao_disputadas": 5 },
+    "tags": ["tiktok-oportunidade", "seo-cauda-longa"],
+    "detailed_analysis": "A principal lacuna identificada e a ausencia de presenca ativa no TikTok..."
+  },
+  "viralPatterns": {
+    "title": "Padroes de conteudo viral no nicho",
+    "summary": "Videos com hook de pergunta provocativa e formato antes/depois dominam o engajamento. Duracao ideal entre 15-45 segundos.",
+    "metrics": { "padrao_dominante": "pergunta provocativa", "duracao_ideal_segundos": "15-45", "tom_dominante": "educacional" },
+    "tags": ["antes-depois", "pergunta-provocativa", "educacional"],
+    "detailed_analysis": "Em 8 videos analisados, o padrao de hook mais frequente (5 de 8) e a pergunta provocativa..."
+  },
+  "recommendations": [
+    {
+      "action": "Criar serie semanal de antes/depois no Instagram",
+      "reason": "Clinica Sorriso SP gera 891 likes por post de antes/depois vs 256 em posts educativos. Este formato gera 3.5x mais engajamento no nicho.",
+      "priority": "alta",
+      "effort": "baixo",
+      "expected_impact": "Aumento de 200-300% no engajamento do Instagram em 30 dias"
+    },
+    {
+      "action": "Iniciar presenca ativa no TikTok com 3 videos por semana",
+      "reason": "Nenhum dos 3 concorrentes tem presenca ativa no TikTok. Clinica Sorriso SP tem 8.400 seguidores abandonados. Oportunidade de first-mover no nicho local.",
+      "priority": "alta",
+      "effort": "medio",
+      "expected_impact": "Capturar audiencia jovem (18-30) nao atendida pelos concorrentes em 60 dias"
+    },
+    {
+      "action": "Criar paginas de conteudo para keywords de cauda longa: 'clareamento dental zona sul sp', 'implante dentario parcelado sp', 'dentista emergencia sp'",
+      "reason": "DentalCare SP ranqueia para 'dentista sp' (alta concorrencia, CPC R$ 8.50). Keywords de cauda longa tem CPC 60% menor e conversao 2x maior.",
+      "priority": "media",
+      "effort": "medio",
+      "expected_impact": "Reducao de 40-60% no custo por lead via busca organica em 90 dias"
+    },
+    {
+      "action": "Otimizar Google Meu Negocio com fotos profissionais e responder todas as avaliacoes",
+      "reason": "Clinica Sorriso SP tem 4.2 estrelas (89 avaliacoes) mas nao responde 67% das avaliacoes negativas. OdontoPlus tem 4.7 (156 avaliacoes) com 95% de respostas.",
+      "priority": "media",
+      "effort": "baixo",
+      "expected_impact": "Melhoria de 0.3-0.5 pontos na avaliacao media e aumento de 20% em visitas ao perfil"
+    },
+    {
+      "action": "Testar Meta Ads com formato video curto (15-30s) usando hook de pergunta provocativa",
+      "reason": "2 de 3 concorrentes usam apenas imagens estaticas nos anuncios. Videos com hook provocativo geram 4x mais cliques no nicho odontologico segundo padroes virais analisados.",
+      "priority": "media",
+      "effort": "alto",
+      "expected_impact": "Reducao de 30-50% no custo por clique comparado a imagens estaticas"
+    }
+  ]
+}

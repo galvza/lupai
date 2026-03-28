@@ -92,18 +92,20 @@ describe('Factory: createSynthesis', () => {
 describe('Factory: createRecommendation', () => {
   it('retorna recomendacao com prioridade alta por padrao', () => {
     const rec = createRecommendation();
-    expect(rec.priority).toBe('high');
-    expect(rec.title).toBeTruthy();
-    expect(rec.description).toBeTruthy();
+    expect(rec.priority).toBe('alta');
+    expect(rec.action).toBeTruthy();
+    expect(rec.reason).toBeTruthy();
+    expect(rec.effort).toBeTruthy();
+    expect(rec.expected_impact).toBeTruthy();
   });
 });
 
 describe('Factory: createCreativeScript', () => {
   it('retorna roteiro com hook, corpo e CTA', () => {
     const script = createCreativeScript();
-    expect(script.hook).toBeTruthy();
-    expect(script.body).toBeTruthy();
-    expect(script.cta).toBeTruthy();
-    expect(script.estimatedDurationSeconds).toBeGreaterThan(0);
+    expect(script.hook.text).toBeTruthy();
+    expect(script.body.text).toBeTruthy();
+    expect(script.cta.text).toBeTruthy();
+    expect(script.estimated_duration_seconds).toBeGreaterThan(0);
   });
 });

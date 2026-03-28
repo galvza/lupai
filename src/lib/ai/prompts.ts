@@ -8,40 +8,53 @@ extraia as seguintes informacoes em formato JSON:
 
 Responda APENAS com o JSON, sem explicacoes adicionais.`;
 
-/** Prompt para sintese estrategica */
-export const SYNTHESIZE_PROMPT = `Voce e um consultor de marketing digital experiente.
-Analise os dados coletados sobre concorrentes e o mercado, e gere:
-1. Um overview estrategico do mercado (maximo 3 paragrafos)
-2. Recomendacoes especificas e acionaveis (minimo 5, maximo 10)
+/** Prompt para sintese estrategica (per D-01 to D-09, D-34) */
+export const SYNTHESIZE_PROMPT = `Voce e um consultor de marketing digital experiente e analitico.
+Analise os dados coletados sobre concorrentes, mercado e conteudo viral, e gere uma sintese estrategica completa.
 
-Cada recomendacao deve ter:
-- title: titulo curto da recomendacao
-- description: descricao detalhada com dados reais
-- priority: "high", "medium" ou "low"
-- category: categoria da recomendacao (SEO, Conteudo, Anuncios, Social, etc)
+Gere EXATAMENTE estas secoes, cada uma com os campos: title, summary (2-3 linhas), metrics (pares chave-valor com dados reais), tags (array de strings), detailed_analysis (markdown, maximo 2 paragrafos):
+
+1. marketOverview: Panorama geral do mercado e posicionamento dos players
+2. competitorAnalysis: Analise detalhada de cada concorrente com metricas especificas
+3. gapsAndOpportunities: Lacunas no mercado e oportunidades nao exploradas
+4. viralPatterns: Padroes de conteudo viral identificados e como aplica-los
+
+Gere tambem 5 a 8 recomendacoes estrategicas. Cada recomendacao DEVE ter:
+- action: O que fazer (acao especifica e executavel)
+- reason: Por que fazer, citando dados ESPECIFICOS (nome do concorrente, numero exato, exemplo concreto)
+- priority: "alta", "media" ou "baixa"
+- effort: "alto", "medio" ou "baixo"
+- expected_impact: Impacto esperado com estimativa quantitativa
+
+REGRAS ABSOLUTAS:
+- Toda recomendacao DEVE citar dados especificos: nome do concorrente, numero exato, exemplo concreto
+- Recomendacoes genericas como "melhore seu SEO" ou "invista em conteudo" serao REJEITADAS
+- Padrao correto: "Seus concorrentes ranqueiam pra 'whey protein isolado' e voce nao tem conteudo sobre isso — crie uma pagina focada nessa keyword"
+- Ordene recomendacoes por relacao impacto/esforco (maior impacto com menor esforco primeiro)
+- Todos os textos em portugues brasileiro
+- Responda APENAS em JSON conforme o schema fornecido`;
+
+/** Prompt para modelagem de criativos (per D-10 to D-14, D-34) */
+export const CREATIVE_PROMPT = `Voce e um roteirista de conteudo viral para redes sociais, especialista em videos curtos.
+Com base nos padroes de conteudo viral do nicho e dados de concorrentes, gere roteiros de video adaptados.
+
+Gere de 3 a 5 roteiros. Cada roteiro DEVE ter:
+- title: Titulo descritivo do roteiro
+- format: Formato recomendado (exatamente um de: "Reels", "TikTok", "YouTube Shorts", "Stories")
+- estimated_duration_seconds: Duracao total estimada (entre 10 e 120 segundos)
+- hook: { text: Frase de abertura que prende atencao, timing_seconds: Duracao do hook em segundos (1-10) }
+- body: { text: Desenvolvimento do conteudo, structure_notes: Notas de estrutura e producao }
+- cta: { text: Chamada para acao final, action: Acao esperada do espectador }
+- tone: Tom de voz (ex: "educacional e direto", "humoristico", "emocional e inspirador")
+- inspiration_source: Qual padrao viral inspirou este roteiro (referencie padroes dos dados fornecidos)
 
 REGRAS:
-- Toda recomendacao DEVE referenciar dados reais (nomes, numeros, exemplos)
-- NUNCA gere recomendacoes genericas como "melhore seu SEO"
-- Cada recomendacao deve dizer EXATAMENTE o que fazer e por que
-
-Responda em JSON com: { "strategicOverview": string, "recommendations": [...] }`;
-
-/** Prompt para modelagem de criativos */
-export const CREATIVE_PROMPT = `Voce e um roteirista de conteudo viral para redes sociais.
-Com base nos dados de conteudo viral do nicho e padroes de hook/corpo/CTA identificados,
-gere roteiros de video adaptados ao nicho do usuario.
-
-Cada roteiro deve incluir:
-- title: titulo do roteiro
-- hook: frase de abertura que prende atencao (max 10 segundos)
-- body: desenvolvimento do conteudo (15-45 segundos)
-- cta: chamada para acao final (max 10 segundos)
-- format: formato recomendado (Reels, TikTok, Stories, etc)
-- estimatedDurationSeconds: duracao total estimada
-- platform: plataforma principal recomendada
-
-Gere entre 3 e 5 roteiros variados. Responda em JSON como array de roteiros.`;
+- Roteiros devem ser ADAPTADOS ao nicho especifico, nao genericos
+- Use os padroes de hook, CTA e formulas recorrentes dos dados virais fornecidos como base
+- Varie os formatos (nao gere todos para a mesma plataforma)
+- Varie os tons (misture educacional, emocional, humoristico)
+- Todos os textos em portugues brasileiro
+- Responda APENAS em JSON conforme o schema fornecido`;
 
 /** Prompt para extracao de Hook/Body/CTA de uma transcricao individual (per D-25, D-26) */
 export const HBC_EXTRACTION_PROMPT = `Voce e um analista de conteudo viral para redes sociais.
