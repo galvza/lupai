@@ -2,23 +2,43 @@ import type { AnalysisMode, AnalysisStatus, NicheInterpreted } from './analysis'
 import type { WebsiteData, SeoData, SocialData, MetaAdsData, GoogleAdsData, GmbData } from './competitor';
 import type { ContentPlatform, EngagementMetrics, HookBodyCta, ViralPatterns } from './viral';
 
-/** Recomendacao estrategica gerada pela IA */
+/** Recomendacao estrategica gerada pela IA (per D-08) */
 export interface Recommendation {
-  title: string;
-  description: string;
-  priority: 'high' | 'medium' | 'low';
-  category: string;
+  action: string;
+  reason: string;
+  priority: 'alta' | 'media' | 'baixa';
+  effort: 'alto' | 'medio' | 'baixo';
+  expected_impact: string;
 }
 
-/** Roteiro criativo gerado pela IA */
+/** Roteiro criativo gerado pela IA (per D-12) */
 export interface CreativeScript {
   title: string;
-  hook: string;
-  body: string;
-  cta: string;
   format: string;
-  estimatedDurationSeconds: number;
-  platform: string;
+  estimated_duration_seconds: number;
+  hook: { text: string; timing_seconds: number };
+  body: { text: string; structure_notes: string };
+  cta: { text: string; action: string };
+  tone: string;
+  inspiration_source: string;
+}
+
+/** Secao individual da sintese estrategica (per D-02) */
+export interface SynthesisSection {
+  title: string;
+  summary: string;
+  metrics: Record<string, string | number>;
+  tags: string[];
+  detailed_analysis: string;
+}
+
+/** Resultado completo da sintese estrategica (per D-03) */
+export interface SynthesisOutput {
+  marketOverview: SynthesisSection;
+  competitorAnalysis: SynthesisSection;
+  gapsAndOpportunities: SynthesisSection;
+  viralPatterns: SynthesisSection;
+  recommendations: Recommendation[];
 }
 
 /** Analise comparativa (Modo Completo) */

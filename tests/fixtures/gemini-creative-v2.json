@@ -1,0 +1,34 @@
+{
+  "scripts": [
+    {
+      "title": "POV: Primeira consulta na clinica",
+      "format": "Reels",
+      "estimated_duration_seconds": 30,
+      "hook": { "text": "Voce sabia que 70% das pessoas tem medo de dentista? Olha o que acontece quando elas chegam aqui...", "timing_seconds": 3 },
+      "body": { "text": "Mostra a recepcao acolhedora, o ambiente moderno, o dentista explicando o procedimento com calma. Corta para o paciente sorrindo no final.", "structure_notes": "POV estilo tour com transicoes suaves. Legendas grandes para visualizacao sem audio." },
+      "cta": { "text": "Agende sua avaliacao gratuita pelo link na bio!", "action": "Link na bio para agendamento online" },
+      "tone": "acolhedor e profissional",
+      "inspiration_source": "Padrao de hook com estatistica provocativa identificado em 5 de 8 videos virais do nicho"
+    },
+    {
+      "title": "3 sinais de que voce precisa de um clareamento",
+      "format": "TikTok",
+      "estimated_duration_seconds": 45,
+      "hook": { "text": "Se voce percebe ISSO no espelho, precisa assistir ate o final", "timing_seconds": 2 },
+      "body": { "text": "Sinal 1: dentes amarelados mesmo escovando bem. Sinal 2: sorriso apagado nas fotos. Sinal 3: voce evita sorrir abertamente. A boa noticia: clareamento resolve em 1 sessao.", "structure_notes": "Formato lista numerada com cortes rapidos a cada sinal. Texto na tela reforca cada ponto." },
+      "cta": { "text": "Quer saber o preco? Comenta EU QUERO que mando no direct!", "action": "Comentario para DM automatico" },
+      "tone": "educacional e direto",
+      "inspiration_source": "Formula recorrente 'lista de sinais + solucao' encontrada em 3 videos virais do nicho"
+    },
+    {
+      "title": "Antes e depois REAL de implante",
+      "format": "Reels",
+      "estimated_duration_seconds": 60,
+      "hook": { "text": "Ela perdeu o dente da frente num acidente. Olha como ficou depois...", "timing_seconds": 3 },
+      "body": { "text": "Mostra foto do antes com depoimento do paciente. Processo simplificado do implante em 3 etapas. Reveal do resultado final com reacao genuina.", "structure_notes": "Formato antes/depois com storytelling. Musica emocional de fundo. Slow motion no reveal." },
+      "cta": { "text": "Implante a partir de R$ 3.500 em ate 12x. Link na bio pra agendar.", "action": "Link na bio com preco e parcelamento" },
+      "tone": "emocional e inspirador",
+      "inspiration_source": "Padrao de antes/depois com depoimento real dominante nos videos com maior engajamento"
+    }
+  ]
+}

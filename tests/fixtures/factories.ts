@@ -63,24 +63,26 @@ export const createViralContent = (overrides?: Partial<ViralContent>): ViralCont
   ...overrides,
 });
 
-/** Cria dados de recomendacao com valores padrao */
+/** Cria dados de recomendacao com valores padrao (per D-08) */
 export const createRecommendation = (overrides?: Partial<Recommendation>): Recommendation => ({
-  title: 'Investir em conteudo de antes/depois',
-  description: 'Posts de antes/depois geram 3x mais engajamento que posts educativos.',
-  priority: 'high',
-  category: 'conteudo',
+  action: 'Criar serie semanal de antes/depois no Instagram',
+  reason: 'Clinica Sorriso SP gera 891 likes por post de antes/depois vs 256 em posts educativos. Este formato gera 3.5x mais engajamento.',
+  priority: 'alta',
+  effort: 'baixo',
+  expected_impact: 'Aumento de 200-300% no engajamento do Instagram em 30 dias',
   ...overrides,
 });
 
-/** Cria dados de roteiro criativo com valores padrao */
+/** Cria dados de roteiro criativo com valores padrao (per D-12) */
 export const createCreativeScript = (overrides?: Partial<CreativeScript>): CreativeScript => ({
-  title: 'POV: Primeira consulta',
-  hook: 'Voce sabia que 70% das pessoas tem medo de dentista?',
-  body: 'Mostra a recepcao acolhedora e o ambiente moderno da clinica.',
-  cta: 'Agende sua avaliacao gratuita pelo link na bio!',
-  format: 'Reels/TikTok',
-  estimatedDurationSeconds: 30,
-  platform: 'Instagram',
+  title: 'POV: Primeira consulta na clinica',
+  format: 'Reels',
+  estimated_duration_seconds: 30,
+  hook: { text: 'Voce sabia que 70% das pessoas tem medo de dentista? Olha o que acontece quando elas chegam aqui...', timing_seconds: 3 },
+  body: { text: 'Mostra a recepcao acolhedora, o ambiente moderno, o dentista explicando o procedimento com calma. Corta para o paciente sorrindo no final.', structure_notes: 'POV estilo "tour" com transicoes suaves. Use legendas grandes.' },
+  cta: { text: 'Agende sua avaliacao gratuita pelo link na bio!', action: 'Link na bio para agendamento' },
+  tone: 'acolhedor e profissional',
+  inspiration_source: 'Padrao de hook provocativo com estatistica identificado em 4 videos virais do nicho',
   ...overrides,
 });
 
