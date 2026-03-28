@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 06-01-PLAN.md
-last_updated: "2026-03-28T14:56:27.701Z"
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-03-28T15:02:55.199Z"
 last_activity: 2026-03-28
 progress:
   total_phases: 10
   completed_phases: 4
   total_plans: 15
-  completed_plans: 12
+  completed_plans: 13
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-27)
 ## Current Position
 
 Phase: 06 (viral-content-transcription) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 Status: Ready to execute
 Last activity: 2026-03-28
 
@@ -63,6 +63,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 05 P01 | 3min | 2 tasks | 5 files |
 | Phase 05 P02 | 3min | 2 tasks | 3 files |
 | Phase 06 P01 | 6min | 2 tasks | 15 files |
+| Phase 06 P02 | 4min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,8 @@ Recent decisions affecting current work:
 - [Phase 06]: ViralPatterns stored as JSONB on analyses table (not separate table) for simpler queries
 - [Phase 06]: ViralVideoCandidate as intermediate filtering type between Apify output and DB-stored ViralContent
 - [Phase 06]: HBC and viral patterns Gemini prompts enforce JSON-only PT-BR responses
+- [Phase 06]: instagram-viral.ts imports shared utilities from tiktok-viral.ts to avoid duplication
+- [Phase 06]: TikTok D-40 fallback returns [] on all failures (never throws); detectViralPatterns requires min 2 transcriptions (D-48)
 
 ### Pending Todos
 
@@ -120,6 +123,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28T14:56:27.697Z
-Stopped at: Completed 06-01-PLAN.md
+Last session: 2026-03-28T15:02:55.195Z
+Stopped at: Completed 06-02-PLAN.md
 Resume file: None

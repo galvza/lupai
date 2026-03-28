@@ -119,7 +119,7 @@ Plans:
 
 Plans:
 - [x] 06-01-PLAN.md — Extend types (ViralPatterns, ViralVideoCandidate), DB migration, Zod schemas, query extensions, Gemini prompts, fixtures (Wave 1)
-- [ ] 06-02-PLAN.md — TikTok/Instagram viral search Apify wrappers, Gemini HBC extraction + pattern detection modules, with tests (Wave 2)
+- [x] 06-02-PLAN.md — TikTok/Instagram viral search Apify wrappers, Gemini HBC extraction + pattern detection modules, with tests (Wave 2)
 - [ ] 06-03-PLAN.md — Full extract-viral compound Trigger.dev task (6-stage pipeline: discover, filter, download, transcribe, HBC, patterns) with tests (Wave 3)
 
 ### Phase 7: AI Synthesis & Creative Modeling
