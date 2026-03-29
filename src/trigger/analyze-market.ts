@@ -1,4 +1,4 @@
-import { task, metadata, wait, batch } from '@trigger.dev/sdk';
+import { task, metadata, batch } from '@trigger.dev/sdk';
 
 import { discoverFromGoogleSearch, discoverFromGoogleMaps, discoverFromFacebookAds, discoverFromSimilarWeb } from './discover-competitors';
 import { extractWebsite } from './extract-website';
@@ -24,7 +24,8 @@ export interface AnalyzeMarketPayload {
   userBusinessUrl: string | null;
 }
 
-/** Resultado da confirmacao do usuario */
+/** Resultado da confirmacao do usuario (mantido para reuso futuro) */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface ConfirmedCompetitors {
   competitors: ScoredCompetitor[];
 }
@@ -207,28 +208,12 @@ export const analyzeMarket = task({
         metadata.set('note', `Apenas ${scored.length} concorrente(s) qualificado(s) encontrado(s).`);
       }
 
-      // Step 8: Pause for user confirmation (D-14, D-15, D-17, D-19)
-      await updateAnalysis(payload.analysisId, { status: 'waiting_confirmation' });
-      metadata.set('status', 'waiting_confirmation');
-      metadata.set('step', 'Aguardando confirmacao...');
-      metadata.set('progress', 55);
+      // Step 8: Auto-confirm all scored competitors (waitpoint removed)
+      metadata.set('step', 'Salvando concorrentes...');
+      metadata.set('progress', 58);
       metadata.set('candidates', scored);
 
-      const token = await wait.createToken({ timeout: '1h' });
-      metadata.set('confirmationTokenId', token.id);
-
-      const confirmResult = await wait.forToken<ConfirmedCompetitors>(token.id);
-
-      if (!confirmResult.ok) {
-        await updateAnalysis(payload.analysisId, { status: 'failed' });
-        metadata.set('status', 'failed');
-        throw new Error('Confirmacao expirou. Inicie uma nova analise.');
-      }
-
-      // Step 9: Persist confirmed competitors (D-16)
-      const confirmedCompetitors = confirmResult.output.competitors;
-      metadata.set('step', 'Salvando concorrentes...');
-      metadata.set('progress', 60);
+      const confirmedCompetitors = scored;
 
       const savedCompetitors = await Promise.all(
         confirmedCompetitors.map((comp) =>

@@ -12,7 +12,6 @@ const STATUS_PROGRESS: Record<string, number> = {
   pending: 5,
   processing: 15,
   discovering: 35,
-  waiting_confirmation: 45,
   extracting: 65,
   completed: 100,
   failed: 0,
@@ -41,7 +40,7 @@ const deriveSteps = (status: string): AnalysisStep[] => [
     title: "Extraindo dados dos concorrentes",
     status: status === "extracting"
       ? "active"
-      : ["pending", "processing", "discovering", "waiting_confirmation"].includes(status)
+      : ["pending", "processing", "discovering"].includes(status)
         ? "pending"
         : "completed",
     logs: [],
@@ -52,7 +51,7 @@ const deriveSteps = (status: string): AnalysisStep[] => [
     subtitle: "TikTok e Reels dos últimos 90 dias",
     status: status === "extracting"
       ? "active"
-      : ["pending", "processing", "discovering", "waiting_confirmation"].includes(status)
+      : ["pending", "processing", "discovering"].includes(status)
         ? "pending"
         : "completed",
     logs: [],
@@ -170,15 +169,6 @@ export const AnalysisPageClient = ({ id }: { id: string }) => {
           {displayRegion ? ` · ${displayRegion}` : ""}
         </p>
       </div>
-
-      {effectiveStatus === "waiting_confirmation" && (
-        <div className="max-w-2xl mx-auto bg-[#1A1A1A] border border-[#333] rounded-xl p-5 mb-6 text-center">
-          <p className="text-white text-[14px] mb-2">Aguardando confirmação de concorrentes</p>
-          <p className="text-[#666] text-[12px]">
-            Os concorrentes foram descobertos e estão sendo confirmados.
-          </p>
-        </div>
-      )}
 
       <ProgressBar progress={displayProgress} />
       <AnalysisTimeline steps={displaySteps} />
