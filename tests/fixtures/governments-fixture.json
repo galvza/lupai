@@ -1,0 +1,60 @@
+{
+  "governments": [
+    {
+      "id": "lula1",
+      "name": "Lula 1",
+      "president": "Luiz Inácio Lula da Silva",
+      "start": "2003-01",
+      "end": "2006-12",
+      "color": "#E3342F"
+    },
+    {
+      "id": "lula2",
+      "name": "Lula 2",
+      "president": "Luiz Inácio Lula da Silva",
+      "start": "2007-01",
+      "end": "2010-12",
+      "color": "#E3342F"
+    },
+    {
+      "id": "dilma1",
+      "name": "Dilma 1",
+      "president": "Dilma Rousseff",
+      "start": "2011-01",
+      "end": "2014-12",
+      "color": "#CC1F1A"
+    },
+    {
+      "id": "dilma2",
+      "name": "Dilma 2",
+      "president": "Dilma Rousseff",
+      "start": "2015-01",
+      "end": "2016-08",
+      "color": "#CC1F1A"
+    },
+    {
+      "id": "temer",
+      "name": "Temer",
+      "president": "Michel Temer",
+      "start": "2016-09",
+      "end": "2018-12",
+      "color": "#3490DC"
+    },
+    {
+      "id": "bolsonaro",
+      "name": "Bolsonaro",
+      "president": "Jair Bolsonaro",
+      "start": "2019-01",
+      "end": "2022-12",
+      "color": "#FFED4A"
+    },
+    {
+      "id": "lula3",
+      "name": "Lula 3",
+      "president": "Luiz Inácio Lula da Silva",
+      "start": "2023-01",
+      "end": "2026-12",
+      "color": "#E3342F"
+    }
+  ]
+}

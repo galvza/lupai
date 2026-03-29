@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>OG Image Generator — Calmai</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px;
+      background: #f0f0f0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .instructions {
+      max-width: 600px;
+      margin: 0 auto 32px;
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .instructions strong { color: #1a1a1a; }
+    .og-frame {
+      width: 1200px;
+      height: 630px;
+      margin: 0 auto;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 80px 120px;
+      position: relative;
+    }
+    .og-title {
+      font-size: 52px;
+      font-weight: 500;
+      line-height: 1.25;
+      color: #1a1a1a;
+      margin-bottom: 32px;
+      letter-spacing: -0.02em;
+    }
+    .og-subtitle {
+      font-size: 36px;
+      font-weight: 400;
+      color: #6b6b6b;
+      margin-bottom: 48px;
+    }
+    .og-footer {
+      font-size: 18px;
+      color: #9b9b9b;
+      letter-spacing: 0.05em;
+    }
+    .og-border-top {
+      position: absolute;
+      top: 0;
+      left: 80px;
+      right: 80px;
+      height: 4px;
+      background: #1a1a1a;
+    }
+  </style>
+</head>
+<body>
+  <div class="instructions">
+    <p><strong>Como gerar a og-image.png:</strong></p>
+    <p>
+      1. Abra esta página no browser<br>
+      2. Use DevTools → abra o frame de 1200×630 abaixo<br>
+      3. Clique com botão direito → "Capture node screenshot" (Chrome)<br>
+      4. Salve como <strong>public/og-image.png</strong>
+    </p>
+  </div>
+  <div class="og-frame" id="og">
+    <div class="og-border-top"></div>
+    <div class="og-title">
+      Em 20 anos, seu dinheiro<br>perdeu metade do valor.
+    </div>
+    <div class="og-subtitle">
+      R$ 100 de 2005 = R$ 42 hoje
+    </div>
+    <div class="og-footer">
+      8 indicadores · 20 anos · Dados oficiais
+    </div>
+  </div>
+</body>
+</html>

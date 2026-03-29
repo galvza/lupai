@@ -3,5 +3,134 @@
 @theme {
   --color-brand: #6366f1;
   --color-brand-light: #818cf8;
+  --color-accent: #C8FF3C;
+  --color-dark-bg: #0F0F0F;
+  --color-dark-card: #1A1A1A;
+  --color-dark-border: #222222;
+  --color-dark-deeper: #0A0A0A;
+  --color-light-bg: #F2F1ED;
+  --color-light-card: #F8F7F4;
+  --color-light-border: #E8E8E4;
+  --color-positive-bg: #162A16;
+  --color-positive-text: #C8FF3C;
+  --color-negative-bg: #2A1616;
+  --color-negative-text: #FF6B6B;
+  --color-warning-light-bg: #FEF9E7;
+  --color-warning-light-text: #B8860B;
+  --color-warning-dark-bg: #1A1A0A;
+  --color-warning-dark-text: #E8C84A;
+  --color-success-bg: #E8F5E8;
+  --color-success-text: #2A7A2A;
   --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: #ffffff;
+  background: #F8F7F4;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Instrument Serif for headlines */
+.font-headline {
+  font-family: "Instrument Serif", Georgia, serif;
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0F0F0F;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Terminal log styling */
+.terminal-log {
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* Fade animation for rotating placeholders */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Marquee scrolling animation */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.marquee-track {
+  animation: marquee 30s linear infinite;
+}
+
+.marquee-track-reverse {
+  animation: marquee-reverse 35s linear infinite;
+}
+
+/* Section transitions */
+section {
+  position: relative;
+}
+
+/* Prevent horizontal overflow */
+main {
+  overflow-x: hidden;
+}
+
+/* Subtle border pulse — used by HeroInput when focused + empty */
+@keyframes subtle-pulse {
+  0%, 100% { border-color: #333; }
+  50% { border-color: #555; }
+}
+
+.border-pulse {
+  animation: subtle-pulse 2s ease-in-out infinite;
+}
+
+/* Accessibility: skip animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe-hidden {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
