@@ -71,17 +71,23 @@ const downloadAndStoreVideo = async (
 ): Promise<ViralContent | null> => {
   try {
     const response = await fetch(candidate.videoUrl, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+      redirect: 'follow',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        'Accept': 'video/*,application/octet-stream,*/*',
+        'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
+        'Referer': candidate.platform === 'instagram' ? 'https://www.instagram.com/' : 'https://www.tiktok.com/',
+      },
     });
     if (!response.ok) {
-      console.warn(`Aviso: download falhou para ${candidate.videoUrl}: ${response.status}`);
+      console.warn(`Aviso: download falhou para [${candidate.platform}] ${candidate.videoUrl.slice(0, 100)}: HTTP ${response.status}`);
       return null;
     }
 
     // Reject non-video responses (e.g. TikTok returning HTML page)
     const contentType = response.headers.get('content-type') ?? '';
     if (!contentType.startsWith('video/') && !contentType.startsWith('application/octet-stream')) {
-      console.warn(`Aviso: URL retornou Content-Type "${contentType}" (esperado video/*): ${candidate.videoUrl}`);
+      console.warn(`Aviso: URL retornou Content-Type "${contentType}" (esperado video/*) [${candidate.platform}]: ${candidate.videoUrl.slice(0, 100)}`);
       return null;
     }
 
@@ -231,11 +237,22 @@ export const extractViral = task({
         ttResult.status === 'rejected' || igResult.status === 'rejected';
 
       if (ttResult.status === 'rejected') {
-        console.warn(`Aviso: busca TikTok falhou: ${(ttResult.reason as Error).message}`);
+        const ttErr = (ttResult.reason as Error).message;
+        console.warn(`Aviso: busca TikTok falhou: ${ttErr}`);
+        metadata.set('tiktokError', ttErr);
       }
       if (igResult.status === 'rejected') {
-        console.warn(`Aviso: busca Instagram falhou: ${(igResult.reason as Error).message}`);
+        const igErr = (igResult.reason as Error).message;
+        console.warn(`Aviso: busca Instagram falhou: ${igErr}`);
+        metadata.set('instagramError', igErr);
       }
+
+      metadata.set('discoveryCounts', {
+        tiktok: ttCandidates.length,
+        instagram: igCandidates.length,
+        tiktokStatus: ttResult.status,
+        instagramStatus: igResult.status,
+      });
 
       if (ttCandidates.length === 0 && igCandidates.length === 0) {
         updateProgress({ discover: 'failed' });
@@ -265,6 +282,11 @@ export const extractViral = task({
       }
       updateProgress({ filter: 'completed' });
 
+      metadata.set('filterResult', {
+        candidatesCount: candidates.length,
+        platforms: candidates.map(c => c.platform),
+      });
+
       // === Stage 3: Download (per D-36 step 3) ===
       updateProgress({ download: 'running' });
       const downloadedRecords: ViralContent[] = [];
@@ -287,6 +309,12 @@ export const extractViral = task({
           download: `${downloadedRecords.length}/${candidates.length}`,
         });
       }
+
+      metadata.set('downloadResult', {
+        attempted: candidates.length,
+        succeeded: downloadedRecords.length,
+        platforms: downloadedRecords.map(r => r.platform),
+      });
 
       if (downloadedRecords.length === 0) {
         updateProgress({ download: 'failed' });

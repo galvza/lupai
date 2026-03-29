@@ -35,9 +35,9 @@ export const deriveViralHashtags = async (
       return [niche.toLowerCase().replace(/\s+/g, '')];
     }
 
-    // Clean: lowercase, remove #, trim
+    // Clean: lowercase, remove #, strip diacritics, trim
     const cleaned = parsed
-      .map((h) => h.toLowerCase().replace(/^#/, '').trim())
+      .map((h) => h.toLowerCase().replace(/^#/, '').trim().normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
       .filter((h) => h.length > 0);
 
     console.log(`[deriveViralHashtags] Gemini gerou ${cleaned.length} hashtags: ${JSON.stringify(cleaned)}`);

@@ -23,7 +23,7 @@ export const transcribeVideo = async (audioUrl: string): Promise<TranscriptionRe
   try {
     const transcript = await client.transcripts.transcribe({
       audio_url: audioUrl,
-      language_detection: true,
+      speech_models: ['universal-2'],
     });
 
     if (transcript.status === 'error') {

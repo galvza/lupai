@@ -59,35 +59,52 @@ export const searchViralInstagram = async (
 
   console.log(`[Instagram Viral] Buscando com hashtags: ${JSON.stringify(hashtags)}${aiHashtags ? ' (Gemini)' : ' (derived)'}`);
 
-  try {
-    const run = await client.actor(APIFY_ACTORS.viralInstagram).call({
-      hashtags,
-      resultsType: 'reels',
-      resultsLimit: 20,
-    });
+  const maxAttempts = 2;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      console.log(`[Instagram Viral] Tentativa ${attempt}/${maxAttempts}...`);
+      const run = await client.actor(APIFY_ACTORS.viralInstagram).call(
+        {
+          hashtags,
+          resultsType: 'reels',
+          resultsLimit: 20,
+        },
+        { timeout: 120 }
+      );
 
-    const { items } = await client.dataset(run.defaultDatasetId).listItems();
+      const { items } = await client.dataset(run.defaultDatasetId).listItems();
 
-    console.log(`[Instagram Viral] Actor retornou ${items.length} items brutos`);
+      console.log(`[Instagram Viral] Actor retornou ${items.length} items brutos`);
 
-    if (!items.length) return [];
+      if (!items.length) {
+        if (attempt < maxAttempts) {
+          console.warn(`[Instagram Viral] 0 items na tentativa ${attempt}, retentando...`);
+          continue;
+        }
+        return [];
+      }
 
-    const candidates = (items as Array<Record<string, unknown>>)
-      .map(mapInstagramItem)
-      .filter((c): c is ViralVideoCandidate => c !== null);
+      const candidates = (items as Array<Record<string, unknown>>)
+        .map(mapInstagramItem)
+        .filter((c): c is ViralVideoCandidate => c !== null);
 
-    console.log(`[Instagram Viral] ${candidates.length} videos validos apos filtragem (Reels only, <=240s)`);
+      console.log(`[Instagram Viral] ${candidates.length} videos validos apos filtragem (Reels only, <=240s)`);
 
-    const sorted = filterAndSortCandidates(candidates, 5);
+      const sorted = filterAndSortCandidates(candidates, 5);
 
-    if (sorted.length > 0) {
-      console.log(`[Instagram Viral] Top video: ${sorted[0].engagement.views ?? 0} views, ${sorted[0].engagement.likes} likes`);
+      if (sorted.length > 0) {
+        console.log(`[Instagram Viral] Top video: ${sorted[0].engagement.views ?? 0} views, ${sorted[0].engagement.likes} likes`);
+      }
+
+      return sorted;
+    } catch (error) {
+      console.error(`[Instagram Viral] Erro na tentativa ${attempt}/${maxAttempts}: ${(error as Error).message}`);
+      if (attempt === maxAttempts) {
+        throw new Error(
+          `Erro ao buscar videos virais do Instagram para "${niche}": ${(error as Error).message}`
+        );
+      }
     }
-
-    return sorted;
-  } catch (error) {
-    throw new Error(
-      `Erro ao buscar videos virais do Instagram para "${niche}": ${(error as Error).message}`
-    );
   }
+  return [];
 };

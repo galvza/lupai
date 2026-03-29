@@ -26,12 +26,15 @@ export const POST = async (request: Request): Promise<NextResponse<StartAnalysis
     const validated = startAnalysisSchema.parse(body);
 
     // Cache check: busca analise completada nas ultimas 24h com mesmo niche_interpreted + mode (per D-04)
-    const cached = await findCachedAnalysis({
-      niche: validated.nicheInterpreted.niche,
-      segment: validated.nicheInterpreted.segment,
-      region: validated.nicheInterpreted.region,
-      mode: validated.mode,
-    });
+    const forceRefresh = body.forceRefresh === true;
+    const cached = forceRefresh
+      ? null
+      : await findCachedAnalysis({
+          niche: validated.nicheInterpreted.niche,
+          segment: validated.nicheInterpreted.segment,
+          region: validated.nicheInterpreted.region,
+          mode: validated.mode,
+        });
 
     if (cached) {
       return NextResponse.json({

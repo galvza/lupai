@@ -109,6 +109,7 @@ const main = async () => {
         nicheInput: NICHE_INPUT,
         nicheInterpreted: interpreted,
         mode: 'quick',
+        forceRefresh: true,
       }),
     });
 

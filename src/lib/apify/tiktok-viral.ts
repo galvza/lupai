@@ -53,11 +53,11 @@ export const deriveKeywords = (niche: string, segment: string): string[] => {
  * @returns Array de hashtags para busca (max 5, sem #)
  */
 export const deriveHashtags = (niche: string, segment: string): string[] => {
-  const clean = (s: string) => s.toLowerCase().trim().replace(/\s+/g, '');
+  const clean = (s: string) => s.toLowerCase().trim().replace(/\s+/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const nicheWord = clean(niche);
   const segmentWord = clean(segment);
   // Extract first word of niche for shorter/broader hashtag
-  const nicheFirstWord = niche.toLowerCase().trim().split(/\s+/)[0] ?? '';
+  const nicheFirstWord = (niche.toLowerCase().trim().split(/\s+/)[0] ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
   const hashtags: string[] = [];
 
