@@ -90,7 +90,8 @@ describe('instagram-viral', () => {
       expect(mockCall).toHaveBeenCalledWith(
         expect.objectContaining({
           hashtags: expect.any(Array),
-          resultsLimit: 30,
+          resultsType: 'reels',
+          resultsLimit: 20,
         })
       );
     });
