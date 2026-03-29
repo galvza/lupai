@@ -81,7 +81,7 @@ describe('instagram-viral', () => {
   });
 
   describe('searchViralInstagram', () => {
-    it('chama ApifyClient com APIFY_ACTORS.viralInstagram e input de hashtag', async () => {
+    it('chama ApifyClient com APIFY_ACTORS.viralInstagram e input de hashtag correto', async () => {
       mockCall.mockResolvedValue({ defaultDatasetId: 'ds-ig-001' });
       mockListItems.mockResolvedValue({ items: instagramFixture });
 
@@ -90,8 +90,7 @@ describe('instagram-viral', () => {
       expect(mockCall).toHaveBeenCalledWith(
         expect.objectContaining({
           hashtags: expect.any(Array),
-          resultsPerHashtag: 20,
-          searchType: 'recent',
+          resultsLimit: 30,
         })
       );
     });

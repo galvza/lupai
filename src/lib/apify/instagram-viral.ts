@@ -6,7 +6,7 @@ import { deriveHashtags, filterAndSortCandidates } from './tiktok-viral';
 
 /**
  * Mapeia item bruto do Instagram Hashtag Scraper para ViralVideoCandidate.
- * Retorna null se item invalido (nao Video, sem videoUrl, duracao > 240s) per D-07, D-11.
+ * Retorna null se item invalido (nao Video, sem videoUrl, duracao > 240s).
  * @param item - Item bruto do actor Instagram
  * @returns ViralVideoCandidate ou null se invalido
  */
@@ -16,7 +16,7 @@ export const mapInstagramItem = (item: Record<string, unknown>): ViralVideoCandi
   if (!videoUrl || type !== 'Video') return null; // Only Reels/Video
 
   const duration = (item.videoDuration as number) ?? 0;
-  if (duration > 240) return null; // D-07: max 4 minutes
+  if (duration > 240) return null; // max 4 minutes
 
   return {
     videoUrl,
@@ -38,11 +38,10 @@ export const mapInstagramItem = (item: Record<string, unknown>): ViralVideoCandi
 /**
  * Busca videos virais do Instagram (Reels) por hashtag usando Apify.
  * Retorna top 5 Reels filtrados por duracao (<=240s) e data (30 dias), ordenados por engajamento.
- * Per D-02: busca niche-wide, nao limitada a concorrentes.
- * Per D-11: usa apify/instagram-hashtag-scraper.
+ * Gera 3-5 hashtags relevantes a partir de niche + segment.
  * @param niche - Nicho de mercado
  * @param segment - Segmento especifico
- * @returns Array de ViralVideoCandidate (max 5, per D-04)
+ * @returns Array de ViralVideoCandidate (max 5)
  */
 export const searchViralInstagram = async (
   niche: string,
@@ -51,14 +50,17 @@ export const searchViralInstagram = async (
   const client = new ApifyClient({ token: process.env.APIFY_API_TOKEN });
   const hashtags = deriveHashtags(niche, segment);
 
+  console.log(`[Instagram Viral] Buscando com hashtags: ${JSON.stringify(hashtags)}`);
+
   try {
     const run = await client.actor(APIFY_ACTORS.viralInstagram).call({
       hashtags,
-      resultsPerHashtag: 20,
-      searchType: 'recent',
+      resultsLimit: 30,
     });
 
     const { items } = await client.dataset(run.defaultDatasetId).listItems();
+
+    console.log(`[Instagram Viral] Actor retornou ${items.length} items brutos`);
 
     if (!items.length) return [];
 
@@ -66,7 +68,15 @@ export const searchViralInstagram = async (
       .map(mapInstagramItem)
       .filter((c): c is ViralVideoCandidate => c !== null);
 
-    return filterAndSortCandidates(candidates, 5);
+    console.log(`[Instagram Viral] ${candidates.length} videos validos apos filtragem (Reels only, <=240s)`);
+
+    const sorted = filterAndSortCandidates(candidates, 5);
+
+    if (sorted.length > 0) {
+      console.log(`[Instagram Viral] Top video: ${sorted[0].engagement.views ?? 0} views, ${sorted[0].engagement.likes} likes`);
+    }
+
+    return sorted;
   } catch (error) {
     throw new Error(
       `Erro ao buscar videos virais do Instagram para "${niche}": ${(error as Error).message}`
