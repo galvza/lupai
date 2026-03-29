@@ -13,7 +13,10 @@ import { deriveHashtags, filterAndSortCandidates } from './tiktok-viral';
 export const mapInstagramItem = (item: Record<string, unknown>): ViralVideoCandidate | null => {
   const videoUrl = item.videoUrl as string;
   const type = item.type as string;
-  if (!videoUrl || type !== 'Video') return null; // Only Reels/Video
+  // Accept Video type OR clips/reels productType (hashtag scraper uses productType)
+  const productType = item.productType as string | undefined;
+  const isVideo = type === 'Video' || productType === 'clips' || productType === 'reels';
+  if (!videoUrl || !isVideo) return null;
 
   const duration = (item.videoDuration as number) ?? 0;
   if (duration > 240) return null; // max 4 minutes
@@ -26,10 +29,11 @@ export const mapInstagramItem = (item: Record<string, unknown>): ViralVideoCandi
     postDate: (item.timestamp as string) ?? '',
     durationSeconds: duration,
     engagement: {
+      // Hashtag scraper may not include play counts; fall back to likes as proxy
       views: (item.videoPlayCount as number) ?? (item.videoViewCount as number) ?? null,
       likes: Math.max((item.likesCount as number) ?? 0, 0), // -1 means hidden, treat as 0
       comments: (item.commentsCount as number) ?? 0,
-      shares: null, // Instagram hashtag scraper may not include shares
+      shares: null,
       saves: null,
     },
   };
