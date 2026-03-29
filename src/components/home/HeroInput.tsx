@@ -20,6 +20,7 @@ export const HeroInput = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { placeholder, visible } = useRotatingPlaceholder();
   const router = useRouter();
@@ -29,22 +30,67 @@ export const HeroInput = () => {
   const handleSubmit = async () => {
     if (!query.trim() && !url.trim()) return;
     setIsSubmitting(true);
+    setSubmitError(null);
 
     try {
-      const res = await fetch("/api/analyze", {
+      // Step 1: Understand the input
+      const understandRes = await fetch("/api/analyze/understand", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nicheInput: query.trim() }),
+      });
+      const understandData = await understandRes.json();
+
+      if (!understandRes.ok) {
+        setSubmitError(understandData.error || "Erro ao interpretar seu nicho.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (understandData.classification === "NONSENSE") {
+        setSubmitError("Não consegui entender. Tente descrever seu nicho de outra forma.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (understandData.classification === "MINIMAL" && understandData.followUpQuestions) {
+        setSubmitError("Pode detalhar mais? " + understandData.followUpQuestions[0]);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Step 2: Start analysis
+      const apiMode = mode === "completo" ? "complete" : "quick";
+      const analyzeRes = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: query.trim(),
-          url: mode === "completo" ? url.trim() : undefined,
-          mode,
+          nicheInput: query.trim(),
+          nicheInterpreted: understandData.interpreted,
+          mode: apiMode,
+          userBusinessUrl: mode === "completo" && url.trim() ? url.trim() : null,
         }),
       });
+      const analyzeData = await analyzeRes.json();
 
-      if (!res.ok) throw new Error("Erro ao iniciar análise");
-      const data = await res.json();
-      router.push(`/analysis/${data.id}`);
+      if (!analyzeRes.ok) {
+        setSubmitError(analyzeData.error || "Erro ao iniciar análise.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Step 3: Store realtime credentials for progress page
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("lupai_runId", analyzeData.runId);
+        sessionStorage.setItem("lupai_accessToken", analyzeData.publicAccessToken);
+        sessionStorage.setItem("lupai_niche", understandData.interpreted?.niche ?? query.trim());
+        sessionStorage.setItem("lupai_region", understandData.interpreted?.region ?? "");
+      }
+
+      // Step 4: Redirect
+      router.push(analyzeData.redirectUrl);
     } catch {
+      setSubmitError("Erro de conexão. Tente novamente.");
       setIsSubmitting(false);
     }
   };
@@ -99,6 +145,11 @@ export const HeroInput = () => {
           {!isSubmitting && <ArrowRight size={14} strokeWidth={2} />}
         </button>
       </div>
+
+      {/* Error message */}
+      {submitError && (
+        <p className="text-red-400 text-sm mt-2">{submitError}</p>
+      )}
 
       {/* Inline tip */}
       <InlineTip tipType={tipType} />

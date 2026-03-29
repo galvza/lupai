@@ -9,30 +9,31 @@ import { CompetitorCard } from "@/components/dashboard/CompetitorCard";
 import { SummaryCards } from "@/components/dashboard/SummaryCards";
 import { Recommendations } from "@/components/dashboard/Recommendations";
 import { Footer } from "@/components/layout/Footer";
-import { MOCK_ANALYSIS_RESULT } from "@/utils/mock-analysis";
+import { mapResultsToUI } from "@/utils/api-to-ui-mappers";
 import type { AnalysisResult } from "@/types/ui";
 
 /** Dashboard de resultados da análise */
 export const DashboardResultsClient = ({ id }: { id: string }) => {
   const [data, setData] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Phase 9: setError will be used by real API call
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // TODO Phase 9: Replace with real API call
-    // fetch(`/api/analysis/${id}`)
-    //   .then(res => res.json())
-    //   .then(setData)
-    //   .catch(err => setError(err.message))
-    //   .finally(() => setLoading(false));
-
-    // For now: simulate loading then show mock data
-    const timer = setTimeout(() => {
-      setData(MOCK_ANALYSIS_RESULT);
-      setLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
+    const fetchResults = async () => {
+      try {
+        const res = await fetch(`/api/analysis/${id}`);
+        if (!res.ok) {
+          throw new Error(`Erro ${res.status}: ${res.statusText}`);
+        }
+        const raw = await res.json();
+        setData(mapResultsToUI(raw));
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Erro ao carregar resultados");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchResults();
   }, [id]);
 
   if (loading) {
@@ -129,10 +130,14 @@ export const DashboardResultsClient = ({ id }: { id: string }) => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <button className="inline-flex items-center gap-2 bg-dark-card border border-dark-border text-[#888] text-[11px] px-3 py-2 rounded-lg hover:border-[#444] transition-colors">
+            <a
+              href={`/api/report/${id}`}
+              download
+              className="inline-flex items-center gap-2 bg-dark-card border border-dark-border text-[#888] text-[11px] px-3 py-2 rounded-lg hover:border-[#444] transition-colors"
+            >
               <Download size={12} strokeWidth={1.5} />
               Exportar PDF
-            </button>
+            </a>
             <button className="inline-flex items-center gap-2 bg-dark-card border border-dark-border text-[#888] text-[11px] px-3 py-2 rounded-lg hover:border-[#444] transition-colors">
               <RefreshCw size={12} strokeWidth={1.5} />
               Atualizar

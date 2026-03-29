@@ -25,70 +25,82 @@
   --font-serif: 'Instrument Serif', Georgia, serif;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    color: #ffffff;
+    background: #F8F7F4;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Scrollbar styling for dark theme */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0F0F0F;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  section {
+    position: relative;
+  }
+
+  main {
+    overflow-x: hidden;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
+@layer utilities {
+  .font-headline {
+    font-family: "Instrument Serif", Georgia, serif;
+  }
+
+  .terminal-log {
+    font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .marquee-track {
+    animation: marquee 30s linear infinite;
+  }
+
+  .marquee-track-reverse {
+    animation: marquee-reverse 35s linear infinite;
+  }
+
+  .border-pulse {
+    animation: subtle-pulse 2s ease-in-out infinite;
+  }
 }
 
-body {
-  color: #ffffff;
-  background: #F8F7F4;
-  font-family: "Inter", system-ui, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-/* Instrument Serif for headlines */
-.font-headline {
-  font-family: "Instrument Serif", Georgia, serif;
-}
-
-/* Scrollbar styling for dark theme */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0F0F0F;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-/* Terminal log styling */
-.terminal-log {
-  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
-  font-size: 11px;
-  line-height: 1.6;
-}
-
-/* Fade animation for rotating placeholders */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out;
-}
-
-/* Marquee scrolling animation */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -99,35 +111,11 @@ body {
   to { transform: translateX(0); }
 }
 
-.marquee-track {
-  animation: marquee 30s linear infinite;
-}
-
-.marquee-track-reverse {
-  animation: marquee-reverse 35s linear infinite;
-}
-
-/* Section transitions */
-section {
-  position: relative;
-}
-
-/* Prevent horizontal overflow */
-main {
-  overflow-x: hidden;
-}
-
-/* Subtle border pulse — used by HeroInput when focused + empty */
 @keyframes subtle-pulse {
   0%, 100% { border-color: #333; }
   50% { border-color: #555; }
 }
 
-.border-pulse {
-  animation: subtle-pulse 2s ease-in-out infinite;
-}
-
-/* Accessibility: skip animations for users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .motion-safe-hidden {
     opacity: 1 !important;

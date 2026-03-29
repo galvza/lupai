@@ -12,11 +12,18 @@ import type { UnderstandResponse } from '@/types/analysis';
  * NONSENSE e MINIMAL nao chamam Gemini — economizam tokens.
  */
 export const POST = async (request: Request): Promise<NextResponse<UnderstandResponse>> => {
+  console.log('[DEBUG understand] GEMINI_API_KEY exists:', !!process.env.GEMINI_API_KEY);
+  console.log('[DEBUG understand] GEMINI_API_KEY length:', process.env.GEMINI_API_KEY?.length);
+
   try {
     const body = await request.json();
+    console.log('[DEBUG understand] Request body:', JSON.stringify(body));
+
     const { nicheInput } = understandRequestSchema.parse(body);
+    console.log('[DEBUG understand] Parsed nicheInput:', nicheInput);
 
     const classification = classifyInput(nicheInput);
+    console.log('[DEBUG understand] Classification:', classification);
 
     switch (classification) {
       case 'NONSENSE':
@@ -51,7 +58,9 @@ export const POST = async (request: Request): Promise<NextResponse<UnderstandRes
 
       case 'MEDIUM':
       case 'EXCESSIVE': {
+        console.log('[DEBUG understand] Calling understandNiche for:', classification);
         const interpreted = await understandNiche(nicheInput);
+        console.log('[DEBUG understand] Gemini response:', JSON.stringify(interpreted));
         return NextResponse.json({
           classification,
           interpreted,
@@ -69,6 +78,10 @@ export const POST = async (request: Request): Promise<NextResponse<UnderstandRes
       );
     }
 
+    console.error('[DEBUG understand] Unhandled error:', error);
+    console.error('[DEBUG understand] Error name:', (error as Error).name);
+    console.error('[DEBUG understand] Error message:', (error as Error).message);
+    console.error('[DEBUG understand] Error stack:', (error as Error).stack);
     return NextResponse.json(
       {
         classification: 'NONSENSE',
