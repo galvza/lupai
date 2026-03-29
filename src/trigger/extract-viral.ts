@@ -3,6 +3,7 @@ import { task, metadata } from '@trigger.dev/sdk';
 import { searchViralTiktok } from '@/lib/apify/tiktok-viral';
 import { searchViralInstagram } from '@/lib/apify/instagram-viral';
 import { calculateEngagementRate, filterAndSortCandidates } from '@/lib/apify/tiktok-viral';
+import { deriveViralHashtags } from '@/lib/ai/derive-hashtags';
 import { uploadFile } from '@/lib/storage/bunny';
 import { transcribeVideo } from '@/lib/transcription/transcribe';
 import { extractHookBodyCta } from '@/lib/ai/hbc-extraction';
@@ -194,12 +195,20 @@ export const extractViral = task({
     };
 
     try {
+      // === Stage 0: Generate viral hashtags via Gemini ===
+      let viralHashtags: string[] | undefined;
+      try {
+        viralHashtags = await deriveViralHashtags(niche, segment, payload.region);
+      } catch (error) {
+        console.warn(`[Viral] Gemini hashtag derivation failed: ${(error as Error).message}. Using default keywords.`);
+      }
+
       // === Stage 1: Discover (per D-36 step 1) ===
       updateProgress({ discover: 'running' });
 
       const [ttResult, igResult] = await Promise.allSettled([
-        searchViralTiktok(niche, segment),
-        searchViralInstagram(niche, segment),
+        searchViralTiktok(niche, segment, viralHashtags),
+        searchViralInstagram(niche, segment, viralHashtags),
       ]);
 
       const ttCandidates = ttResult.status === 'fulfilled' ? ttResult.value : [];

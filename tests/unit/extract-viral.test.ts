@@ -32,6 +32,10 @@ vi.mock('@/lib/apify/instagram-viral', () => ({
   searchViralInstagram: vi.fn(),
 }));
 
+vi.mock('@/lib/ai/derive-hashtags', () => ({
+  deriveViralHashtags: vi.fn(),
+}));
+
 vi.mock('@/lib/storage/bunny', () => ({
   uploadFile: vi.fn(),
 }));
@@ -60,6 +64,7 @@ vi.stubGlobal('fetch', mockFetch);
 
 import { searchViralTiktok } from '@/lib/apify/tiktok-viral';
 import { searchViralInstagram } from '@/lib/apify/instagram-viral';
+import { deriveViralHashtags } from '@/lib/ai/derive-hashtags';
 import { uploadFile } from '@/lib/storage/bunny';
 import { transcribeVideo } from '@/lib/transcription/transcribe';
 import { extractHookBodyCta } from '@/lib/ai/hbc-extraction';
@@ -75,6 +80,7 @@ import type { ExtractViralResult } from '@/trigger/extract-viral';
 // Force module load to capture run functions
 import '@/trigger/extract-viral';
 
+const mockDeriveViralHashtags = vi.mocked(deriveViralHashtags);
 const mockSearchViralTiktok = vi.mocked(searchViralTiktok);
 const mockSearchViralInstagram = vi.mocked(searchViralInstagram);
 const mockUploadFile = vi.mocked(uploadFile);
@@ -158,6 +164,7 @@ const setupFullSuccess = () => {
   const ttCandidates = [makeTiktokCandidate(1), makeTiktokCandidate(2)];
   const igCandidates = [makeInstagramCandidate(1), makeInstagramCandidate(2)];
 
+  mockDeriveViralHashtags.mockResolvedValue(['odonto', 'dentista', 'esteticadental', 'sorriso', 'clareamento']);
   mockSearchViralTiktok.mockResolvedValue(ttCandidates);
   mockSearchViralInstagram.mockResolvedValue(igCandidates);
 
@@ -227,8 +234,9 @@ describe('extractViral compound task', () => {
     expect(result.status).toBe('success');
     expect(result.data.viralContent.length).toBe(4); // 2 TikTok + 2 Instagram
     expect(result.data.patterns).not.toBeNull();
-    expect(mockSearchViralTiktok).toHaveBeenCalledWith('odontologia', 'estetica');
-    expect(mockSearchViralInstagram).toHaveBeenCalledWith('odontologia', 'estetica');
+    expect(mockDeriveViralHashtags).toHaveBeenCalledWith('odontologia', 'estetica', 'Brasil');
+    expect(mockSearchViralTiktok).toHaveBeenCalledWith('odontologia', 'estetica', ['odonto', 'dentista', 'esteticadental', 'sorriso', 'clareamento']);
+    expect(mockSearchViralInstagram).toHaveBeenCalledWith('odontologia', 'estetica', ['odonto', 'dentista', 'esteticadental', 'sorriso', 'clareamento']);
     expect(mockCreateViralContent).toHaveBeenCalledTimes(4);
     expect(mockUpdateViralContent).toHaveBeenCalled();
     expect(mockUpdateAnalysisViralPatterns).toHaveBeenCalledWith('test-analysis-123', MOCK_PATTERNS);
@@ -246,6 +254,7 @@ describe('extractViral compound task', () => {
   });
 
   it('deve retornar status "unavailable" quando ambas plataformas falham na descoberta', async () => {
+    mockDeriveViralHashtags.mockResolvedValue(['odonto', 'dentista']);
     mockSearchViralTiktok.mockRejectedValue(new Error('TikTok error'));
     mockSearchViralInstagram.mockRejectedValue(new Error('Instagram error'));
 
@@ -320,6 +329,7 @@ describe('extractViral compound task', () => {
   });
 
   it('deve pular detectViralPatterns quando menos de 2 transcricoes existem (per D-48)', async () => {
+    mockDeriveViralHashtags.mockResolvedValue(['odonto', 'dentista']);
     const ttCandidates = [makeTiktokCandidate(1)];
     mockSearchViralTiktok.mockResolvedValue(ttCandidates);
     mockSearchViralInstagram.mockResolvedValue([]);

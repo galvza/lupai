@@ -187,16 +187,19 @@ const runTiktokSearch = async (
  *   3. Fallback 2: return [] (0 TikTok videos, continue with Instagram)
  * @param niche - Nicho de mercado
  * @param segment - Segmento especifico
+ * @param hashtags - Hashtags geradas por Gemini (opcional, substitui deriveKeywords)
  * @returns Array de ViralVideoCandidate (max 5)
  */
 export const searchViralTiktok = async (
   niche: string,
-  segment: string
+  segment: string,
+  hashtags?: string[]
 ): Promise<ViralVideoCandidate[]> => {
   const client = new ApifyClient({ token: process.env.APIFY_API_TOKEN });
-  const primaryKeywords = deriveKeywords(niche, segment);
+  const primaryKeywords = hashtags && hashtags.length > 0 ? hashtags : deriveKeywords(niche, segment);
 
-  console.log(`[TikTok Viral] Buscando com keywords: ${JSON.stringify(primaryKeywords)}`);
+  console.log(`[TikTok Viral] Buscando com keywords: ${JSON.stringify(primaryKeywords)}${hashtags ? ' (Gemini)' : ' (derived)'}`);
+
 
   // Tier 1: Primary keyword search
   try {

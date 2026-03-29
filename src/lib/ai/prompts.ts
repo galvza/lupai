@@ -105,6 +105,20 @@ As recomendacoes DEVEM ser comparativas: "Seu concorrente X posta 5x por semana 
 DADOS DO NEGOCIO DO USUARIO:
 `;
 
+/** Prompt para gerar hashtags virais a partir do nicho (per viral search improvement) */
+export const DERIVE_VIRAL_HASHTAGS_PROMPT = `Voce e um especialista em conteudo viral de TikTok e Instagram Reels.
+Dado o nicho e regiao abaixo, gere 5 a 8 hashtags que criadores de conteudo REALMENTE usam nessas plataformas para esse topico.
+
+Foque em:
+- Hashtags com alto engajamento (trending, gírias, variações populares)
+- Termos que criadores usam, NAO termos de negocio formal
+- Misture hashtags amplas (ex: "barba") com específicas (ex: "degrademasculino")
+- Inclua variações sem acento e em português brasileiro
+
+Retorne APENAS um JSON array de strings (sem #), sem explicacao.
+Exemplo para "barbearia masculina" em "Belo Horizonte":
+["barba","barbeiro","cortemasculino","fadecut","degrade","barbeariamasculina","cortedecabelo","barbeariabh"]`;
+
 /** Prompt para scoring de candidatos a concorrentes */
 export const SCORE_COMPETITORS_PROMPT = `Voce e um analista de mercado especializado em identificar concorrentes diretos.
 

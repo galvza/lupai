@@ -45,16 +45,18 @@ export const mapInstagramItem = (item: Record<string, unknown>): ViralVideoCandi
  * Gera 3-5 hashtags relevantes a partir de niche + segment.
  * @param niche - Nicho de mercado
  * @param segment - Segmento especifico
+ * @param aiHashtags - Hashtags geradas por Gemini (opcional, substitui deriveHashtags)
  * @returns Array de ViralVideoCandidate (max 5)
  */
 export const searchViralInstagram = async (
   niche: string,
-  segment: string
+  segment: string,
+  aiHashtags?: string[]
 ): Promise<ViralVideoCandidate[]> => {
   const client = new ApifyClient({ token: process.env.APIFY_API_TOKEN });
-  const hashtags = deriveHashtags(niche, segment);
+  const hashtags = aiHashtags && aiHashtags.length > 0 ? aiHashtags : deriveHashtags(niche, segment);
 
-  console.log(`[Instagram Viral] Buscando com hashtags: ${JSON.stringify(hashtags)}`);
+  console.log(`[Instagram Viral] Buscando com hashtags: ${JSON.stringify(hashtags)}${aiHashtags ? ' (Gemini)' : ' (derived)'}`);
 
   try {
     const run = await client.actor(APIFY_ACTORS.viralInstagram).call({
