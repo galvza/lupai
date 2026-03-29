@@ -18,9 +18,13 @@ const mapMetaAdsItems = (items: Array<Record<string, unknown>>): MetaAd[] =>
       copyText: (body.text as string) ?? null,
       format: (snapshot.card_type as string) ?? null,
       startedAt: (item.startDate as string) ?? null,
-      isActive: (item.isActive as boolean) ?? true,
+      isActive: (item.isActive as boolean) ?? false,
     };
   });
+
+/** Verifica se os ads mapeados contêm dados reais ou são shells vazios */
+const hasRealAds = (ads: MetaAd[]): boolean =>
+  ads.some((a) => (a.adId && a.adId !== '') || a.copyText || a.creativeUrl);
 
 /**
  * Extrai dados de anuncios Meta (Facebook/Instagram) usando Apify.
@@ -54,6 +58,9 @@ export const scrapeFacebookAds = async (
 
         if (items.length > 0) {
           const ads = mapMetaAdsItems(items as Array<Record<string, unknown>>);
+          if (!hasRealAds(ads)) {
+            return { activeAdsCount: 0, ads: [] };
+          }
           return {
             activeAdsCount: ads.filter((a) => a.isActive).length,
             ads: ads.slice(0, 20),
@@ -74,6 +81,10 @@ export const scrapeFacebookAds = async (
 
     const { items } = await client.dataset(run.defaultDatasetId).listItems();
     const ads = mapMetaAdsItems(items as Array<Record<string, unknown>>);
+
+    if (!hasRealAds(ads)) {
+      return { activeAdsCount: 0, ads: [] };
+    }
 
     return {
       activeAdsCount: ads.filter((a) => a.isActive).length,

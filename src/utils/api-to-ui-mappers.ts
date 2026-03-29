@@ -83,6 +83,25 @@ const parseStrategicOverview = (
       }
     }
 
+    // Fuzzy fallback: scan ALL sections' metrics for known indicators
+    if (competition === 'N/A' || trend === 'N/A' || strongChannels === 'N/A') {
+      for (const s of sections) {
+        if (!s.metrics) continue;
+        for (const [mk, mv] of Object.entries(s.metrics)) {
+          const lk = mk.toLowerCase();
+          if (competition === 'N/A' && (/compet/.test(lk) || /concorr/.test(lk))) {
+            competition = String(mv);
+          }
+          if (trend === 'N/A' && (/trend/.test(lk) || /tendenc/.test(lk))) {
+            trend = String(mv);
+          }
+          if (strongChannels === 'N/A' && (/canal/.test(lk) || /channel/.test(lk))) {
+            strongChannels = String(mv);
+          }
+        }
+      }
+    }
+
     // Fallback: iterate all keys if none of the known keys matched
     if (sections.length === 0) {
       for (const [key, value] of Object.entries(parsed)) {
@@ -111,7 +130,7 @@ const parseStrategicOverview = (
 const computeScore = (comp: Competitor): number => {
   let score = 50;
   if (comp.seoData?.estimatedAuthority) score += Math.min(comp.seoData.estimatedAuthority / 2, 15);
-  if (comp.metaAdsData?.activeAdsCount) score += Math.min(comp.metaAdsData.activeAdsCount, 10);
+  if (comp.metaAdsData?.activeAdsCount && comp.metaAdsData.activeAdsCount >= 2) score += Math.min(comp.metaAdsData.activeAdsCount, 10);
   if (comp.socialData?.instagram?.followers) score += Math.min(comp.socialData.instagram.followers / 100_000, 15);
   if (comp.socialData?.tiktok?.followers) score += Math.min(comp.socialData.tiktok.followers / 50_000, 10);
   return Math.min(Math.round(score), 100);
