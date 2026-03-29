@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   ChevronRight,
   ShoppingCart,
@@ -9,7 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Footer } from "@/components/layout/Footer";
-import { MOCK_HISTORY } from "@/utils/mock-analysis";
+import { mapSummaryToHistoryItem } from "@/utils/api-to-ui-mappers";
 import type { HistoryItem } from "@/types/ui";
 
 const ICON_MAP: Record<string, typeof ShoppingCart> = {
@@ -67,7 +68,25 @@ const HistoryCard = ({ item }: { item: HistoryItem }) => {
 
 /** Página de histórico de análises */
 export default function HistoryPage() {
-  const items = MOCK_HISTORY;
+  const [items, setItems] = useState<HistoryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const res = await fetch("/api/history");
+        if (!res.ok) throw new Error("Erro ao carregar histórico");
+        const data = await res.json();
+        setItems((data.analyses ?? []).map(mapSummaryToHistoryItem));
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Erro ao carregar histórico");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHistory();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -79,7 +98,9 @@ export default function HistoryPage() {
               Suas <em className="italic text-accent">análises</em>
             </h1>
             <p className="text-[12px] text-[#666] mt-1">
-              {items.length} análise{items.length !== 1 ? "s" : ""} realizadas
+              {loading
+                ? "Carregando..."
+                : `${items.length} análise${items.length !== 1 ? "s" : ""} realizadas`}
             </p>
           </div>
           <Link
@@ -95,11 +116,31 @@ export default function HistoryPage() {
       {/* List */}
       <div className="bg-light-bg flex-1 px-6 py-8">
         <div className="max-w-4xl mx-auto space-y-3">
-          {items.map((item) => (
+          {loading && (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-light-card border border-light-border rounded-xl h-20 animate-pulse" />
+              ))}
+            </div>
+          )}
+
+          {error && (
+            <div className="text-center py-16">
+              <p className="text-[14px] text-red-500 mb-4">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="text-[13px] text-accent hover:underline"
+              >
+                Tentar novamente
+              </button>
+            </div>
+          )}
+
+          {!loading && !error && items.map((item) => (
             <HistoryCard key={item.id} item={item} />
           ))}
 
-          {items.length === 0 && (
+          {!loading && !error && items.length === 0 && (
             <div className="text-center py-16">
               <p className="text-[14px] text-[#999]">
                 Nenhuma análise ainda. Comece descrevendo seu nicho.

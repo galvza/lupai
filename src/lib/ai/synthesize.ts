@@ -101,7 +101,7 @@ export const truncateContextIfNeeded = async (
   const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
   const tokenCount = await genai.models.countTokens({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     contents: fullPrompt,
   });
 
@@ -177,7 +177,7 @@ export const synthesizeAnalysis = async (input: {
     }
 
     const response = await genai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents: fullPrompt,
       config: {
         responseMimeType: 'application/json',

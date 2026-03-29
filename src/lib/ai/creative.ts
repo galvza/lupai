@@ -94,7 +94,7 @@ export const generateCreativeScripts = async (input: {
     const fullPrompt = `${CREATIVE_PROMPT}\n\n${context}`;
 
     const response = await genai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents: fullPrompt,
       config: {
         responseMimeType: 'application/json',

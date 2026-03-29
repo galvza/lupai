@@ -15,7 +15,7 @@ export const understandNiche = async (userInput: string): Promise<NicheInterpret
 
   try {
     const response = await genai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents: `${UNDERSTAND_NICHE_PROMPT}\n\nInput do usuario: "${userInput}"`,
       config: {
         responseMimeType: 'application/json',

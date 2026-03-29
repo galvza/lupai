@@ -124,7 +124,7 @@ describe('viral-patterns', () => {
     expect(result).toBeNull();
   });
 
-  it('usa modelo gemini-2.0-flash', async () => {
+  it('usa modelo gemini-2.5-flash', async () => {
     mockGenerateContent.mockResolvedValue({
       text: JSON.stringify(patternsFixture),
     });
@@ -134,7 +134,7 @@ describe('viral-patterns', () => {
 
     expect(mockGenerateContent).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-2.5-flash',
       })
     );
   });
