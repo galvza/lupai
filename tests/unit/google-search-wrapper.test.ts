@@ -70,8 +70,8 @@ describe('scrapeGoogleSearch', () => {
     await scrapeGoogleSearch(['query1', 'query2'], 'US');
 
     expect(mockCall).toHaveBeenCalledWith({
-      queries: ['query1', 'query2'],
-      countryCode: 'US',
+      queries: 'query1\nquery2',
+      countryCode: 'us',
       languageCode: 'pt-BR',
       maxPagesPerQuery: 1,
       resultsPerPage: 10,
@@ -85,7 +85,7 @@ describe('scrapeGoogleSearch', () => {
     await scrapeGoogleSearch(['query']);
 
     expect(mockCall).toHaveBeenCalledWith(
-      expect.objectContaining({ countryCode: 'BR' })
+      expect.objectContaining({ countryCode: 'br' })
     );
   });
 
