@@ -24,7 +24,7 @@ export const APIFY_ACTORS = {
   googleMaps: 'compass/google-maps-scraper',
   googleAds: 'memo23/google-ad-transparency-scraper-cheerio',
   website: 'apify/website-content-crawler',
-  viralTiktok: 'clockworks/free-tiktok-scraper',
+  viralTiktok: 'sociavault/tiktok-keyword-search-scraper',
   viralInstagram: 'apify/instagram-hashtag-scraper',
 } as const;
 

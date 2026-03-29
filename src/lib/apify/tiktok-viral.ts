@@ -90,37 +90,68 @@ export const deriveHashtags = (niche: string, segment: string): string[] => {
 };
 
 /**
- * Mapeia item bruto do TikTok Data Extractor (free-tiktok-scraper) para ViralVideoCandidate.
- * Retorna null se item invalido (sem URL, duracao > 240s, ou ad).
- * @param item - Item bruto do actor TikTok
+ * Mapeia item bruto do sociavault/tiktok-keyword-search-scraper para ViralVideoCandidate.
+ * O actor retorna dados no formato raw da API TikTok com aweme_info aninhado.
+ * Retorna null se item invalido (sem URL de download, duracao > 240s, ou anuncio).
+ * @param item - Item bruto do actor (contém aweme_info)
  * @returns ViralVideoCandidate ou null se invalido
  */
 export const mapTiktokItem = (item: Record<string, unknown>): ViralVideoCandidate | null => {
-  const videoUrl = (item.webVideoUrl as string) ?? (item.videoUrl as string);
-  if (!videoUrl) return null;
+  const aweme = item.aweme_info as Record<string, unknown> | undefined;
+  if (!aweme) return null;
+
+  // Video object with download URLs
+  const video = aweme.video as Record<string, unknown> | undefined;
+  if (!video) return null;
+
+  // Prefer no-watermark URL, fallback to play_addr
+  const dlNoWm = video.download_no_watermark_addr as Record<string, unknown> | undefined;
+  const dlNoWmUrls = dlNoWm?.url_list as string[] | undefined;
+  const playAddr = video.play_addr as Record<string, unknown> | undefined;
+  const playUrls = playAddr?.url_list as string[] | undefined;
+
+  const downloadUrl = dlNoWmUrls?.[0] ?? playUrls?.[0] ?? null;
+  if (!downloadUrl) return null;
 
   // Filter ads
-  if (item.isAd === true) return null;
+  if (aweme.is_ads === true) return null;
 
-  const videoMeta = item.videoMeta as Record<string, unknown> | undefined;
-  const duration = (videoMeta?.duration as number) ?? 0;
-  if (duration > 240) return null; // max 4 minutes
+  // Duration is in milliseconds — convert to seconds
+  const durationMs = (video.duration as number) ?? 0;
+  const durationSeconds = Math.round(durationMs / 1000);
+  if (durationSeconds > 240) return null; // max 4 minutes
 
-  const authorMeta = item.authorMeta as Record<string, unknown> | undefined;
+  // Author info
+  const author = aweme.author as Record<string, unknown> | undefined;
+
+  // Statistics
+  const stats = aweme.statistics as Record<string, unknown> | undefined;
+
+  // Construct web URL from aweme_id and author unique_id
+  const awemeId = aweme.aweme_id as string | undefined;
+  const uniqueId = author?.unique_id as string | undefined;
+  const webUrl = awemeId && uniqueId
+    ? `https://www.tiktok.com/@${uniqueId}/video/${awemeId}`
+    : undefined;
+
+  // Create time (unix timestamp) to ISO string
+  const createTime = aweme.create_time as number | undefined;
+  const postDate = createTime ? new Date(createTime * 1000).toISOString() : '';
 
   return {
-    videoUrl,
-    caption: (item.text as string) ?? '',
-    creatorHandle: (authorMeta?.nickName as string) ?? (authorMeta?.name as string) ?? 'unknown',
+    videoUrl: downloadUrl,
+    sourceWebUrl: webUrl,
+    caption: (aweme.desc as string) ?? '',
+    creatorHandle: (author?.nickname as string) ?? (author?.unique_id as string) ?? 'unknown',
     platform: 'tiktok' as ContentPlatform,
-    postDate: (item.createTimeISO as string) ?? '',
-    durationSeconds: duration,
+    postDate,
+    durationSeconds,
     engagement: {
-      views: (item.playCount as number) ?? null,
-      likes: (item.diggCount as number) ?? 0,
-      comments: (item.commentCount as number) ?? 0,
-      shares: (item.shareCount as number) ?? null,
-      saves: (item.collectCount as number) ?? null,
+      views: (stats?.play_count as number) ?? null,
+      likes: (stats?.digg_count as number) ?? 0,
+      comments: (stats?.comment_count as number) ?? 0,
+      shares: (stats?.share_count as number) ?? null,
+      saves: (stats?.collect_count as number) ?? null,
     },
   };
 };
@@ -149,45 +180,11 @@ export const filterAndSortCandidates = (
 };
 
 /**
- * Executa busca de videos virais no TikTok via Apify keyword search.
- * Usa clockworks/free-tiktok-scraper com searchQueries.
- * @param client - Cliente Apify
- * @param keywords - Array de keywords para busca
- * @returns Array de ViralVideoCandidate
- */
-const runTiktokSearch = async (
-  client: InstanceType<typeof ApifyClient>,
-  keywords: string[]
-): Promise<ViralVideoCandidate[]> => {
-  const run = await client.actor(APIFY_ACTORS.viralTiktok).call({
-    searchQueries: keywords,
-    resultsPerPage: 3,
-    excludePinnedPosts: true,
-    shouldDownloadCovers: false,
-    shouldDownloadSlideshowImages: false,
-    shouldDownloadSubtitles: false,
-    shouldDownloadVideos: false,
-  });
-
-  const { items } = await client.dataset(run.defaultDatasetId).listItems();
-  if (!items.length) return [];
-
-  const candidates = (items as Array<Record<string, unknown>>)
-    .map(mapTiktokItem)
-    .filter((c): c is ViralVideoCandidate => c !== null);
-
-  return filterAndSortCandidates(candidates, 5);
-};
-
-/**
- * Busca videos virais do TikTok por keyword usando Apify.
- * Implementa fallback de 3 niveis:
- *   1. Primary: keyword search com segment + niche combinados
- *   2. Fallback: broader single-word segment keyword
- *   3. Fallback 2: return [] (0 TikTok videos, continue with Instagram)
+ * Busca videos virais do TikTok por keyword usando sociavault/tiktok-keyword-search-scraper.
+ * O actor aceita uma query string e retorna resultados com CDN download URLs.
  * @param niche - Nicho de mercado
  * @param segment - Segmento especifico
- * @param hashtags - Hashtags geradas por Gemini (opcional, substitui deriveKeywords)
+ * @param hashtags - Hashtags geradas por Gemini (opcional, usa primeira como query)
  * @returns Array de ViralVideoCandidate (max 5)
  */
 export const searchViralTiktok = async (
@@ -196,46 +193,43 @@ export const searchViralTiktok = async (
   hashtags?: string[]
 ): Promise<ViralVideoCandidate[]> => {
   const client = new ApifyClient({ token: process.env.APIFY_API_TOKEN });
-  const primaryKeywords = hashtags && hashtags.length > 0 ? hashtags : deriveKeywords(niche, segment);
 
-  console.log(`[TikTok Viral] Buscando com keywords: ${JSON.stringify(primaryKeywords)}${hashtags ? ' (Gemini)' : ' (derived)'}`);
+  // Build search query: prefer Gemini hashtag, fallback to segment
+  const query = hashtags && hashtags.length > 0
+    ? hashtags[0]
+    : segment.toLowerCase().trim() || niche.toLowerCase().trim();
 
-
-  // Tier 1: Primary keyword search
-  try {
-    const results = await runTiktokSearch(client, primaryKeywords);
-    if (results.length > 0) {
-      console.log(`[TikTok Viral] Encontrados ${results.length} videos (tier 1). Top views: ${results[0]?.engagement.views ?? 0}`);
-      return results;
-    }
-  } catch (error) {
-    console.warn(
-      `Aviso: busca primaria TikTok falhou para "${niche}": ${(error as Error).message}. Tentando busca mais ampla...`
-    );
-  }
-
-  // Tier 2: Broader single-word segment keyword fallback
-  const broaderKeywords = [segment.toLowerCase().trim()];
-  if (broaderKeywords[0] === primaryKeywords[0]) {
-    // Already tried this keyword, try niche instead
-    broaderKeywords[0] = niche.toLowerCase().trim();
-  }
-
-  console.log(`[TikTok Viral] Tentando fallback com keywords: ${JSON.stringify(broaderKeywords)}`);
+  console.log(`[TikTok Viral] Buscando com query: "${query}"${hashtags ? ' (Gemini)' : ' (derived)'}`);
 
   try {
-    const results = await runTiktokSearch(client, broaderKeywords);
-    if (results.length > 0) {
-      console.log(`[TikTok Viral] Encontrados ${results.length} videos (tier 2). Top views: ${results[0]?.engagement.views ?? 0}`);
-      return results;
-    }
-  } catch (error) {
-    console.warn(
-      `Aviso: busca ampla TikTok falhou para "${niche}": ${(error as Error).message}. Retornando 0 videos TikTok.`
-    );
-  }
+    const run = await client.actor(APIFY_ACTORS.viralTiktok).call({
+      query,
+      maxResults: 30,
+    });
 
-  // Tier 3: Return 0 TikTok videos — pipeline continues with Instagram only
-  console.log('[TikTok Viral] Nenhum video encontrado em nenhum tier.');
-  return [];
+    const { items } = await client.dataset(run.defaultDatasetId).listItems();
+    if (!items.length) {
+      console.log('[TikTok Viral] Actor retornou 0 items.');
+      return [];
+    }
+
+    console.log(`[TikTok Viral] Actor retornou ${items.length} items brutos.`);
+
+    const candidates = (items as Array<Record<string, unknown>>)
+      .map(mapTiktokItem)
+      .filter((c): c is ViralVideoCandidate => c !== null);
+
+    console.log(`[TikTok Viral] ${candidates.length} videos validos apos filtragem (<=240s, com URL, sem ads).`);
+
+    const sorted = filterAndSortCandidates(candidates, 5);
+
+    if (sorted.length > 0) {
+      console.log(`[TikTok Viral] Top video: ${sorted[0].engagement.views ?? 0} views, ${sorted[0].engagement.likes} likes`);
+    }
+
+    return sorted;
+  } catch (error) {
+    console.warn(`Aviso: busca TikTok falhou para "${query}": ${(error as Error).message}`);
+    return [];
+  }
 };
