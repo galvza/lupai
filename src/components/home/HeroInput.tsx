@@ -48,13 +48,16 @@ export const HeroInput = () => {
       }
 
       if (understandData.classification === "NONSENSE") {
-        setSubmitError("Não consegui entender. Tente descrever seu nicho de outra forma.");
+        setSubmitError("Não conseguimos identificar seu nicho 😅 Tente descrever o tipo de negócio e a cidade. Ex: 'barbearia masculina em Campinas'");
         setIsSubmitting(false);
         return;
       }
 
-      if (understandData.classification === "MINIMAL" && understandData.followUpQuestions) {
-        setSubmitError("Pode detalhar mais? " + understandData.followUpQuestions[0]);
+      if (understandData.classification === "MINIMAL") {
+        setSubmitError(
+          "Precisamos de um pouco mais de detalhe para fazer sua análise! " +
+          (understandData.followUpQuestions?.[0] ?? "Nos diga o tipo de negócio e a região. Ex: 'pet shop premium em Curitiba'")
+        );
         setIsSubmitting(false);
         return;
       }
@@ -90,7 +93,7 @@ export const HeroInput = () => {
       // Step 4: Redirect
       router.push(analyzeData.redirectUrl);
     } catch {
-      setSubmitError("Erro de conexão. Tente novamente.");
+      setSubmitError("Não foi possível iniciar sua análise. Tente novamente em alguns segundos.");
       setIsSubmitting(false);
     }
   };
@@ -148,7 +151,7 @@ export const HeroInput = () => {
 
       {/* Error message */}
       {submitError && (
-        <p className="text-red-400 text-sm mt-2">{submitError}</p>
+        <p className="text-[#FFB86C] text-sm mt-2">{submitError}</p>
       )}
 
       {/* Inline tip */}
