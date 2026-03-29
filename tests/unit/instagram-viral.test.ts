@@ -68,6 +68,19 @@ describe('instagram-viral', () => {
       expect(result).toBeNull();
     });
 
+    it('arredonda durationSeconds float para inteiro', () => {
+      const item = {
+        ...instagramFixture[0],
+        videoDuration: 27.299999237060547,
+        type: 'Video',
+      } as unknown as Record<string, unknown>;
+
+      const result = mapInstagramItem(item);
+      expect(result).not.toBeNull();
+      expect(result!.durationSeconds).toBe(27);
+      expect(Number.isInteger(result!.durationSeconds)).toBe(true);
+    });
+
     it('trata likesCount de -1 como 0 (Instagram esconde likes)', () => {
       const item = {
         ...instagramFixture[0],
@@ -92,7 +105,8 @@ describe('instagram-viral', () => {
           hashtags: expect.any(Array),
           resultsType: 'reels',
           resultsLimit: 20,
-        })
+        }),
+        expect.objectContaining({ timeout: 120 })
       );
     });
 

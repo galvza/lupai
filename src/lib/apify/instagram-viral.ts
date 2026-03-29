@@ -28,7 +28,7 @@ export const mapInstagramItem = (item: Record<string, unknown>): ViralVideoCandi
     creatorHandle: (item.ownerUsername as string) ?? 'unknown',
     platform: 'instagram' as ContentPlatform,
     postDate: (item.timestamp as string) ?? '',
-    durationSeconds: duration,
+    durationSeconds: Math.round(duration),
     engagement: {
       // Hashtag scraper may not include play counts; fall back to likes as proxy
       views: (item.videoPlayCount as number) ?? (item.videoViewCount as number) ?? null,

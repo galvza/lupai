@@ -55,6 +55,13 @@ const DOWNLOAD_BATCH_SIZE = 5;
 const TRANSCRIPTION_BATCH_SIZE = 5;
 const TRANSCRIPTION_BATCH_DELAY_MS = 2000;
 
+/** Resultado de tentativa de download com diagnostico de falha */
+interface DownloadAttemptResult {
+  record: ViralContent | null;
+  failReason?: string;
+  platform: string;
+}
+
 /**
  * Faz download de um video e armazena no Bunny Storage + DB.
  * Per D-16: path format viral/{analysisId}/{platform}/{NN}.mp4
@@ -62,13 +69,13 @@ const TRANSCRIPTION_BATCH_DELAY_MS = 2000;
  * @param candidate - Candidato a video viral
  * @param analysisId - ID da analise
  * @param index - Indice global do video (para nomeacao)
- * @returns ViralContent criado ou null se falhou
+ * @returns Resultado com record criado ou motivo da falha
  */
 const downloadAndStoreVideo = async (
   candidate: ViralVideoCandidate,
   analysisId: string,
   index: number
-): Promise<ViralContent | null> => {
+): Promise<DownloadAttemptResult> => {
   try {
     const response = await fetch(candidate.videoUrl, {
       redirect: 'follow',
@@ -80,15 +87,13 @@ const downloadAndStoreVideo = async (
       },
     });
     if (!response.ok) {
-      console.warn(`Aviso: download falhou para [${candidate.platform}] ${candidate.videoUrl.slice(0, 100)}: HTTP ${response.status}`);
-      return null;
+      return { record: null, failReason: `HTTP ${response.status}`, platform: candidate.platform };
     }
 
     // Reject non-video responses (e.g. TikTok returning HTML page)
     const contentType = response.headers.get('content-type') ?? '';
     if (!contentType.startsWith('video/') && !contentType.startsWith('application/octet-stream')) {
-      console.warn(`Aviso: URL retornou Content-Type "${contentType}" (esperado video/*) [${candidate.platform}]: ${candidate.videoUrl.slice(0, 100)}`);
-      return null;
+      return { record: null, failReason: `content-type: ${contentType}`, platform: candidate.platform };
     }
 
     const buffer = Buffer.from(await response.arrayBuffer());
@@ -97,7 +102,7 @@ const downloadAndStoreVideo = async (
 
     const cdnUrl = await uploadFile(filePath, buffer);
 
-    return await createViralContent({
+    const record = await createViralContent({
       analysisId,
       platform: candidate.platform,
       sourceUrl: candidate.sourceWebUrl ?? candidate.videoUrl,
@@ -108,9 +113,10 @@ const downloadAndStoreVideo = async (
       durationSeconds: candidate.durationSeconds,
       postDate: candidate.postDate,
     });
+
+    return { record, platform: candidate.platform };
   } catch (error) {
-    console.warn(`Aviso: falha ao processar video ${candidate.videoUrl}: ${(error as Error).message}`);
-    return null;
+    return { record: null, failReason: (error as Error).message, platform: candidate.platform };
   }
 };
 
@@ -290,6 +296,7 @@ export const extractViral = task({
       // === Stage 3: Download (per D-36 step 3) ===
       updateProgress({ download: 'running' });
       const downloadedRecords: ViralContent[] = [];
+      const downloadFailures: Array<{ platform: string; reason: string }> = [];
 
       for (let i = 0; i < candidates.length; i += DOWNLOAD_BATCH_SIZE) {
         const batch = candidates.slice(i, i + DOWNLOAD_BATCH_SIZE);
@@ -300,8 +307,14 @@ export const extractViral = task({
         );
 
         for (const result of results) {
-          if (result.status === 'fulfilled' && result.value) {
-            downloadedRecords.push(result.value);
+          if (result.status === 'fulfilled') {
+            if (result.value.record) {
+              downloadedRecords.push(result.value.record);
+            } else if (result.value.failReason) {
+              downloadFailures.push({ platform: result.value.platform, reason: result.value.failReason });
+            }
+          } else {
+            downloadFailures.push({ platform: 'unknown', reason: `rejected: ${result.reason}` });
           }
         }
 
@@ -314,6 +327,7 @@ export const extractViral = task({
         attempted: candidates.length,
         succeeded: downloadedRecords.length,
         platforms: downloadedRecords.map(r => r.platform),
+        failures: downloadFailures,
       });
 
       if (downloadedRecords.length === 0) {
