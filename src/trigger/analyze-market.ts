@@ -272,8 +272,9 @@ export const analyzeMarket = task({
 
       if (viralRun) {
         if (viralRun.ok) {
-          const viralResult = viralRun.output as { status: string; data: { viralContent: unknown[]; patterns: unknown } };
-          console.log(`[Viral] Extração concluída: ${viralResult.data.viralContent.length} vídeos, status=${viralResult.status}`);
+          const viralResult = viralRun.output as { status?: string; data?: { viralContent?: unknown[]; patterns?: unknown } } | undefined;
+          const viralCount = viralResult?.data?.viralContent?.length ?? 0;
+          console.log(`[Viral] Extração concluída: ${viralCount} vídeos, status=${viralResult?.status ?? 'unknown'}`);
         } else {
           console.warn(`[Viral] Extração falhou: ${String(viralRun.error)}`);
         }
