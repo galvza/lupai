@@ -10,6 +10,55 @@ import type {
   MarketSection,
 } from '@/types/ui';
 
+/** Mapa de tradução de chaves de métricas (snake_case EN → PT-BR) */
+const METRIC_LABELS: Record<string, string> = {
+  'dominant_tone': 'Tom dominante',
+  'average_total_duration_seconds': 'Duração média (segundos)',
+  'top_hook_pattern': 'Padrão de gancho principal',
+  'top_cta_pattern': 'Padrão de CTA principal',
+  'competition_level': 'Nível de competição',
+  'market_trend': 'Tendência do mercado',
+  'strong_channels': 'Canais fortes',
+  'total_competitors': 'Total de concorrentes',
+  'average_followers': 'Seguidores médios',
+  'total_active_ads': 'Anúncios ativos',
+  'content_frequency': 'Frequência de conteúdo',
+  'engagement_rate': 'Taxa de engajamento',
+  'top_platform': 'Plataforma principal',
+  'posting_frequency': 'Frequência de postagem',
+  'analysis_confidence': 'Confiança da análise',
+};
+
+/** Mapa de tradução de valores conhecidos (EN → PT-BR) */
+const VALUE_TRANSLATIONS: Record<string, string> = {
+  'entertainment': 'Entretenimento',
+  'high': 'Alta',
+  'medium': 'Média',
+  'low': 'Baixa',
+  'growing': 'Crescente',
+  'stable': 'Estável',
+  'declining': 'Decrescente',
+};
+
+/** Traduz chave de métrica para PT-BR */
+const translateMetricKey = (key: string): string =>
+  METRIC_LABELS[key] ?? key.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase());
+
+/** Traduz valor de métrica se for string conhecida */
+const translateMetricValue = (value: string | number): string | number => {
+  if (typeof value !== 'string') return value;
+  return VALUE_TRANSLATIONS[value.toLowerCase()] ?? value;
+};
+
+/** Traduz todas as chaves e valores de um objeto de métricas */
+const translateMetrics = (metrics: Record<string, string | number>): Record<string, string | number> => {
+  const result: Record<string, string | number> = {};
+  for (const [key, value] of Object.entries(metrics)) {
+    result[translateMetricKey(key)] = translateMetricValue(value);
+  }
+  return result;
+};
+
 /** Formata numero grande para display (1200000 -> "1.2M") */
 const formatLargeNumber = (n: number): string => {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
@@ -72,7 +121,7 @@ const parseStrategicOverview = (
         summary: s.summary ?? '',
         tags: Array.isArray(s.tags) ? s.tags : undefined,
         detailedAnalysis: s.detailed_analysis ?? s.detailedAnalysis ?? undefined,
-        metrics: s.metrics && typeof s.metrics === 'object' ? s.metrics : undefined,
+        metrics: s.metrics && typeof s.metrics === 'object' ? translateMetrics(s.metrics) : undefined,
       });
       if (key === 'competitorAnalysis' && s.metrics) {
         competition = String(s.metrics.competition_level ?? s.metrics.competitionLevel ?? competition);
@@ -113,7 +162,7 @@ const parseStrategicOverview = (
             summary: String(v.summary ?? ''),
             tags: Array.isArray(v.tags) ? v.tags as string[] : undefined,
             detailedAnalysis: v.detailed_analysis != null ? String(v.detailed_analysis) : v.detailedAnalysis != null ? String(v.detailedAnalysis) : undefined,
-            metrics: v.metrics && typeof v.metrics === 'object' ? v.metrics as Record<string, string | number> : undefined,
+            metrics: v.metrics && typeof v.metrics === 'object' ? translateMetrics(v.metrics as Record<string, string | number>) : undefined,
           });
         }
       }
