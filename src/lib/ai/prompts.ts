@@ -14,8 +14,8 @@ Analise os dados coletados sobre concorrentes, mercado e conteudo viral, e gere 
 
 Gere EXATAMENTE estas secoes, cada uma com os campos: title, summary (2-3 linhas), metrics (pares chave-valor com dados reais), tags (array de strings), detailed_analysis (markdown, maximo 2 paragrafos):
 
-1. marketOverview: Panorama geral do mercado e posicionamento dos players
-2. competitorAnalysis: Analise detalhada de cada concorrente com metricas especificas
+1. marketOverview: Panorama geral do mercado e posicionamento dos players. metrics DEVE incluir: "market_trend" (string: "crescente", "estavel" ou "decrescente"), "strong_channels" (string: lista separada por virgula dos canais dominantes, ex: "Instagram, TikTok, Google Ads")
+2. competitorAnalysis: Analise detalhada de cada concorrente com metricas especificas. metrics DEVE incluir: "competition_level" (string: "alta", "media" ou "baixa")
 3. gapsAndOpportunities: Lacunas no mercado e oportunidades nao exploradas
 4. viralPatterns: Padroes de conteudo viral identificados e como aplica-los
 
