@@ -13,6 +13,7 @@ export const ProgressBar = ({ progress }: { progress: number }) => {
       <div className="w-full h-1.5 bg-[#1A1A1A] rounded-full overflow-hidden">
         <motion.div
           className="h-full bg-accent rounded-full"
+          style={progress < 100 ? { animation: "bar-pulse 2s ease-in-out infinite" } : undefined}
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.5, ease: "easeOut" }}

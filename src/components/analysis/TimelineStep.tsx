@@ -38,7 +38,7 @@ export const TimelineStep = ({
       {/* Conteúdo */}
       <div className="flex-1 pb-8">
         <h3
-          className={`text-[14px] font-medium ${
+          className={`text-[14px] font-medium flex items-center gap-2 ${
             isCompleted
               ? "text-white"
               : isActive
@@ -47,6 +47,9 @@ export const TimelineStep = ({
           }`}
         >
           {step.title}
+          {isActive && (
+            <div className="w-4 h-4 border-2 border-[#C8FF3C] border-t-transparent rounded-full animate-spin shrink-0" />
+          )}
         </h3>
 
         {step.status === "pending" && step.subtitle && (

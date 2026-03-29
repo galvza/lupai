@@ -144,10 +144,23 @@ export const HeroInput = () => {
               : "bg-accent text-dark-bg hover:brightness-110"
           }`}
         >
+          {isSubmitting && (
+            <div className="w-4 h-4 border-2 border-[#0F0F0F] border-t-transparent rounded-full animate-spin" />
+          )}
           {isSubmitting ? "Analisando..." : "Analisar"}
           {!isSubmitting && <ArrowRight size={14} strokeWidth={2} />}
         </button>
       </div>
+
+      {/* Indeterminate progress bar while submitting */}
+      {isSubmitting && (
+        <div className="w-full h-1 bg-[#1A1A1A] rounded-full overflow-hidden mt-3">
+          <div
+            className="bg-[#C8FF3C] h-1 rounded-full w-1/3"
+            style={{ animation: "indeterminate 1.2s ease-in-out infinite" }}
+          />
+        </div>
+      )}
 
       {/* Error message */}
       {submitError && (
