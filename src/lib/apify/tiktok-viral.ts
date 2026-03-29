@@ -161,7 +161,7 @@ const runTiktokSearch = async (
 ): Promise<ViralVideoCandidate[]> => {
   const run = await client.actor(APIFY_ACTORS.viralTiktok).call({
     searchQueries: keywords,
-    resultsPerPage: 20,
+    resultsPerPage: 3,
     excludePinnedPosts: true,
     shouldDownloadCovers: false,
     shouldDownloadSlideshowImages: false,

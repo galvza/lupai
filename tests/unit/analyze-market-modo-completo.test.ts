@@ -60,8 +60,11 @@ vi.mock('@/trigger/extract-ads', () => ({
   extractAds: { id: 'extract-ads' },
 }));
 
+const { mockExtractViralTriggerAndWait } = vi.hoisted(() => ({
+  mockExtractViralTriggerAndWait: vi.fn(),
+}));
 vi.mock('@/trigger/extract-viral', () => ({
-  extractViral: { id: 'extract-viral' },
+  extractViral: { id: 'extract-viral', triggerAndWait: mockExtractViralTriggerAndWait },
 }));
 
 vi.mock('@/trigger/synthesize', () => ({
@@ -248,12 +251,11 @@ const setupModoCompleto = () => {
     output: { competitors: MOCK_SCORED },
   });
 
-  // Call 3: Batch 1 — extractWebsite x2 + extractViral
+  // Call 3: Batch 1 — extractWebsite x2 only
   mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
     runs: [
       { ok: true, output: MOCK_WEBSITE_RESULT_A },
       { ok: true, output: MOCK_WEBSITE_RESULT_B },
-      { ok: true, output: {} },
     ],
   });
 
@@ -266,6 +268,9 @@ const setupModoCompleto = () => {
       { ok: true, output: {} },
     ],
   });
+
+  // Batch 3: extractViral runs alone via triggerAndWait
+  mockExtractViralTriggerAndWait.mockResolvedValueOnce({ ok: true, output: { status: 'success', data: { viralContent: [], patterns: null } } });
 };
 
 /** Setup para modo rapido (happy path, sem user extraction) */
@@ -294,12 +299,11 @@ const setupModoRapido = () => {
     .mockResolvedValueOnce({ ...MOCK_SAVED_COMPETITORS[0], analysisId: 'analysis-quick-456' })
     .mockResolvedValueOnce({ ...MOCK_SAVED_COMPETITORS[1], analysisId: 'analysis-quick-456' });
 
-  // Batch 1 (call 2)
+  // Batch 1 (call 2): website only
   mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
     runs: [
       { ok: true, output: MOCK_WEBSITE_RESULT_A },
       { ok: true, output: MOCK_WEBSITE_RESULT_B },
-      { ok: true, output: {} },
     ],
   });
 
@@ -310,6 +314,9 @@ const setupModoRapido = () => {
   mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
     runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
   });
+
+  // Batch 3: viral
+  mockExtractViralTriggerAndWait.mockResolvedValueOnce({ ok: true, output: {} });
 };
 
 describe('analyzeMarket Modo Completo', () => {
@@ -345,8 +352,9 @@ describe('analyzeMarket Modo Completo', () => {
     // batch.triggerByTaskAndWait call order:
     // Call 0: User Batch B (social + ads for user business) -- after extractWebsite.triggerAndWait
     // Call 1: Discovery (4 sources)
-    // Call 2: Batch 1 (website + viral for competitors)
+    // Call 2: Batch 1 (website for competitors)
     // Call 3: Batch 2 (social + ads for competitors)
+    // + extractViral.triggerAndWait (not a batch call)
     const allBatchCalls = mockBatch.triggerByTaskAndWait.mock.calls;
     expect(allBatchCalls.length).toBe(4);
 
@@ -405,7 +413,6 @@ describe('analyzeMarket Modo Completo', () => {
       runs: [
         { ok: true, output: MOCK_WEBSITE_RESULT_A },
         { ok: true, output: MOCK_WEBSITE_RESULT_B },
-        { ok: true, output: {} },
       ],
     });
 
@@ -415,6 +422,8 @@ describe('analyzeMarket Modo Completo', () => {
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
       runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
     });
+
+    mockExtractViralTriggerAndWait.mockResolvedValueOnce({ ok: true, output: {} });
 
     // Should NOT throw — continues to discovery
     const result = await getOrchestratorRun()(COMPLETE_PAYLOAD) as Record<string, unknown>;
@@ -477,7 +486,6 @@ describe('analyzeMarket Modo Completo', () => {
       runs: [
         { ok: true, output: MOCK_WEBSITE_RESULT_A },
         { ok: true, output: MOCK_WEBSITE_RESULT_B },
-        { ok: true, output: {} },
       ],
     });
 
@@ -487,6 +495,8 @@ describe('analyzeMarket Modo Completo', () => {
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
       runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
     });
+
+    mockExtractViralTriggerAndWait.mockResolvedValueOnce({ ok: true, output: {} });
 
     await getOrchestratorRun()(COMPLETE_NO_URL_PAYLOAD);
 
@@ -551,13 +561,14 @@ describe('analyzeMarket Modo Completo', () => {
       runs: [
         { ok: true, output: MOCK_WEBSITE_RESULT_A },
         { ok: true, output: MOCK_WEBSITE_RESULT_B },
-        { ok: true, output: {} },
       ],
     });
 
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
       runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
     });
+
+    mockExtractViralTriggerAndWait.mockResolvedValueOnce({ ok: true, output: {} });
 
     // Should NOT throw — continues to discovery
     const result = await getOrchestratorRun()(COMPLETE_PAYLOAD) as Record<string, unknown>;

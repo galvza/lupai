@@ -91,7 +91,7 @@ describe('instagram-viral', () => {
         expect.objectContaining({
           hashtags: expect.any(Array),
           resultsType: 'reels',
-          resultsLimit: 20,
+          resultsLimit: 3,
         })
       );
     });

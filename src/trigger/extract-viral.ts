@@ -2,7 +2,7 @@ import { task, metadata } from '@trigger.dev/sdk';
 
 import { searchViralTiktok } from '@/lib/apify/tiktok-viral';
 import { searchViralInstagram } from '@/lib/apify/instagram-viral';
-import { calculateEngagementRate } from '@/lib/apify/tiktok-viral';
+import { calculateEngagementRate, filterAndSortCandidates } from '@/lib/apify/tiktok-viral';
 import { uploadFile } from '@/lib/storage/bunny';
 import { transcribeVideo } from '@/lib/transcription/transcribe';
 import { extractHookBodyCta } from '@/lib/ai/hbc-extraction';
@@ -226,9 +226,10 @@ export const extractViral = task({
 
       updateProgress({ discover: 'completed' });
 
-      // === Stage 2: Filter (per D-36 step 2) ===
+      // === Stage 2: Filter — combine and take top 5 by engagement ===
       updateProgress({ filter: 'running' });
-      const candidates = [...ttCandidates, ...igCandidates];
+      const combined = [...ttCandidates, ...igCandidates];
+      const candidates = filterAndSortCandidates(combined, 5);
 
       if (candidates.length === 0) {
         updateProgress({ filter: 'completed' });

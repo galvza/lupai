@@ -21,6 +21,11 @@ vi.mock('@/lib/apify/tiktok-viral', () => ({
     const views = Math.max(e.views ?? 1, 1);
     return interactions / views;
   }),
+  filterAndSortCandidates: vi.fn((candidates: unknown[], maxResults: number = 5) => {
+    return (candidates as Array<{ engagement: { views?: number | null; likes: number } }>)
+      .sort((a, b) => ((b.engagement.views ?? 0) + b.engagement.likes) - ((a.engagement.views ?? 0) + a.engagement.likes))
+      .slice(0, maxResults);
+  }),
 }));
 
 vi.mock('@/lib/apify/instagram-viral', () => ({

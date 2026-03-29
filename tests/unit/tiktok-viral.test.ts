@@ -150,7 +150,7 @@ describe('tiktok-viral', () => {
       expect(mockCall).toHaveBeenCalledWith(
         expect.objectContaining({
           searchQueries: expect.any(Array),
-          resultsPerPage: 20,
+          resultsPerPage: 3,
         })
       );
     });

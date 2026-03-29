@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const { mockMetadata, mockWait, mockBatch, capturedRuns } = vi.hoisted(() => ({
+const { mockMetadata, mockWait, mockBatch, capturedRuns, mockExtractViralTrigger } = vi.hoisted(() => ({
   mockMetadata: { set: vi.fn() },
   mockWait: { createToken: vi.fn(), forToken: vi.fn() },
   mockBatch: { triggerByTaskAndWait: vi.fn() },
   capturedRuns: new Map<string, (payload: unknown) => Promise<unknown>>(),
+  mockExtractViralTrigger: vi.fn(),
 }));
 
 vi.mock('@trigger.dev/sdk', () => ({
@@ -50,8 +51,8 @@ vi.mock('./extract-ads', () => ({
   extractAds: { id: 'extract-ads' },
 }));
 
-vi.mock('./extract-viral', () => ({
-  extractViral: { id: 'extract-viral' },
+vi.mock('@/trigger/extract-viral', () => ({
+  extractViral: { id: 'extract-viral', triggerAndWait: mockExtractViralTrigger },
 }));
 
 vi.mock('@/utils/socialFallback', () => ({
@@ -173,12 +174,11 @@ const setupHappyPath = () => {
     .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
     .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[1]);
 
-  // Batch 1 runs: extractWebsite x2 + extractViral (call 2)
+  // Batch 1 runs: extractWebsite x2 (call 2)
   mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
     runs: [
       { ok: true, output: MOCK_WEBSITE_RESULT_A },
       { ok: true, output: MOCK_WEBSITE_RESULT_B },
-      { ok: true, output: {} },
     ],
   });
 
@@ -198,6 +198,9 @@ const setupHappyPath = () => {
       { ok: true, output: {} },
     ],
   });
+
+  // Batch 3: extractViral (triggerAndWait, not batch)
+  mockExtractViralTrigger.mockResolvedValueOnce({ ok: true, output: { status: 'success', data: { viralContent: [], patterns: null } } });
 };
 
 describe('analyzeMarket orchestrator', () => {
@@ -255,21 +258,19 @@ describe('analyzeMarket orchestrator', () => {
     });
   });
 
-  it('deve fazer fan-out de extracao em 2 batches sequenciais', async () => {
+  it('deve fazer fan-out de extracao em 3 batches: website, social+ads, viral', async () => {
     setupHappyPath();
     await getOrchestratorRun()(MOCK_PAYLOAD);
 
-    // batch.triggerByTaskAndWait called 3 times: discovery, batch1, batch2
+    // batch.triggerByTaskAndWait called 3 times: discovery, batch1 (website), batch2 (social+ads)
     expect(mockBatch.triggerByTaskAndWait).toHaveBeenCalledTimes(3);
 
-    // Batch 1 (call 2): extractWebsite x2 + extractViral = 3
+    // Batch 1 (call 2): extractWebsite x2 only
     const batch1Call = mockBatch.triggerByTaskAndWait.mock.calls[1][0];
-    expect(batch1Call).toHaveLength(3);
+    expect(batch1Call).toHaveLength(2);
     const batch1Ids = batch1Call.map((item: { task: { id: string } }) => item.task.id);
     expect(batch1Ids).toContain('extract-website');
-    expect(batch1Ids).toContain('extract-viral');
-    expect(batch1Ids).not.toContain('extract-social');
-    expect(batch1Ids).not.toContain('extract-ads');
+    expect(batch1Ids).not.toContain('extract-viral');
 
     // Batch 2 (call 3): extractSocial x2 + extractAds x2 = 4
     const batch2Call = mockBatch.triggerByTaskAndWait.mock.calls[2][0];
@@ -277,8 +278,13 @@ describe('analyzeMarket orchestrator', () => {
     const batch2Ids = batch2Call.map((item: { task: { id: string } }) => item.task.id);
     expect(batch2Ids).toContain('extract-social');
     expect(batch2Ids).toContain('extract-ads');
-    expect(batch2Ids).not.toContain('extract-website');
-    expect(batch2Ids).not.toContain('extract-viral');
+
+    // Batch 3: extractViral runs alone via triggerAndWait
+    expect(mockExtractViralTrigger).toHaveBeenCalledTimes(1);
+    expect(mockExtractViralTrigger).toHaveBeenCalledWith(expect.objectContaining({
+      analysisId: 'analysis-123',
+      niche: 'odontologia',
+    }));
   });
 
   it('deve reportar erro se todas as fontes falharem', async () => {
@@ -321,12 +327,11 @@ describe('analyzeMarket orchestrator', () => {
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[1]);
 
-    // Batch 1: website + viral
+    // Batch 1: website only
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
       runs: [
         { ok: true, output: MOCK_WEBSITE_RESULT_A },
         { ok: true, output: MOCK_WEBSITE_RESULT_B },
-        { ok: true, output: {} },
       ],
     });
 
@@ -337,6 +342,9 @@ describe('analyzeMarket orchestrator', () => {
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
       runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
     });
+
+    // Batch 3: viral
+    mockExtractViralTrigger.mockResolvedValueOnce({ ok: true, output: {} });
 
     const result = await getOrchestratorRun()(MOCK_PAYLOAD);
     expect(result).toBeDefined();
@@ -381,12 +389,11 @@ describe('analyzeMarket orchestrator', () => {
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[1]);
 
-    // Batch 1: website + viral
+    // Batch 1: website only
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
       runs: [
         { ok: true, output: MOCK_WEBSITE_RESULT_A },
         { ok: true, output: MOCK_WEBSITE_RESULT_B },
-        { ok: true, output: {} },
       ],
     });
 
@@ -397,6 +404,9 @@ describe('analyzeMarket orchestrator', () => {
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
       runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
     });
+
+    // Batch 3: viral
+    mockExtractViralTrigger.mockResolvedValueOnce({ ok: true, output: {} });
 
     const result = await getOrchestratorRun()(MOCK_PAYLOAD);
     expect(result).toBeDefined();
@@ -453,29 +463,29 @@ describe('analyzeMarket orchestrator', () => {
 
     expect(result.analysisId).toBe('analysis-123');
     expect(result.competitorsFound).toBe(2);
-    // Batch 1: 3 runs (2 website + 1 viral) + Batch 2: 4 runs (2 social + 2 ads) = 7 total
+    // Batch 1: 2 website + Batch 2: 4 (2 social + 2 ads) + Batch 3: 1 viral = 7 total
     expect(result.extractionSuccess).toBe(7);
     expect(result.extractionFailed).toBe(0);
   });
 });
 
-describe('2-batch extraction pattern', () => {
+describe('3-batch extraction pattern', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('runs Batch 1 (website+viral) then Batch 2 (social+ads) sequentially', async () => {
+  it('runs Batch 1 (website) then Batch 2 (social+ads) then Batch 3 (viral) sequentially', async () => {
     setupHappyPath();
     await getOrchestratorRun()(MOCK_PAYLOAD);
 
-    // batch.triggerByTaskAndWait called 3 times: discovery, batch1, batch2
+    // batch.triggerByTaskAndWait called 3 times: discovery, batch1 (website), batch2 (social+ads)
     expect(mockBatch.triggerByTaskAndWait).toHaveBeenCalledTimes(3);
 
-    // Batch 1 (call index 1): contains extractWebsite + extractViral
+    // Batch 1 (call index 1): contains extractWebsite only
     const batch1 = mockBatch.triggerByTaskAndWait.mock.calls[1][0];
     const batch1Ids = batch1.map((item: { task: { id: string } }) => item.task.id);
     expect(batch1Ids.filter((id: string) => id === 'extract-website')).toHaveLength(2);
-    expect(batch1Ids.filter((id: string) => id === 'extract-viral')).toHaveLength(1);
+    expect(batch1Ids).not.toContain('extract-viral');
     expect(batch1Ids).not.toContain('extract-social');
     expect(batch1Ids).not.toContain('extract-ads');
 
@@ -486,6 +496,9 @@ describe('2-batch extraction pattern', () => {
     expect(batch2Ids.filter((id: string) => id === 'extract-ads')).toHaveLength(2);
     expect(batch2Ids).not.toContain('extract-website');
     expect(batch2Ids).not.toContain('extract-viral');
+
+    // Batch 3: extractViral runs alone via triggerAndWait (after all competitor actors free memory)
+    expect(mockExtractViralTrigger).toHaveBeenCalledTimes(1);
   });
 
   it('collects social links from Batch 1 results and passes to Batch 2', async () => {
@@ -584,7 +597,6 @@ describe('2-batch extraction pattern', () => {
       runs: [
         { ok: false, output: null },
         { ok: true, output: MOCK_WEBSITE_RESULT_B },
-        { ok: true, output: {} },
       ],
     });
 
@@ -596,6 +608,9 @@ describe('2-batch extraction pattern', () => {
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
       runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
     });
+
+    // Batch 3: viral
+    mockExtractViralTrigger.mockResolvedValueOnce({ ok: true, output: {} });
 
     const result = await getOrchestratorRun()(MOCK_PAYLOAD) as Record<string, unknown>;
     expect(result).toBeDefined();
@@ -637,12 +652,11 @@ describe('2-batch extraction pattern', () => {
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[1]);
 
-    // Batch 1
+    // Batch 1: website only
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
       runs: [
         { ok: true, output: MOCK_WEBSITE_RESULT_A },
         { ok: true, output: MOCK_WEBSITE_RESULT_B },
-        { ok: true, output: {} },
       ],
     });
 
@@ -654,6 +668,9 @@ describe('2-batch extraction pattern', () => {
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
       runs: [{ ok: true }, { ok: true }, { ok: true }, { ok: true }],
     });
+
+    // Batch 3: viral
+    mockExtractViralTrigger.mockResolvedValueOnce({ ok: true, output: {} });
 
     const result = await getOrchestratorRun()(MOCK_PAYLOAD) as Record<string, unknown>;
     expect(result).toBeDefined();

@@ -240,7 +240,7 @@ export const analyzeMarket = task({
         )
       );
 
-      // Step 10a: Batch 1 — Website extraction + Viral (parallel, no deps on each other)
+      // Step 10a: Batch 1 — Website extraction (parallel per competitor)
       await updateAnalysis(payload.analysisId, { status: 'extracting' });
       metadata.set('status', 'extracting');
       metadata.set('step', 'Extraindo dados dos sites...');
@@ -253,13 +253,10 @@ export const analyzeMarket = task({
       });
       metadata.set('subTasks', subTaskProgress);
 
-      const batch1Items = [
-        ...savedCompetitors.map((comp) => ({
-          task: extractWebsite,
-          payload: { analysisId: payload.analysisId, competitorId: comp.id, competitorName: comp.name, websiteUrl: comp.websiteUrl ?? '' },
-        })),
-        { task: extractViral, payload: { analysisId: payload.analysisId, niche: payload.niche, segment: payload.segment, region: payload.region } },
-      ];
+      const batch1Items = savedCompetitors.map((comp) => ({
+        task: extractWebsite,
+        payload: { analysisId: payload.analysisId, competitorId: comp.id, competitorName: comp.name, websiteUrl: comp.websiteUrl ?? '' },
+      }));
 
       const { runs: batch1Runs } = await batch.triggerByTaskAndWait(batch1Items);
 
@@ -267,18 +264,7 @@ export const analyzeMarket = task({
       metadata.set('step', 'Descobrindo perfis sociais...');
       metadata.set('progress', 75);
 
-      const websiteRuns = batch1Runs.slice(0, savedCompetitors.length);
-      const viralRun = batch1Runs[savedCompetitors.length]; // extract-viral is the last item in batch1Items
-
-      if (viralRun) {
-        if (viralRun.ok) {
-          const viralResult = viralRun.output as { status?: string; data?: { viralContent?: unknown[]; patterns?: unknown } } | undefined;
-          const viralCount = viralResult?.data?.viralContent?.length ?? 0;
-          console.log(`[Viral] Extração concluída: ${viralCount} vídeos, status=${viralResult?.status ?? 'unknown'}`);
-        } else {
-          console.warn(`[Viral] Extração falhou: ${String(viralRun.error)}`);
-        }
-      }
+      const websiteRuns = batch1Runs;
 
       const socialProfilesPerCompetitor: Array<{ instagram: SocialProfileInput | null; tiktok: SocialProfileInput | null }> = [];
 
@@ -353,12 +339,7 @@ export const analyzeMarket = task({
 
       const { runs: batch2Runs } = await batch.triggerByTaskAndWait(batch2Items);
 
-      // Step 11: Summarize results from both batches
-      const allRuns = [...batch1Runs, ...batch2Runs];
-      const successCount = allRuns.filter((r) => r.ok).length;
-      const failCount = allRuns.filter((r) => !r.ok).length;
-
-      // Update final sub-task status
+      // Update sub-task status from batch 2
       const socialRuns = batch2Runs.slice(0, savedCompetitors.length);
       socialRuns.forEach((run, i) => {
         subTaskProgress[savedCompetitors[i].name].social = run.ok ? 'completed' : 'failed';
@@ -370,6 +351,30 @@ export const analyzeMarket = task({
         }
       });
       metadata.set('subTasks', subTaskProgress);
+
+      // Step 10d: Batch 3 — Viral extraction (runs alone after competitors free Apify memory)
+      metadata.set('step', 'Buscando conteudo viral do nicho...');
+      metadata.set('progress', 85);
+
+      const viralRun = await extractViral.triggerAndWait({
+        analysisId: payload.analysisId,
+        niche: payload.niche,
+        segment: payload.segment,
+        region: payload.region,
+      });
+
+      if (viralRun.ok) {
+        const viralResult = viralRun.output as { status?: string; data?: { viralContent?: unknown[]; patterns?: unknown } } | undefined;
+        const viralCount = viralResult?.data?.viralContent?.length ?? 0;
+        console.log(`[Viral] Extração concluída: ${viralCount} vídeos, status=${viralResult?.status ?? 'unknown'}`);
+      } else {
+        console.warn(`[Viral] Extração falhou: ${String(viralRun.error)}`);
+      }
+
+      // Step 11: Summarize results from all batches
+      const allRuns = [...batch1Runs, ...batch2Runs, viralRun];
+      const successCount = allRuns.filter((r) => r.ok).length;
+      const failCount = allRuns.filter((r) => !r.ok).length;
 
       metadata.set('step', 'Extracao concluida. Gerando sintese e recomendacoes...');
       metadata.set('progress', 90);
