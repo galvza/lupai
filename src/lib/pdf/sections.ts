@@ -98,6 +98,112 @@ export const addCoverPage = (doc: jsPDF, analysis: Analysis): void => {
 };
 
 /**
+ * Tenta parsear strategicOverview como JSON e renderizar seções formatadas.
+ * Se falhar, renderiza como texto simples.
+ */
+const renderStrategicOverview = (doc: jsPDF, raw: string, y: number): number => {
+  const trimmed = raw.trim();
+
+  // Se não parece JSON, renderizar como texto
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) {
+    doc.setFontSize(10);
+    const lines = doc.splitTextToSize(trimmed, CONTENT_WIDTH);
+    for (const line of lines) {
+      y = checkPageBreak(doc, y, 6);
+      doc.text(line, PAGE_MARGIN, y);
+      y += 5;
+    }
+    return y + 5;
+  }
+
+  let parsed: Record<string, unknown>;
+  try {
+    parsed = JSON.parse(trimmed);
+    if (typeof parsed !== 'object' || parsed === null) throw new Error('not object');
+  } catch {
+    // Parse failed — render as text
+    doc.setFontSize(10);
+    const lines = doc.splitTextToSize(trimmed, CONTENT_WIDTH);
+    for (const line of lines) {
+      y = checkPageBreak(doc, y, 6);
+      doc.text(line, PAGE_MARGIN, y);
+      y += 5;
+    }
+    return y + 5;
+  }
+
+  // Render each section
+  for (const [, value] of Object.entries(parsed)) {
+    if (typeof value !== 'object' || value === null) continue;
+    const section = value as Record<string, unknown>;
+
+    // Title
+    if (section.title) {
+      y = checkPageBreak(doc, y, 12);
+      doc.setFontSize(12);
+      doc.setTextColor(...BRAND_COLOR);
+      doc.text(String(section.title), PAGE_MARGIN, y);
+      doc.setTextColor(0, 0, 0);
+      y += 7;
+    }
+
+    // Summary
+    if (section.summary) {
+      doc.setFontSize(10);
+      const summaryLines = doc.splitTextToSize(String(section.summary), CONTENT_WIDTH);
+      for (const line of summaryLines) {
+        y = checkPageBreak(doc, y, 5);
+        doc.text(line, PAGE_MARGIN, y);
+        y += 5;
+      }
+      y += 2;
+    }
+
+    // Tags
+    const tags = section.tags;
+    if (Array.isArray(tags) && tags.length > 0) {
+      y = checkPageBreak(doc, y, 6);
+      doc.setFontSize(8);
+      doc.setTextColor(80, 80, 80);
+      doc.text(`Tags: ${tags.join(', ')}`, PAGE_MARGIN, y);
+      doc.setTextColor(0, 0, 0);
+      y += 5;
+    }
+
+    // Detailed analysis
+    const analysis = section.detailed_analysis ?? section.detailedAnalysis;
+    if (analysis && typeof analysis === 'string') {
+      doc.setFontSize(9);
+      doc.setTextColor(60, 60, 60);
+      const analysisLines = doc.splitTextToSize(analysis, CONTENT_WIDTH);
+      for (const line of analysisLines) {
+        y = checkPageBreak(doc, y, 5);
+        doc.text(line, PAGE_MARGIN, y);
+        y += 4;
+      }
+      doc.setTextColor(0, 0, 0);
+      y += 3;
+    }
+
+    // Metrics
+    const metrics = section.metrics;
+    if (metrics && typeof metrics === 'object') {
+      doc.setFontSize(8);
+      for (const [mk, mv] of Object.entries(metrics as Record<string, unknown>)) {
+        y = checkPageBreak(doc, y, 5);
+        doc.text(`${mk.replace(/_/g, ' ')}: ${String(mv ?? '-')}`, PAGE_MARGIN + 5, y);
+        y += 4;
+      }
+      y += 2;
+    }
+
+    y += 3;
+  }
+
+  return y;
+};
+
+/**
  * Adiciona secao de visao geral do mercado.
  *
  * @param doc - Documento jsPDF
@@ -113,15 +219,7 @@ export const addMarketOverview = (doc: jsPDF, synthesis: Synthesis, y: number): 
     return y + 8;
   }
 
-  doc.setFontSize(10);
-  const lines = doc.splitTextToSize(synthesis.strategicOverview, CONTENT_WIDTH);
-  for (const line of lines) {
-    y = checkPageBreak(doc, y, 6);
-    doc.text(line, PAGE_MARGIN, y);
-    y += 5;
-  }
-
-  return y + 5;
+  return renderStrategicOverview(doc, synthesis.strategicOverview, y);
 };
 
 /**
