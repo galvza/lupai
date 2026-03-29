@@ -10,10 +10,17 @@ const ICON_MAP: Record<string, typeof Search> = {
   trending: TrendingUp,
 };
 
-/** Card resumo de gap/viral/roteiro com expand/collapse */
-const SummaryCardItem = ({ card }: { card: SummaryCard }) => {
+/** Card resumo de gap/viral/roteiro com expand/collapse compartilhado */
+const SummaryCardItem = ({
+  card,
+  expanded,
+  onToggle,
+}: {
+  card: SummaryCard;
+  expanded: boolean;
+  onToggle: () => void;
+}) => {
   const Icon = ICON_MAP[card.icon] || Search;
-  const [expanded, setExpanded] = useState(false);
   const hasExpanded = card.expandedItems && card.expandedItems.length > 0;
 
   return (
@@ -50,7 +57,7 @@ const SummaryCardItem = ({ card }: { card: SummaryCard }) => {
 
       {hasExpanded && (
         <button
-          onClick={() => setExpanded(!expanded)}
+          onClick={onToggle}
           className="mt-3 text-[12px] text-accent hover:underline"
         >
           {expanded ? "Ver menos \u2191" : "Ver mais \u2192"}
@@ -60,7 +67,7 @@ const SummaryCardItem = ({ card }: { card: SummaryCard }) => {
   );
 };
 
-/** Grid de 3 cards de resumo */
+/** Grid de 3 cards de resumo com expand/collapse sincronizado */
 export const SummaryCards = ({
   gaps,
   virals,
@@ -70,11 +77,14 @@ export const SummaryCards = ({
   virals: SummaryCard;
   scripts: SummaryCard;
 }) => {
+  const [expanded, setExpanded] = useState(false);
+  const toggle = () => setExpanded((prev) => !prev);
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-      <SummaryCardItem card={gaps} />
-      <SummaryCardItem card={virals} />
-      <SummaryCardItem card={scripts} />
+      <SummaryCardItem card={gaps} expanded={expanded} onToggle={toggle} />
+      <SummaryCardItem card={virals} expanded={expanded} onToggle={toggle} />
+      <SummaryCardItem card={scripts} expanded={expanded} onToggle={toggle} />
     </div>
   );
 };
