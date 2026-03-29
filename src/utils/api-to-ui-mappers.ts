@@ -279,7 +279,7 @@ export const mapResultsToUI = (response: AnalysisResultsResponse): AnalysisResul
   return {
     id: analysis.id,
     niche,
-    nicheKeyword: restWords || niche,
+    nicheKeyword: restWords,
     nicheAccent: lastWord,
     region: analysis.nicheInterpreted?.region ?? 'Brasil',
     timestamp,
