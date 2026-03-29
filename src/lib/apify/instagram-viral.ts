@@ -59,7 +59,8 @@ export const searchViralInstagram = async (
   try {
     const run = await client.actor(APIFY_ACTORS.viralInstagram).call({
       hashtags,
-      resultsLimit: 50,
+      resultsType: 'reels',
+      resultsLimit: 20,
     });
 
     const { items } = await client.dataset(run.defaultDatasetId).listItems();
