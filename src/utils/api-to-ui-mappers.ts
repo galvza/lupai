@@ -7,6 +7,7 @@ import type {
   SummaryCard,
   HistoryItem,
   CompetitorTag,
+  MarketSection,
 } from '@/types/ui';
 
 /** Formata numero grande para display (1200000 -> "1.2M") */
@@ -41,6 +42,69 @@ const deriveTags = (comp: Competitor): CompetitorTag[] => {
   }
 
   return tags.slice(0, 3);
+};
+
+/** Tenta parsear strategicOverview como JSON e extrair seções formatadas */
+const parseStrategicOverview = (
+  raw: string
+): { sections: MarketSection[]; competition: string; trend: string; strongChannels: string } | null => {
+  if (!raw || typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return null;
+
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (typeof parsed !== 'object' || parsed === null) return null;
+
+    const sections: MarketSection[] = [];
+    let competition = 'N/A';
+    let trend = 'N/A';
+    let strongChannels = 'N/A';
+
+    const knownKeys = ['marketOverview', 'competitorAnalysis', 'gapsAndOpportunities', 'viralPatterns'];
+
+    for (const key of knownKeys) {
+      const s = parsed[key];
+      if (!s || typeof s !== 'object') continue;
+      sections.push({
+        key,
+        title: s.title ?? key,
+        summary: s.summary ?? '',
+        tags: Array.isArray(s.tags) ? s.tags : undefined,
+        detailedAnalysis: s.detailed_analysis ?? s.detailedAnalysis ?? undefined,
+        metrics: s.metrics && typeof s.metrics === 'object' ? s.metrics : undefined,
+      });
+      if (key === 'competitorAnalysis' && s.metrics) {
+        competition = String(s.metrics.competition_level ?? s.metrics.competitionLevel ?? competition);
+      }
+      if (key === 'marketOverview' && s.metrics) {
+        trend = String(s.metrics.trend ?? s.metrics.market_trend ?? trend);
+        strongChannels = String(s.metrics.strong_channels ?? s.metrics.strongChannels ?? strongChannels);
+      }
+    }
+
+    // Fallback: iterate all keys if none of the known keys matched
+    if (sections.length === 0) {
+      for (const [key, value] of Object.entries(parsed)) {
+        if (typeof value === 'object' && value !== null && 'title' in (value as Record<string, unknown>)) {
+          const v = value as Record<string, unknown>;
+          sections.push({
+            key,
+            title: String(v.title ?? key),
+            summary: String(v.summary ?? ''),
+            tags: Array.isArray(v.tags) ? v.tags as string[] : undefined,
+            detailedAnalysis: v.detailed_analysis != null ? String(v.detailed_analysis) : v.detailedAnalysis != null ? String(v.detailedAnalysis) : undefined,
+            metrics: v.metrics && typeof v.metrics === 'object' ? v.metrics as Record<string, string | number> : undefined,
+          });
+        }
+      }
+    }
+
+    if (sections.length === 0) return null;
+    return { sections, competition, trend, strongChannels };
+  } catch {
+    return null;
+  }
 };
 
 /** Calcula score simples de um concorrente (0-100) */
@@ -102,10 +166,10 @@ export const mapCompetitorToUI = (comp: Competitor): UICompetitor => ({
   ads:
     comp.metaAdsData?.ads.map((a) => ({
       copy: a.copyText ?? '',
-      format: a.format ?? 'N/A',
+      format: a.format ?? 'Formato não identificado',
       duration: a.startedAt
         ? `Desde ${new Date(a.startedAt).toLocaleDateString('pt-BR')}`
-        : 'N/A',
+        : 'Data não disponível',
     })) ?? [],
   lessons: undefined,
 });
@@ -142,17 +206,19 @@ export const mapResultsToUI = (response: AnalysisResultsResponse): AnalysisResul
             : ('BAIXO' as const),
     })) ?? [];
 
+  const highPriorityRecs = synthesis?.recommendations.filter((r) => r.priority === 'alta') ?? [];
+
   const gaps: SummaryCard = {
     icon: 'search',
     label: 'Gaps identificados',
-    value: synthesis?.recommendations.filter((r) => r.priority === 'alta').length ?? 0,
+    value: highPriorityRecs.length,
     subtitle: 'oportunidades de alta prioridade',
     preview:
-      synthesis?.recommendations
-        .filter((r) => r.priority === 'alta')
+      highPriorityRecs
         .slice(0, 3)
         .map((r) => r.action)
         .join(' \u00b7 ') || 'Aguardando an\u00e1lise',
+    expandedItems: highPriorityRecs.map((r) => `${r.action}\n${r.reason}`),
   };
 
   const virals: SummaryCard = {
@@ -165,6 +231,12 @@ export const mapResultsToUI = (response: AnalysisResultsResponse): AnalysisResul
         .slice(0, 3)
         .map((v) => v.caption ?? v.creatorHandle ?? 'V\u00eddeo viral')
         .join(' \u00b7 ') || 'Nenhum viral encontrado',
+    expandedItems: viralContent.map((v) => {
+      const handle = v.creatorHandle ? `@${v.creatorHandle}` : '';
+      const views = v.engagementMetrics?.views ? `${formatLargeNumber(v.engagementMetrics.views)} views` : '';
+      const caption = v.caption ?? 'V\u00eddeo viral';
+      return [caption, handle, views].filter(Boolean).join(' \u2014 ');
+    }),
   };
 
   const scripts: SummaryCard = {
@@ -177,7 +249,13 @@ export const mapResultsToUI = (response: AnalysisResultsResponse): AnalysisResul
         .slice(0, 3)
         .map((s) => s.title)
         .join(' \u00b7 ') || 'Aguardando s\u00edntese',
+    expandedItems: synthesis?.creativeScripts.map(
+      (s) => `${s.title}\nGancho: ${s.hook.text}\nCorpo: ${s.body.text}\nCTA: ${s.cta.text}`
+    ),
   };
+
+  const overviewRaw = synthesis?.strategicOverview ?? '';
+  const parsed = parseStrategicOverview(overviewRaw);
 
   return {
     id: analysis.id,
@@ -187,10 +265,13 @@ export const mapResultsToUI = (response: AnalysisResultsResponse): AnalysisResul
     region: analysis.nicheInterpreted?.region ?? 'Brasil',
     timestamp,
     marketOverview: {
-      summary: synthesis?.strategicOverview ?? 'An\u00e1lise em processamento.',
-      competition: 'N/A',
-      trend: 'N/A',
-      strongChannels: 'N/A',
+      summary: parsed
+        ? parsed.sections.map((s) => s.summary).filter(Boolean).join(' ')
+        : overviewRaw || 'An\u00e1lise em processamento.',
+      competition: parsed?.competition ?? 'N/A',
+      trend: parsed?.trend ?? 'N/A',
+      strongChannels: parsed?.strongChannels ?? 'N/A',
+      sections: parsed?.sections,
     },
     competitors: competitors.filter((c) => c.role === 'competitor').map(mapCompetitorToUI),
     gaps,

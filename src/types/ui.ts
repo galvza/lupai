@@ -71,6 +71,16 @@ export interface UICompetitor {
   lessons?: string;
 }
 
+/** Seção parsed do strategic overview (quando Gemini retorna JSON) */
+export interface MarketSection {
+  key: string;
+  title: string;
+  summary: string;
+  tags?: string[];
+  detailedAnalysis?: string;
+  metrics?: Record<string, string | number>;
+}
+
 /** Card de gap/viral/roteiro */
 export interface SummaryCard {
   icon: string;
@@ -78,6 +88,7 @@ export interface SummaryCard {
   value: number;
   subtitle: string;
   preview: string;
+  expandedItems?: string[];
 }
 
 /** Recomendação (UI display shape) */
@@ -99,6 +110,7 @@ export interface AnalysisResult {
     competition: string;
     trend: string;
     strongChannels: string;
+    sections?: MarketSection[];
   };
   competitors: UICompetitor[];
   gaps: SummaryCard;

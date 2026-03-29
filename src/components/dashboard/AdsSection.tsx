@@ -23,16 +23,17 @@ export const AdsSection = ({ competitor }: { competitor: Competitor }) => {
               className="bg-light-card border border-light-border rounded-xl overflow-hidden"
             >
               {/* Thumbnail placeholder */}
-              <div className="bg-[#F0F0EC] h-32 flex items-center justify-center">
+              <div className="bg-[#F0F0EC] h-28 flex flex-col items-center justify-center gap-1">
                 {ad.format.toLowerCase().includes("vídeo") ? (
-                  <Play color="#999" size={24} strokeWidth={1.5} />
+                  <Play color="#bbb" size={20} strokeWidth={1.5} />
                 ) : (
-                  <Image color="#999" size={24} strokeWidth={1.5} />
+                  <Image color="#bbb" size={20} strokeWidth={1.5} />
                 )}
+                <span className="text-[10px] text-[#bbb]">Sem preview</span>
               </div>
               <div className="p-3">
-                <p className="text-[11px] text-[#333] leading-relaxed mb-2">
-                  {ad.copy}
+                <p className="text-[12px] text-[#333] leading-relaxed mb-2 font-medium">
+                  {ad.copy || "Sem texto disponível"}
                 </p>
                 <p className="text-[10px] text-[#999]">
                   {ad.format} · {ad.duration}
