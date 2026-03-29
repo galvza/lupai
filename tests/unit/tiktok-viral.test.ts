@@ -185,12 +185,11 @@ describe('tiktok-viral', () => {
     it('gera 3-5 hashtags com segmento como principal', () => {
       const hashtags = deriveHashtags('odontologia', 'estetica');
 
-      // Segment should be first (most specific)
-      expect(hashtags[0]).toBe('estetica');
-      expect(hashtags).toContain('odontologia');
-      expect(hashtags).toContain('esteticaodontologia');
-      expect(hashtags).toContain('odontologiaestetica');
-      expect(hashtags).toContain('esteticabrasil');
+      // Niche should be first (broader, more likely to have Reels)
+      expect(hashtags[0]).toBe('odontologia');
+      expect(hashtags).toContain('estetica');
+      expect(hashtags).toContain('odontologiabrasil');
+      expect(hashtags.length).toBeGreaterThanOrEqual(3);
       expect(hashtags.length).toBeLessThanOrEqual(5);
     });
 
