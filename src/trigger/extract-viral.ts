@@ -70,9 +70,18 @@ const downloadAndStoreVideo = async (
   index: number
 ): Promise<ViralContent | null> => {
   try {
-    const response = await fetch(candidate.videoUrl);
+    const response = await fetch(candidate.videoUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+    });
     if (!response.ok) {
       console.warn(`Aviso: download falhou para ${candidate.videoUrl}: ${response.status}`);
+      return null;
+    }
+
+    // Reject non-video responses (e.g. TikTok returning HTML page)
+    const contentType = response.headers.get('content-type') ?? '';
+    if (!contentType.startsWith('video/') && !contentType.startsWith('application/octet-stream')) {
+      console.warn(`Aviso: URL retornou Content-Type "${contentType}" (esperado video/*): ${candidate.videoUrl}`);
       return null;
     }
 
@@ -85,7 +94,7 @@ const downloadAndStoreVideo = async (
     return await createViralContent({
       analysisId,
       platform: candidate.platform,
-      sourceUrl: candidate.videoUrl,
+      sourceUrl: candidate.sourceWebUrl ?? candidate.videoUrl,
       engagementMetrics: candidate.engagement,
       bunnyUrl: cdnUrl,
       caption: candidate.caption,
@@ -109,9 +118,13 @@ const transcribeVideoSafe = async (
 ): Promise<{ text: string; durationSeconds: number | null } | null> => {
   try {
     const result = await transcribeVideo(bunnyUrl);
+    if (!result.text || result.text.trim().length === 0) {
+      console.warn(`Aviso: transcricao retornou texto vazio para ${bunnyUrl}`);
+      return null;
+    }
     return { text: result.text, durationSeconds: result.durationSeconds };
   } catch (error) {
-    console.warn(`Aviso: transcricao falhou: ${(error as Error).message}`);
+    console.warn(`Aviso: transcricao falhou para ${bunnyUrl}: ${(error as Error).message}`);
     return null;
   }
 };

@@ -171,6 +171,7 @@ const setupFullSuccess = () => {
   // fetch returns video buffer
   mockFetch.mockResolvedValue({
     ok: true,
+    headers: new Map([['content-type', 'video/mp4']]),
     arrayBuffer: () => Promise.resolve(new ArrayBuffer(1024)),
   });
 
@@ -278,6 +279,7 @@ describe('extractViral compound task', () => {
       }
       return {
         ok: true,
+        headers: new Map([['content-type', 'video/mp4']]),
         arrayBuffer: () => Promise.resolve(new ArrayBuffer(1024)),
       };
     });

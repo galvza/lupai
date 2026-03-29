@@ -28,17 +28,20 @@ describe('tiktok-viral', () => {
   });
 
   describe('mapTiktokItem', () => {
-    it('mapeia item valido do fixture para ViralVideoCandidate com campos corretos', () => {
+    it('mapeia item valido do fixture (sociavault format) para ViralVideoCandidate', () => {
       const item = tiktokFixture[0] as unknown as Record<string, unknown>;
       const result = mapTiktokItem(item);
 
       expect(result).not.toBeNull();
-      expect(result!.videoUrl).toBe('https://www.tiktok.com/@drdentes/video/001');
+      // videoUrl should be the no-watermark CDN download URL
+      expect(result!.videoUrl).toBe('https://v16m.tiktokcdn-us.com/video/001-no-wm.mp4');
+      expect(result!.sourceWebUrl).toBe('https://www.tiktok.com/@drdentes/video/7571929778882612488');
       expect(result!.caption).toBe(
         '3 erros que todo dentista comete no Instagram #dentista #odontologia'
       );
-      expect(result!.creatorHandle).toBe('drdentes');
+      expect(result!.creatorHandle).toBe('Dr. Dentes');
       expect(result!.platform).toBe('tiktok');
+      // Duration is ms in fixture (32000ms = 32s)
       expect(result!.durationSeconds).toBe(32);
       expect(result!.engagement.views).toBe(890000);
       expect(result!.engagement.likes).toBe(45200);
@@ -47,51 +50,72 @@ describe('tiktok-viral', () => {
       expect(result!.engagement.saves).toBe(5600);
     });
 
-    it('retorna null para item com duracao > 240s (fixture tt_viral_006 tem 350s)', () => {
+    it('retorna null para item com duracao > 240s (fixture item 6 tem 350000ms = 350s)', () => {
       const item = tiktokFixture[5] as unknown as Record<string, unknown>;
-      expect(item.id).toBe('tt_viral_006');
       const result = mapTiktokItem(item);
       expect(result).toBeNull();
     });
 
-    it('retorna null para item sem videoUrl e sem webVideoUrl', () => {
+    it('retorna null para item sem URLs de download (fixture item 3 tem null addr)', () => {
+      const item = tiktokFixture[2] as unknown as Record<string, unknown>;
+      const result = mapTiktokItem(item);
+      expect(result).toBeNull();
+    });
+
+    it('retorna null para item sem aweme_info', () => {
       const item = {
-        text: 'Teste sem URL',
-        createTimeISO: '2026-03-15T10:00:00Z',
-        webVideoUrl: null,
-        videoUrl: null,
-        diggCount: 100,
-        shareCount: 10,
-        playCount: 1000,
-        commentCount: 5,
-        collectCount: 20,
-        isAd: false,
-        authorMeta: { nickName: 'test' },
-        videoMeta: { duration: 30 },
+        some_field: 'test',
       } as unknown as Record<string, unknown>;
 
       const result = mapTiktokItem(item);
       expect(result).toBeNull();
     });
 
-    it('retorna null para items onde isAd e true (fixture tt_viral_007)', () => {
+    it('retorna null para items onde is_ads e true (fixture item 7)', () => {
       const item = tiktokFixture[6] as unknown as Record<string, unknown>;
-      expect(item.id).toBe('tt_viral_007');
-      expect(item.isAd).toBe(true);
+      const aweme = (item as { aweme_info: Record<string, unknown> }).aweme_info;
+      expect(aweme.is_ads).toBe(true);
       const result = mapTiktokItem(item);
       expect(result).toBeNull();
+    });
+
+    it('converte create_time unix para ISO string', () => {
+      const item = tiktokFixture[0] as unknown as Record<string, unknown>;
+      const result = mapTiktokItem(item);
+      expect(result!.postDate).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    });
+
+    it('usa play_addr como fallback quando download_no_watermark_addr e null', () => {
+      const item = {
+        aweme_info: {
+          aweme_id: 'test123',
+          desc: 'Test video',
+          create_time: 1742036400,
+          is_ads: false,
+          author: { unique_id: 'tester', nickname: 'Tester' },
+          video: {
+            duration: 30000,
+            download_no_watermark_addr: null,
+            play_addr: { url_list: ['https://cdn.example.com/play.mp4'] },
+          },
+          statistics: { play_count: 100, digg_count: 10, comment_count: 5, share_count: 2, collect_count: 1 },
+        },
+      } as unknown as Record<string, unknown>;
+
+      const result = mapTiktokItem(item);
+      expect(result).not.toBeNull();
+      expect(result!.videoUrl).toBe('https://cdn.example.com/play.mp4');
     });
   });
 
   describe('filterAndSortCandidates', () => {
-    it('filtra por ultimos 30 dias, ordena por views descendente, retorna top 5', () => {
-      // Map all valid items from fixture
+    it('ordena por views descendente e retorna top N', () => {
       const candidates = tiktokFixture
         .map((item) => mapTiktokItem(item as unknown as Record<string, unknown>))
         .filter((c): c is ViralVideoCandidate => c !== null);
 
-      // Should have 5 valid candidates (7 total - 1 duration > 240s - 1 isAd)
-      expect(candidates).toHaveLength(5);
+      // Should have 4 valid candidates (7 total - 1 duration > 240s - 1 isAd - 1 no URLs)
+      expect(candidates).toHaveLength(4);
 
       const sorted = filterAndSortCandidates(candidates, 5);
 
@@ -141,7 +165,7 @@ describe('tiktok-viral', () => {
   });
 
   describe('searchViralTiktok', () => {
-    it('chama ApifyClient com APIFY_ACTORS.viralTiktok e input de keyword search correto', async () => {
+    it('chama actor sociavault com query string e maxResults', async () => {
       mockCall.mockResolvedValue({ defaultDatasetId: 'ds-001' });
       mockListItems.mockResolvedValue({ items: tiktokFixture });
 
@@ -149,8 +173,8 @@ describe('tiktok-viral', () => {
 
       expect(mockCall).toHaveBeenCalledWith(
         expect.objectContaining({
-          searchQueries: expect.any(Array),
-          resultsPerPage: 3,
+          query: expect.any(String),
+          maxResults: 30,
         })
       );
     });
@@ -163,21 +187,11 @@ describe('tiktok-viral', () => {
       expect(result).toEqual([]);
     });
 
-    it('faz retry com keyword mais ampla quando busca primaria falha (fallback)', async () => {
-      // First call (primary keywords) fails
-      mockCall
-        .mockRejectedValueOnce(new Error('Actor failed'))
-        // Second call (broader) succeeds
-        .mockResolvedValueOnce({ defaultDatasetId: 'ds-003' });
-
-      mockListItems.mockResolvedValue({ items: tiktokFixture });
+    it('retorna array vazio quando actor lanca erro (sem propagacao)', async () => {
+      mockCall.mockRejectedValue(new Error('Actor failed'));
 
       const result = await searchViralTiktok('odontologia', 'estetica');
-
-      // Should have called the actor twice (primary + fallback)
-      expect(mockCall).toHaveBeenCalledTimes(2);
-      // Should still return results from the fallback
-      expect(result.length).toBeGreaterThan(0);
+      expect(result).toEqual([]);
     });
   });
 

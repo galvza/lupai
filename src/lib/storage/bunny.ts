@@ -10,7 +10,7 @@ export const uploadFile = async (
 ): Promise<string> => {
   const { storageApiKey, storageZoneName, cdnUrl } = getBunnyEnv();
   const response = await fetch(
-    `https://storage.bunnycdn.com/${storageZoneName}/${filePath}`,
+    `https://br.storage.bunnycdn.com/${storageZoneName}/${filePath}`,
     {
       method: 'PUT',
       headers: {
@@ -39,7 +39,7 @@ export const downloadFile = async (filePath: string): Promise<Buffer> => {
   const { storageApiKey, storageZoneName } = getBunnyEnv();
 
   const response = await fetch(
-    `https://storage.bunnycdn.com/${storageZoneName}/${filePath}`,
+    `https://br.storage.bunnycdn.com/${storageZoneName}/${filePath}`,
     {
       method: 'GET',
       headers: { AccessKey: storageApiKey },
@@ -63,7 +63,7 @@ export const deleteFile = async (filePath: string): Promise<void> => {
   const { storageApiKey, storageZoneName } = getBunnyEnv();
 
   const response = await fetch(
-    `https://storage.bunnycdn.com/${storageZoneName}/${filePath}`,
+    `https://br.storage.bunnycdn.com/${storageZoneName}/${filePath}`,
     {
       method: 'DELETE',
       headers: { AccessKey: storageApiKey },

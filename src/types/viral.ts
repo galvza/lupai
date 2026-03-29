@@ -52,6 +52,7 @@ export interface ViralContentInput {
 /** Candidato a video viral pre-download (output dos Apify actors filtrado) */
 export interface ViralVideoCandidate {
   videoUrl: string;
+  sourceWebUrl?: string;
   caption: string;
   creatorHandle: string;
   platform: ContentPlatform;

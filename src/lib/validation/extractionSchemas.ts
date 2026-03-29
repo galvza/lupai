@@ -157,6 +157,7 @@ export const engagementMetricsSchema = z.object({
 /** Schema para candidato a video viral (pre-download, per D-12, D-13) */
 export const viralVideoCandidateSchema = z.object({
   videoUrl: z.string().min(1),
+  sourceWebUrl: z.string().optional(),
   caption: z.string(),
   creatorHandle: z.string(),
   platform: z.enum(['tiktok', 'instagram', 'facebook']),
