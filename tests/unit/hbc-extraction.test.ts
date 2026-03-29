@@ -105,7 +105,7 @@ describe('hbc-extraction', () => {
 
     expect(mockGenerateContent).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-2.5-flash',
       })
     );
   });
