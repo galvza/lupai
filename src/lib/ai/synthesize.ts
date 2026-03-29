@@ -187,11 +187,25 @@ export const synthesizeAnalysis = async (input: {
     });
 
     const text = response.text ?? '';
-    const parsed = JSON.parse(text);
+    console.log(`[Synthesis DEBUG] Gemini raw response length: ${text.length}`);
+    console.log(`[Synthesis DEBUG] Gemini raw response (first 500 chars): ${text.slice(0, 500)}`);
 
-    return validateOrNull(synthesisOutputSchema, parsed);
+    const parsed = JSON.parse(text);
+    console.log(`[Synthesis DEBUG] JSON.parse succeeded. Keys: ${Object.keys(parsed).join(', ')}`);
+
+    const result = validateOrNull(synthesisOutputSchema, parsed);
+    if (!result) {
+      // Log the actual Zod validation error for diagnosis
+      const validation = synthesisOutputSchema.safeParse(parsed);
+      if (!validation.success) {
+        console.error(`[Synthesis DEBUG] Zod validation FAILED:`, JSON.stringify(validation.error.issues, null, 2));
+      }
+    }
+    return result;
   } catch (error) {
-    console.warn(`Aviso: falha na sintese estrategica: ${(error as Error).message}`);
+    console.error(`[Synthesis DEBUG] FULL ERROR:`, error);
+    console.error(`[Synthesis DEBUG] Error name: ${(error as Error).name}, message: ${(error as Error).message}`);
+    console.error(`[Synthesis DEBUG] Stack: ${(error as Error).stack}`);
     return null;
   }
 };
