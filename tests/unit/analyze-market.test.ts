@@ -125,8 +125,8 @@ const MOCK_SCORED = [
 ];
 
 const MOCK_SAVED_COMPETITORS = [
-  { id: 'comp-1', analysisId: 'analysis-123', name: 'Clinica A', websiteUrl: 'https://clinica-a.com', websiteData: null, seoData: null, socialData: null, metaAdsData: null, googleAdsData: null, gmbData: null, createdAt: '2026-01-01' },
-  { id: 'comp-2', analysisId: 'analysis-123', name: 'Clinica B', websiteUrl: 'https://clinica-b.com', websiteData: null, seoData: null, socialData: null, metaAdsData: null, googleAdsData: null, gmbData: null, createdAt: '2026-01-01' },
+  { id: 'comp-1', analysisId: 'analysis-123', name: 'Clinica A', websiteUrl: 'https://clinica-a.com', role: 'competitor' as const, websiteData: null, seoData: null, socialData: null, metaAdsData: null, googleAdsData: null, gmbData: null, createdAt: '2026-01-01' },
+  { id: 'comp-2', analysisId: 'analysis-123', name: 'Clinica B', websiteUrl: 'https://clinica-b.com', role: 'competitor' as const, websiteData: null, seoData: null, socialData: null, metaAdsData: null, googleAdsData: null, gmbData: null, createdAt: '2026-01-01' },
 ];
 
 /** Mock ExtractWebsiteResult com social links */
@@ -163,12 +163,6 @@ const setupHappyPath = () => {
   });
 
   mockScoreCompetitors.mockResolvedValue(MOCK_SCORED);
-
-  mockWait.createToken.mockResolvedValue({ id: 'token-abc' });
-  mockWait.forToken.mockResolvedValue({
-    ok: true,
-    output: { competitors: MOCK_SCORED },
-  });
 
   mockCreateCompetitor
     .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
@@ -233,12 +227,14 @@ describe('analyzeMarket orchestrator', () => {
     expect(filterCallOrder).toBeLessThan(dedupeCallOrder);
   });
 
-  it('deve pausar para confirmacao com wait.forToken', async () => {
+  it('deve auto-confirmar concorrentes sem waitpoint', async () => {
     setupHappyPath();
     await getOrchestratorRun()(MOCK_PAYLOAD);
 
-    expect(mockWait.createToken).toHaveBeenCalledWith({ timeout: '1h' });
-    expect(mockWait.forToken).toHaveBeenCalledWith('token-abc');
+    // Auto-confirm: no waitpoint calls, competitors saved directly
+    expect(mockWait.createToken).not.toHaveBeenCalled();
+    expect(mockWait.forToken).not.toHaveBeenCalled();
+    expect(mockCreateCompetitor).toHaveBeenCalledTimes(2);
   });
 
   it('deve persistir concorrentes confirmados no Supabase', async () => {
@@ -317,11 +313,6 @@ describe('analyzeMarket orchestrator', () => {
     });
 
     mockScoreCompetitors.mockResolvedValue(MOCK_SCORED);
-    mockWait.createToken.mockResolvedValue({ id: 'token-xyz' });
-    mockWait.forToken.mockResolvedValue({
-      ok: true,
-      output: { competitors: MOCK_SCORED },
-    });
 
     mockCreateCompetitor
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
@@ -363,27 +354,8 @@ describe('analyzeMarket orchestrator', () => {
       ],
     });
 
-    // Gemini scoring fails
+    // Gemini scoring fails — pipeline uses inline fallback (no waitpoint)
     mockScoreCompetitors.mockRejectedValue(new Error('Gemini API error'));
-
-    // Fallback will create candidates with score 50
-    mockWait.createToken.mockResolvedValue({ id: 'token-fallback' });
-    mockWait.forToken.mockResolvedValue({
-      ok: true,
-      output: {
-        competitors: MOCK_CANDIDATES.map((c) => ({
-          ...c,
-          score: 50,
-          segmentMatch: 0,
-          productMatch: 0,
-          sizeMatch: 0,
-          regionMatch: 0,
-          digitalPresence: 0,
-          reasoning: 'Scoring automatico indisponivel. Candidato selecionado por relevancia de fonte.',
-          socialProfiles: { instagram: null, tiktok: null, facebook: null },
-        })),
-      },
-    });
 
     mockCreateCompetitor
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
@@ -417,26 +389,24 @@ describe('analyzeMarket orchestrator', () => {
     setupHappyPath();
     await getOrchestratorRun()(MOCK_PAYLOAD);
 
-    const metadataCalls = mockMetadata.set.mock.calls.map(([key]: [string]) => key);
+    const metadataCalls = mockMetadata.set.mock.calls.map(([key]: string[]) => key);
     expect(metadataCalls).toContain('status');
     expect(metadataCalls).toContain('step');
     expect(metadataCalls).toContain('progress');
     expect(metadataCalls).toContain('candidates');
-    expect(metadataCalls).toContain('confirmationTokenId');
     expect(metadataCalls).toContain('subTasks');
     expect(metadataCalls).toContain('extractionSummary');
 
-    // Verify specific status transitions
+    // Verify specific status transitions (no waiting_confirmation in auto-confirm flow)
     const statusCalls = mockMetadata.set.mock.calls
-      .filter(([key]: [string]) => key === 'status')
-      .map(([, value]: [string, string]) => value);
+      .filter(([key]: string[]) => key === 'status')
+      .map(([, value]: string[]) => value);
     expect(statusCalls).toContain('discovering');
-    expect(statusCalls).toContain('waiting_confirmation');
     expect(statusCalls).toContain('extracting');
     expect(statusCalls).toContain('completed');
   });
 
-  it('deve falhar graciosamente se confirmacao expirar', async () => {
+  it('deve falhar se nenhum concorrente qualificado for encontrado', async () => {
     mockUpdateAnalysis.mockResolvedValue({} as ReturnType<typeof updateAnalysis> extends Promise<infer T> ? T : never);
 
     mockBatch.triggerByTaskAndWait.mockResolvedValueOnce({
@@ -448,12 +418,11 @@ describe('analyzeMarket orchestrator', () => {
       ],
     });
 
-    mockScoreCompetitors.mockResolvedValue(MOCK_SCORED);
-    mockWait.createToken.mockResolvedValue({ id: 'token-expired' });
-    mockWait.forToken.mockResolvedValue({ ok: false });
+    // Scoring returns empty (no qualified competitors)
+    mockScoreCompetitors.mockResolvedValue([]);
 
     await expect(getOrchestratorRun()(MOCK_PAYLOAD)).rejects.toThrow(
-      'Confirmacao expirou. Inicie uma nova analise.'
+      'Nenhum concorrente qualificado encontrado para este nicho.'
     );
   });
 
@@ -582,11 +551,6 @@ describe('3-batch extraction pattern', () => {
     });
 
     mockScoreCompetitors.mockResolvedValue(MOCK_SCORED);
-    mockWait.createToken.mockResolvedValue({ id: 'token-fail' });
-    mockWait.forToken.mockResolvedValue({
-      ok: true,
-      output: { competitors: MOCK_SCORED },
-    });
 
     mockCreateCompetitor
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
@@ -642,11 +606,6 @@ describe('3-batch extraction pattern', () => {
     });
 
     mockScoreCompetitors.mockResolvedValue(MOCK_SCORED);
-    mockWait.createToken.mockResolvedValue({ id: 'token-search-fail' });
-    mockWait.forToken.mockResolvedValue({
-      ok: true,
-      output: { competitors: MOCK_SCORED },
-    });
 
     mockCreateCompetitor
       .mockResolvedValueOnce(MOCK_SAVED_COMPETITORS[0])
