@@ -30,7 +30,7 @@ export const extractHookBodyCta = async (
       : '';
 
     const response = await genai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents: `${HBC_EXTRACTION_PROMPT}${durationContext}\n\nTranscricao:\n"${transcription}"`,
       config: {
         responseMimeType: 'application/json',

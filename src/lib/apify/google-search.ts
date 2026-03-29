@@ -23,8 +23,8 @@ export const scrapeGoogleSearch = async (
 
   try {
     const run = await client.actor(ACTOR_ID).call({
-      queries,
-      countryCode,
+      queries: queries.join('\n'),
+      countryCode: countryCode.toLowerCase(),
       languageCode: 'pt-BR',
       maxPagesPerQuery: 1,
       resultsPerPage: 10,

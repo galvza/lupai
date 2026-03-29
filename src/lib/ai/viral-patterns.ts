@@ -41,7 +41,7 @@ export const detectViralPatterns = async (
       .join('\n\n');
 
     const response = await genai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents: `${VIRAL_PATTERNS_PROMPT}\n\nTotal de videos: ${inputs.length}\n\n${transcriptionsContext}`,
       config: {
         responseMimeType: 'application/json',

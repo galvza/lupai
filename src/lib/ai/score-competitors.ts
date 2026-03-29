@@ -49,7 +49,7 @@ export const scoreCompetitorsWithAI = async (
     const contents = buildPromptContents(niche, segment, region, candidateList);
 
     const response = await genai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents,
       config: {
         responseMimeType: 'application/json',
