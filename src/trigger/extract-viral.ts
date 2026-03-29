@@ -248,10 +248,12 @@ export const extractViral = task({
 
       updateProgress({ discover: 'completed' });
 
-      // === Stage 2: Filter — combine and take top 5 by engagement ===
+      // === Stage 2: Filter — combine with platform diversity, top 5 by engagement ===
+      // Take top 3 from each platform so both are represented in the final 5
       updateProgress({ filter: 'running' });
-      const combined = [...ttCandidates, ...igCandidates];
-      const candidates = filterAndSortCandidates(combined, 5);
+      const ttTop = ttCandidates.slice(0, 3);
+      const igTop = igCandidates.slice(0, 3);
+      const candidates = filterAndSortCandidates([...ttTop, ...igTop], 5);
 
       if (candidates.length === 0) {
         updateProgress({ filter: 'completed' });

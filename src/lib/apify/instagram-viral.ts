@@ -23,6 +23,7 @@ export const mapInstagramItem = (item: Record<string, unknown>): ViralVideoCandi
 
   return {
     videoUrl,
+    sourceWebUrl: (item.url as string) ?? undefined,
     caption: (item.caption as string) ?? '',
     creatorHandle: (item.ownerUsername as string) ?? 'unknown',
     platform: 'instagram' as ContentPlatform,
@@ -62,7 +63,7 @@ export const searchViralInstagram = async (
     const run = await client.actor(APIFY_ACTORS.viralInstagram).call({
       hashtags,
       resultsType: 'reels',
-      resultsLimit: 3,
+      resultsLimit: 20,
     });
 
     const { items } = await client.dataset(run.defaultDatasetId).listItems();
