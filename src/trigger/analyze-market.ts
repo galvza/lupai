@@ -268,6 +268,17 @@ export const analyzeMarket = task({
       metadata.set('progress', 75);
 
       const websiteRuns = batch1Runs.slice(0, savedCompetitors.length);
+      const viralRun = batch1Runs[savedCompetitors.length]; // extract-viral is the last item in batch1Items
+
+      if (viralRun) {
+        if (viralRun.ok) {
+          const viralResult = viralRun.output as { status: string; data: { viralContent: unknown[]; patterns: unknown } };
+          console.log(`[Viral] Extração concluída: ${viralResult.data.viralContent.length} vídeos, status=${viralResult.status}`);
+        } else {
+          console.warn(`[Viral] Extração falhou: ${String(viralRun.error)}`);
+        }
+      }
+
       const socialProfilesPerCompetitor: Array<{ instagram: SocialProfileInput | null; tiktok: SocialProfileInput | null }> = [];
 
       for (let i = 0; i < savedCompetitors.length; i++) {

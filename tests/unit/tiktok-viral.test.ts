@@ -16,6 +16,7 @@ import {
   mapTiktokItem,
   calculateEngagementRate,
   deriveHashtags,
+  deriveKeywords,
   filterAndSortCandidates,
   searchViralTiktok,
 } from '@/lib/apify/tiktok-viral';
@@ -83,7 +84,7 @@ describe('tiktok-viral', () => {
   });
 
   describe('filterAndSortCandidates', () => {
-    it('filtra por ultimos 30 dias, ordena por engajamento descendente, retorna top 5', () => {
+    it('filtra por ultimos 30 dias, ordena por views descendente, retorna top 5', () => {
       // Map all valid items from fixture
       const candidates = tiktokFixture
         .map((item) => mapTiktokItem(item as unknown as Record<string, unknown>))
@@ -94,15 +95,18 @@ describe('tiktok-viral', () => {
 
       const sorted = filterAndSortCandidates(candidates, 5);
 
-      // Verify sorted by engagement rate descending
+      // Verify sorted by views descending (primary sort)
       for (let i = 1; i < sorted.length; i++) {
-        const prevRate = calculateEngagementRate(sorted[i - 1].engagement);
-        const currRate = calculateEngagementRate(sorted[i].engagement);
-        expect(prevRate).toBeGreaterThanOrEqual(currRate);
+        const prevViews = sorted[i - 1].engagement.views ?? 0;
+        const currViews = sorted[i].engagement.views ?? 0;
+        expect(prevViews).toBeGreaterThanOrEqual(currViews);
       }
 
       // Verify max 5 results
       expect(sorted.length).toBeLessThanOrEqual(5);
+
+      // Top result should be the most viewed
+      expect(sorted[0].engagement.views).toBe(2100000);
     });
   });
 
@@ -137,7 +141,7 @@ describe('tiktok-viral', () => {
   });
 
   describe('searchViralTiktok', () => {
-    it('chama ApifyClient com APIFY_ACTORS.viralTiktok e input de hashtag correto', async () => {
+    it('chama ApifyClient com APIFY_ACTORS.viralTiktok e input de keyword search correto', async () => {
       mockCall.mockResolvedValue({ defaultDatasetId: 'ds-001' });
       mockListItems.mockResolvedValue({ items: tiktokFixture });
 
@@ -145,7 +149,7 @@ describe('tiktok-viral', () => {
 
       expect(mockCall).toHaveBeenCalledWith(
         expect.objectContaining({
-          hashtags: expect.any(Array),
+          searchQueries: expect.any(Array),
           resultsPerPage: 20,
         })
       );
@@ -159,8 +163,8 @@ describe('tiktok-viral', () => {
       expect(result).toEqual([]);
     });
 
-    it('faz retry com hashtag mais ampla quando busca primaria falha (D-40 fallback)', async () => {
-      // First call (primary hashtags) fails
+    it('faz retry com keyword mais ampla quando busca primaria falha (fallback)', async () => {
+      // First call (primary keywords) fails
       mockCall
         .mockRejectedValueOnce(new Error('Actor failed'))
         // Second call (broader) succeeds
@@ -178,12 +182,16 @@ describe('tiktok-viral', () => {
   });
 
   describe('deriveHashtags', () => {
-    it('gera multiplas variantes de hashtag a partir de nicho + segmento', () => {
+    it('gera 3-5 hashtags com segmento como principal', () => {
       const hashtags = deriveHashtags('odontologia', 'estetica');
 
+      // Segment should be first (most specific)
+      expect(hashtags[0]).toBe('estetica');
       expect(hashtags).toContain('odontologia');
+      expect(hashtags).toContain('esteticaodontologia');
       expect(hashtags).toContain('odontologiaestetica');
-      expect(hashtags.length).toBeGreaterThanOrEqual(2);
+      expect(hashtags).toContain('esteticabrasil');
+      expect(hashtags.length).toBeLessThanOrEqual(5);
     });
 
     it('remove espacos e converte para lowercase', () => {
@@ -199,6 +207,23 @@ describe('tiktok-viral', () => {
       const hashtags = deriveHashtags('dentista', 'dentista');
       // Should deduplicate
       expect(new Set(hashtags).size).toBe(hashtags.length);
+    });
+  });
+
+  describe('deriveKeywords', () => {
+    it('gera keywords com segmento como principal', () => {
+      const keywords = deriveKeywords('academia', 'crossfit');
+
+      expect(keywords[0]).toBe('crossfit');
+      expect(keywords).toContain('crossfit academia');
+      expect(keywords).toContain('academia');
+      expect(keywords.length).toBeLessThanOrEqual(3);
+    });
+
+    it('nao duplica quando nicho e segmento sao iguais', () => {
+      const keywords = deriveKeywords('crossfit', 'crossfit');
+      expect(new Set(keywords).size).toBe(keywords.length);
+      expect(keywords).toContain('crossfit');
     });
   });
 });
