@@ -56,28 +56,34 @@ export const deriveHashtags = (niche: string, segment: string): string[] => {
   const clean = (s: string) => s.toLowerCase().trim().replace(/\s+/g, '');
   const nicheWord = clean(niche);
   const segmentWord = clean(segment);
+  // Extract first word of niche for shorter/broader hashtag
+  const nicheFirstWord = niche.toLowerCase().trim().split(/\s+/)[0] ?? '';
 
   const hashtags: string[] = [];
 
-  // Segment is the primary hashtag (most specific)
-  if (segmentWord) {
-    hashtags.push(segmentWord);
-  }
-
-  // Niche alone
-  if (nicheWord && nicheWord !== segmentWord) {
+  // Niche alone (broader, more likely to have Reels)
+  if (nicheWord) {
     hashtags.push(nicheWord);
   }
 
-  // Combined variations
-  if (nicheWord && segmentWord && nicheWord !== segmentWord) {
-    hashtags.push(`${segmentWord}${nicheWord}`);
-    hashtags.push(`${nicheWord}${segmentWord}`);
+  // First word of niche (even broader — e.g. "suplementos" from "suplementos esportivos")
+  if (nicheFirstWord && nicheFirstWord !== nicheWord) {
+    hashtags.push(nicheFirstWord);
   }
 
-  // Segment + brasil for local reach
-  if (segmentWord) {
-    hashtags.push(`${segmentWord}brasil`);
+  // Segment (most specific)
+  if (segmentWord && segmentWord !== nicheWord) {
+    hashtags.push(segmentWord);
+  }
+
+  // Niche + brasil for local reach
+  if (nicheWord) {
+    hashtags.push(`${nicheWord}brasil`);
+  }
+
+  // Niche + dicas (tips — high Reels density)
+  if (nicheFirstWord) {
+    hashtags.push(`${nicheFirstWord}dicas`);
   }
 
   return [...new Set(hashtags)].slice(0, 5);
@@ -120,24 +126,17 @@ export const mapTiktokItem = (item: Record<string, unknown>): ViralVideoCandidat
 };
 
 /**
- * Filtra candidatos por data (ultimos 30 dias), ordena por engajamento, retorna top N.
+ * Ordena candidatos por engajamento e retorna top N.
+ * Sem filtro de data — videos virais antigos ainda sao valiosos para analise de padroes.
  * @param candidates - Array de candidatos a video viral
  * @param maxResults - Numero maximo de resultados (default: 5)
- * @returns Array filtrado e ordenado de ViralVideoCandidate
+ * @returns Array ordenado de ViralVideoCandidate
  */
 export const filterAndSortCandidates = (
   candidates: ViralVideoCandidate[],
   maxResults: number = 5
 ): ViralVideoCandidate[] => {
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
   return candidates
-    .filter((c) => {
-      if (!c.postDate) return true; // Keep if no date available
-      const postDate = new Date(c.postDate);
-      return postDate >= thirtyDaysAgo;
-    })
     .sort((a, b) => {
       // Primary sort: by views (most viral first)
       const aViews = a.engagement.views ?? 0;
