@@ -28,7 +28,7 @@ A frustração é real: o trabalho é repetitivo, manual, e boa parte dele é co
 
 ## A solução
 
-O LupAI automatiza esse processo inteiro. O usuário digita uma frase simples — "barbearia premium em São Paulo" — e em ~5 minutos recebe:
+O LupAI automatiza esse processo inteiro. O usuário digita uma frase simples — "barbearia premium em São Paulo" — e em ~15 minutos recebe:
 
 - **3-4 concorrentes mapeados** com dados de site, SEO, redes sociais e anúncios
 - **5 vídeos virais do nicho** baixados, transcritos e analisados (padrões de gancho, corpo e CTA)
@@ -93,7 +93,7 @@ Com todos os dados coletados, a IA gera:
 
 | Antes | Depois |
 |-------|--------|
-| 15-20 horas de pesquisa manual | ~5-8 minutos de análise automatizada |
+| 15-20 horas de pesquisa manual | ~15 minutos de análise automatizada |
 | Dados fragmentados em abas do navegador | Dashboard unificado com tudo consolidado |
 | Recomendações genéricas ("melhore seu SEO") | Recomendações específicas ("seu concorrente X ranqueia pra 'barba degradê' e você não tem conteúdo sobre isso") |
 | Roteiros de vídeo do zero | Roteiros baseados em padrões virais reais do nicho |
@@ -105,7 +105,7 @@ Com todos os dados coletados, a IA gera:
 
 ### Por que Trigger.dev e não executar tudo na API?
 
-O pipeline completo leva ~5-8 minutos — envolve 9+ chamadas a APIs de scraping, transcrição de áudio e múltiplas chamadas à IA. Serverless functions têm timeout de 10-60 segundos. O Trigger.dev permite jobs de longa duração com progresso em tempo real e retry automático. As etapas rodam sequencialmente para respeitar o limite de memória concorrente da Apify (32 GB no plano Starter).
+O pipeline completo leva ~15 minutos — envolve 9+ chamadas a APIs de scraping, transcrição de áudio e múltiplas chamadas à IA. Serverless functions têm timeout de 10-60 segundos. O Trigger.dev permite jobs de longa duração com progresso em tempo real e retry automático. As etapas rodam sequencialmente para respeitar o limite de memória concorrente da Apify (32 GB no plano Starter).
 
 ### Por que Bunny CDN pra hospedar os vídeos?
 
@@ -172,7 +172,7 @@ npm run dev
 npx trigger.dev@latest dev
 ```
 
-Acesse `http://localhost:3000`, digite um nicho e aguarde ~5-8 minutos.
+Acesse `http://localhost:3000`, digite um nicho e aguarde ~15 minutos.
 
 ### Deploy em produção
 
