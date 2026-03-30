@@ -1,4 +1,4 @@
-import { task, metadata, batch } from '@trigger.dev/sdk';
+import { task, metadata } from '@trigger.dev/sdk';
 
 import { discoverFromGoogleSearch, discoverFromGoogleMaps, discoverFromFacebookAds, discoverFromSimilarWeb } from './discover-competitors';
 import { extractWebsite } from './extract-website';
@@ -36,7 +36,7 @@ interface ConfirmedCompetitors {
  */
 export const analyzeMarket = task({
   id: 'analyze-market',
-  maxDuration: 300,
+  maxDuration: 900,
   run: async (payload: AnalyzeMarketPayload) => {
     const emptySocialLinks: SocialLinks = { instagram: null, tiktok: null, facebook: null, youtube: null, linkedin: null, twitter: null };
 
@@ -102,28 +102,20 @@ export const analyzeMarket = task({
               { instagram: null, tiktok: null, facebook: null }
             );
 
-            // User Batch B: social + ads (per D-03, D-13)
-            await batch.triggerByTaskAndWait([
-              {
-                task: extractSocial,
-                payload: {
-                  analysisId: payload.analysisId,
-                  competitorId: userBusiness.id,
-                  competitorName: userBusiness.name,
-                  socialProfiles: merged,
-                },
-              },
-              {
-                task: extractAds,
-                payload: {
-                  analysisId: payload.analysisId,
-                  competitorId: userBusiness.id,
-                  competitorName: userBusiness.name,
-                  websiteUrl: payload.userBusinessUrl,
-                  region: payload.region,
-                },
-              },
-            ]);
+            // User social + ads sequencial (Apify memory limit)
+            await extractSocial.triggerAndWait({
+              analysisId: payload.analysisId,
+              competitorId: userBusiness.id,
+              competitorName: userBusiness.name,
+              socialProfiles: merged,
+            });
+            await extractAds.triggerAndWait({
+              analysisId: payload.analysisId,
+              competitorId: userBusiness.id,
+              competitorName: userBusiness.name,
+              websiteUrl: payload.userBusinessUrl,
+              region: payload.region,
+            });
           } else {
             // Website extraction failed but we still continue per D-29
             console.warn('Aviso: extracao do site do usuario falhou. Continuando com pipeline de concorrentes.');
@@ -140,17 +132,24 @@ export const analyzeMarket = task({
         }
       }
 
-      // Step 2: Fan-out discovery via batch
-      const { runs: discoveryRuns } = await batch.triggerByTaskAndWait([
-        { task: discoverFromGoogleSearch, payload: { niche: payload.niche, segment: payload.segment, region: payload.region } },
-        { task: discoverFromGoogleMaps, payload: { niche: payload.niche, segment: payload.segment, region: payload.region } },
-        { task: discoverFromFacebookAds, payload: { niche: payload.niche, segment: payload.segment, region: payload.region } },
-        { task: discoverFromSimilarWeb, payload: { niche: payload.niche, segment: payload.segment, region: payload.region, seedUrl: payload.userBusinessUrl ?? undefined } },
-      ]);
+      // Step 2: Discovery sequencial (Apify memory limit — 1 actor por vez)
+      const discoveryPayload = { niche: payload.niche, segment: payload.segment, region: payload.region };
+      const discoveryTasks = [
+        { task: discoverFromGoogleSearch, payload: discoveryPayload },
+        { task: discoverFromGoogleMaps, payload: discoveryPayload },
+        { task: discoverFromFacebookAds, payload: discoveryPayload },
+        { task: discoverFromSimilarWeb, payload: { ...discoveryPayload, seedUrl: payload.userBusinessUrl ?? undefined } },
+      ] as const;
+
+      const discoveryRuns: Array<{ ok: boolean; output?: RawCompetitorCandidate[] }> = [];
+      for (const item of discoveryTasks) {
+        const result = await item.task.triggerAndWait(item.payload);
+        discoveryRuns.push({ ok: result.ok, output: result.ok ? result.output as RawCompetitorCandidate[] : undefined });
+      }
 
       // Step 3: Collect successful results (D-29)
       const allCandidates: RawCompetitorCandidate[] = discoveryRuns
-        .filter((r) => r.ok)
+        .filter((r) => r.ok && r.output)
         .flatMap((r) => r.output as RawCompetitorCandidate[]);
 
       const failedSources = discoveryRuns.filter((r) => !r.ok).length;
@@ -238,18 +237,21 @@ export const analyzeMarket = task({
       });
       metadata.set('subTasks', subTaskProgress);
 
-      const batch1Items = savedCompetitors.map((comp) => ({
-        task: extractWebsite,
-        payload: { analysisId: payload.analysisId, competitorId: comp.id, competitorName: comp.name, websiteUrl: comp.websiteUrl ?? '' },
-      }));
+      // Website extraction sequencial (Apify memory limit — 1 competitor por vez)
+      const websiteRuns: Array<{ ok: boolean; output?: ExtractWebsiteResult }> = [];
+      for (const comp of savedCompetitors) {
+        const result = await extractWebsite.triggerAndWait({
+          analysisId: payload.analysisId,
+          competitorId: comp.id,
+          competitorName: comp.name,
+          websiteUrl: comp.websiteUrl ?? '',
+        });
+        websiteRuns.push({ ok: result.ok, output: result.ok ? result.output as ExtractWebsiteResult : undefined });
+      }
 
-      const { runs: batch1Runs } = await batch.triggerByTaskAndWait(batch1Items);
-
-      // Step 10b: Collect social links from Batch 1 and merge with AI hints
+      // Step 10b: Collect social links and merge with AI hints
       metadata.set('step', 'Descobrindo perfis sociais...');
       metadata.set('progress', 75);
-
-      const websiteRuns = batch1Runs;
 
       const socialProfilesPerCompetitor: Array<{ instagram: SocialProfileInput | null; tiktok: SocialProfileInput | null }> = [];
 
@@ -300,42 +302,29 @@ export const analyzeMarket = task({
       });
       metadata.set('subTasks', subTaskProgress);
 
-      const batch2Items = [
-        ...savedCompetitors.map((comp, i) => ({
-          task: extractSocial,
-          payload: {
-            analysisId: payload.analysisId,
-            competitorId: comp.id,
-            competitorName: comp.name,
-            socialProfiles: socialProfilesPerCompetitor[i],
-          },
-        })),
-        ...savedCompetitors.map((comp) => ({
-          task: extractAds,
-          payload: {
-            analysisId: payload.analysisId,
-            competitorId: comp.id,
-            competitorName: comp.name,
-            websiteUrl: comp.websiteUrl ?? '',
-            region: payload.region,
-          },
-        })),
-      ];
+      // Social + Ads extraction sequencial (Apify memory limit — 1 competitor por vez)
+      for (let i = 0; i < savedCompetitors.length; i++) {
+        const comp = savedCompetitors[i];
 
-      const { runs: batch2Runs } = await batch.triggerByTaskAndWait(batch2Items);
+        const socialResult = await extractSocial.triggerAndWait({
+          analysisId: payload.analysisId,
+          competitorId: comp.id,
+          competitorName: comp.name,
+          socialProfiles: socialProfilesPerCompetitor[i],
+        });
+        subTaskProgress[comp.name].social = socialResult.ok ? 'completed' : 'failed';
 
-      // Update sub-task status from batch 2
-      const socialRuns = batch2Runs.slice(0, savedCompetitors.length);
-      socialRuns.forEach((run, i) => {
-        subTaskProgress[savedCompetitors[i].name].social = run.ok ? 'completed' : 'failed';
-      });
-      const adsRuns = batch2Runs.slice(savedCompetitors.length);
-      adsRuns.forEach((run, i) => {
-        if (i < savedCompetitors.length) {
-          subTaskProgress[savedCompetitors[i].name].ads = run.ok ? 'completed' : 'failed';
-        }
-      });
-      metadata.set('subTasks', subTaskProgress);
+        const adsResult = await extractAds.triggerAndWait({
+          analysisId: payload.analysisId,
+          competitorId: comp.id,
+          competitorName: comp.name,
+          websiteUrl: comp.websiteUrl ?? '',
+          region: payload.region,
+        });
+        subTaskProgress[comp.name].ads = adsResult.ok ? 'completed' : 'failed';
+
+        metadata.set('subTasks', subTaskProgress);
+      }
 
       // Step 10d: Batch 3 — Viral extraction (runs alone after competitors free Apify memory)
       metadata.set('step', 'Buscando conteudo viral do nicho...');
@@ -356,14 +345,15 @@ export const analyzeMarket = task({
         console.warn(`[Viral] Extração falhou: ${String(viralRun.error)}`);
       }
 
-      // Step 11: Summarize results from all batches
-      const allRuns = [...batch1Runs, ...batch2Runs, viralRun];
-      const successCount = allRuns.filter((r) => r.ok).length;
-      const failCount = allRuns.filter((r) => !r.ok).length;
+      // Step 11: Summarize results from sequential runs
+      const extractionRunCount = websiteRuns.length + (savedCompetitors.length * 2) + 1; // website + social + ads + viral
+      const websiteSuccess = websiteRuns.filter((r) => r.ok).length;
+      const successCount = websiteSuccess + (viralRun.ok ? 1 : 0);
+      const failCount = extractionRunCount - successCount;
 
       metadata.set('step', 'Extracao concluida. Gerando sintese e recomendacoes...');
       metadata.set('progress', 90);
-      metadata.set('extractionSummary', { success: successCount, failed: failCount, total: allRuns.length });
+      metadata.set('extractionSummary', { success: successCount, failed: failCount, total: extractionRunCount });
 
       // Step 12: AI Synthesis & Creative Modeling (per D-25, D-26)
       let synthesisStatus = 'skipped';

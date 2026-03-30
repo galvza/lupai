@@ -59,7 +59,7 @@ O usuário descreve o nicho em linguagem natural. A IA interpreta e extrai: nich
 
 ### 2. Descoberta de concorrentes
 
-Quatro fontes são consultadas em paralelo:
+Quatro fontes são consultadas sequencialmente (para respeitar o limite de memória da Apify no plano Starter):
 - **Google Search** — resultados orgânicos do nicho + região
 - **Google Maps** — negócios locais com avaliações
 - **Biblioteca de Anúncios Meta** — quem está anunciando no nicho
@@ -69,7 +69,7 @@ Dos 20-30 candidatos encontrados, a IA seleciona os 3-4 mais relevantes usando c
 
 ### 3. Extração profunda
 
-Para cada concorrente, o sistema extrai em paralelo:
+Para cada concorrente, o sistema extrai sequencialmente:
 - **Site:** conteúdo, posicionamento, estrutura, palavras-chave
 - **Redes sociais:** seguidores, engajamento, frequência de posts (Instagram + TikTok)
 - **Anúncios:** campanhas ativas na Meta Ads Library e Google Ads
@@ -93,7 +93,7 @@ Com todos os dados coletados, a IA gera:
 
 | Antes | Depois |
 |-------|--------|
-| 15-20 horas de pesquisa manual | ~5 minutos de análise automatizada |
+| 15-20 horas de pesquisa manual | ~5-8 minutos de análise automatizada |
 | Dados fragmentados em abas do navegador | Dashboard unificado com tudo consolidado |
 | Recomendações genéricas ("melhore seu SEO") | Recomendações específicas ("seu concorrente X ranqueia pra 'barba degradê' e você não tem conteúdo sobre isso") |
 | Roteiros de vídeo do zero | Roteiros baseados em padrões virais reais do nicho |
@@ -105,7 +105,7 @@ Com todos os dados coletados, a IA gera:
 
 ### Por que Trigger.dev e não executar tudo na API?
 
-O pipeline completo leva ~5 minutos — envolve 9 chamadas a APIs de scraping, transcrição de áudio e múltiplas chamadas à IA. Serverless functions têm timeout de 10-60 segundos. O Trigger.dev permite jobs de longa duração com progresso em tempo real, retry automático e paralelização de etapas.
+O pipeline completo leva ~5-8 minutos — envolve 9+ chamadas a APIs de scraping, transcrição de áudio e múltiplas chamadas à IA. Serverless functions têm timeout de 10-60 segundos. O Trigger.dev permite jobs de longa duração com progresso em tempo real e retry automático. As etapas rodam sequencialmente para respeitar o limite de memória concorrente da Apify (32 GB no plano Starter).
 
 ### Por que Bunny CDN pra hospedar os vídeos?
 
@@ -172,7 +172,30 @@ npm run dev
 npx trigger.dev@latest dev
 ```
 
-Acesse `http://localhost:3000`, digite um nicho e aguarde ~5 minutos.
+Acesse `http://localhost:3000`, digite um nicho e aguarde ~5-8 minutos.
+
+### Deploy em produção
+
+O LupAI roda em produção em **https://lupai.gsdigitais.com**.
+
+| Serviço | Papel |
+|---------|-------|
+| **Vercel** | Hospeda o Next.js (frontend + API Routes) |
+| **Trigger.dev Cloud** | Executa os jobs de extração e síntese |
+| **Supabase** | Banco de dados PostgreSQL |
+| **Bunny CDN** | Storage de vídeos virais |
+
+Para deployar:
+
+```bash
+# Deploy do Trigger.dev (jobs + env vars sincronizadas do .env.local)
+npx trigger.dev@4.4.3 deploy --env prod
+
+# Deploy da Vercel (frontend + API)
+npx vercel --prod
+```
+
+> **Nota:** O `trigger.config.ts` usa a extensão `syncEnvVars` para sincronizar automaticamente as variáveis de ambiente do `.env.local` para o Trigger.dev Cloud a cada deploy. A extensão `additionalPackages` instala o `proxy-agent` (dependência transitiva do `apify-client` que o bundler não inclui automaticamente).
 
 ### Testes
 

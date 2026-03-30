@@ -231,10 +231,14 @@ export const extractViral = task({
       // === Stage 1: Discover (per D-36 step 1) ===
       updateProgress({ discover: 'running' });
 
-      const [ttResult, igResult] = await Promise.allSettled([
-        searchViralTiktok(niche, segment, viralHashtags),
-        searchViralInstagram(niche, segment, viralHashtags),
-      ]);
+      // Sequencial para respeitar limite de memória da Apify
+      const ttResult = await searchViralTiktok(niche, segment, viralHashtags)
+        .then((v) => ({ status: 'fulfilled' as const, value: v }))
+        .catch((e) => ({ status: 'rejected' as const, reason: e }));
+
+      const igResult = await searchViralInstagram(niche, segment, viralHashtags)
+        .then((v) => ({ status: 'fulfilled' as const, value: v }))
+        .catch((e) => ({ status: 'rejected' as const, reason: e }));
 
       const ttCandidates = ttResult.status === 'fulfilled' ? ttResult.value : [];
       const igCandidates = igResult.status === 'fulfilled' ? igResult.value : [];

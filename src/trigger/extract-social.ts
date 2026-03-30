@@ -60,16 +60,18 @@ export const extractSocial = task({
         };
       }
 
-      // Step 2: Build scrape promises only for non-null profiles (per D-24)
-      const igPromise = igProfile
-        ? scrapeInstagram(igProfile.username)
-        : Promise.resolve(null);
-      const ttPromise = ttProfile
-        ? scrapeTiktok(ttProfile.username)
-        : Promise.resolve(null);
+      // Step 2-3: Run scraping sequentially (Apify memory limit)
+      const igResult = igProfile
+        ? await scrapeInstagram(igProfile.username)
+            .then((v) => ({ status: 'fulfilled' as const, value: v }))
+            .catch((e) => ({ status: 'rejected' as const, reason: e }))
+        : { status: 'fulfilled' as const, value: null };
 
-      // Step 3: Run in parallel using Promise.allSettled (per D-21)
-      const [igResult, ttResult] = await Promise.allSettled([igPromise, ttPromise]);
+      const ttResult = ttProfile
+        ? await scrapeTiktok(ttProfile.username)
+            .then((v) => ({ status: 'fulfilled' as const, value: v }))
+            .catch((e) => ({ status: 'rejected' as const, reason: e }))
+        : { status: 'fulfilled' as const, value: null };
 
       // Step 4: Extract results
       const igData = igResult.status === 'fulfilled' ? igResult.value : null;

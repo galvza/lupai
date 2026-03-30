@@ -47,11 +47,14 @@ export const extractWebsite = task({
 
       const warnings: string[] = [];
 
-      // Step 1: Run website scraping and SimilarWeb SEO in parallel (per D-07, D-08)
-      const [websiteResult, seoResult] = await Promise.allSettled([
-        scrapeWebsite(payload.websiteUrl),
-        scrapeSimilarweb(payload.websiteUrl),
-      ]);
+      // Step 1: Run website scraping and SimilarWeb SEO sequentially (Apify memory limit)
+      const websiteResult = await scrapeWebsite(payload.websiteUrl)
+        .then((v) => ({ status: 'fulfilled' as const, value: v }))
+        .catch((e) => ({ status: 'rejected' as const, reason: e }));
+
+      const seoResult = await scrapeSimilarweb(payload.websiteUrl)
+        .then((v) => ({ status: 'fulfilled' as const, value: v }))
+        .catch((e) => ({ status: 'rejected' as const, reason: e }));
 
       // Step 2: Extract results from allSettled
       const websiteScrapingResult = websiteResult.status === 'fulfilled' ? websiteResult.value : null;

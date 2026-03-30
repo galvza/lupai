@@ -59,12 +59,18 @@ export const extractAds = task({
       const warnings: string[] = [];
       const domain = extractDomain(payload.websiteUrl);
 
-      // Step 1: Three-way parallel extraction via Promise.allSettled (per D-14, D-15)
-      const [metaResult, googleResult, gmbResult] = await Promise.allSettled([
-        scrapeFacebookAds(payload.websiteUrl, payload.competitorName),
-        scrapeGoogleAds(domain, payload.competitorName),
-        scrapeGoogleMaps(payload.competitorName, payload.region),
-      ]);
+      // Step 1: Three-way sequential extraction (Apify memory limit)
+      const metaResult = await scrapeFacebookAds(payload.websiteUrl, payload.competitorName)
+        .then((v) => ({ status: 'fulfilled' as const, value: v }))
+        .catch((e) => ({ status: 'rejected' as const, reason: e }));
+
+      const googleResult = await scrapeGoogleAds(domain, payload.competitorName)
+        .then((v) => ({ status: 'fulfilled' as const, value: v }))
+        .catch((e) => ({ status: 'rejected' as const, reason: e }));
+
+      const gmbResult = await scrapeGoogleMaps(payload.competitorName, payload.region)
+        .then((v) => ({ status: 'fulfilled' as const, value: v }))
+        .catch((e) => ({ status: 'rejected' as const, reason: e }));
 
       // Step 2: Extract results + build warnings
       const rawMetaAds = metaResult.status === 'fulfilled' ? metaResult.value : null;

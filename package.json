@@ -36,6 +36,7 @@
     "@testing-library/dom": "^10",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16",
+    "@trigger.dev/build": "4.4.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
